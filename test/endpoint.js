@@ -16,13 +16,17 @@ assert.selectorText = function(sel, txt) {
   );
 };
 
+console.warn = function(msg) {
+  throw Error(msg);
+}
+
 // Setup
 beforeEach(function() {
 
   var dom = jsdom('<div><div id="mount"></div></div>');
   global.document = dom;
   global.window = dom.parentWindow;
-  global.mount = dom.querySelector('#mount');
+  document.mount = dom.querySelector('#mount');
 
   require('react/lib/ExecutionEnvironment').canUseDOM = true;
 });
