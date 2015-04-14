@@ -14,7 +14,10 @@
     "baobab",
     "react"
   ],
-  "author": "yomguithereal <kropotkinepiotr@gmail.com>",
+  "author": {
+    "name": "Guillaume Plique",
+    "url": "http://github.com/Yomguithereal"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Yomguithereal/baobab-react/issues"
