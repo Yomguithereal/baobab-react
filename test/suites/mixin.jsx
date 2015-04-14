@@ -21,7 +21,7 @@ var Root = React.createClass({
   render: function() {
     var Component = this.props.component;
 
-    return <Component />;
+    return <Component arg={this.props.arg || null}/>;
   }
 });
 
@@ -120,5 +120,58 @@ describe('Mixin', function() {
     tree.set('surname', 'the Third');
 
     assert.selectorText('#test', 'Hello John the Third');
+  });
+
+  it('should be possible to set cursors with a function.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    var Child = React.createClass({
+      mixins: [mixin],
+      cursors: function() {
+        return {
+          name: this.props.arg,
+          surname: ['surname']
+        };
+      },
+      render: function() {
+        return (
+          <span id="test">
+            Hello {this.state.name} {this.state.surname}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} arg={['name']} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
+  it('should be possible to set specific paths with a function.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    var Child = React.createClass({
+      mixins: [mixin],
+      cursors: {
+        name: function() {
+          return this.props.arg;
+        },
+        surname: function() {
+          return ['surname'];
+        }
+      },
+      render: function() {
+
+        return (
+          <span id="test">
+            Hello {this.state.name} {this.state.surname}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} arg={['name']} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
   });
 });

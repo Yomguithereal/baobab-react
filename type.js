@@ -13,14 +13,12 @@ type.Object = function(value) {
          !(value instanceof Function);
 };
 
-type.Map = function(value) {
-  return typeof value === 'function' || type.Object(value);
-}
-
 type.BaobabPropType = function(props, propName, componentName) {
   var p = props[propName];
 
-  if (!(typeof p.toString === 'function' && p.toString() === '[object Baobab]'))
+  if (!(p &&
+        typeof p.toString === 'function' &&
+        p.toString() === '[object Baobab]'))
     return new Error('baobab-react: the given tree is not a Baobab instance.');
 };
 

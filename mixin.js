@@ -49,8 +49,30 @@ var ChildMixin = {
     if (!map)
       return {};
 
-    if (!type.Map(map))
+    if (typeof map === 'function')
+      map = map.call(this);
+
+    if (!type.Object(map))
       throw Error('baobab-react.mixin: wrong "cursors" property (should be object or function).');
+
+    this.cursors = {};
+
+    var o = {},
+        k;
+
+    for (k in map) {
+
+      // Solving
+      if (typeof map[k] === 'function')
+        o[k] = map[k].call(this);
+      else
+        o[k] = map[k];
+
+      // Binding cursor
+      this.cursors[k] = this.context.tree.select(o[k]);
+    }
+
+    map = o;
 
     // Creating facet
     this.__facet = this.context.tree.createFacet({cursors: map});
