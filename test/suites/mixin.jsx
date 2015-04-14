@@ -40,8 +40,6 @@ describe('Mixin', function() {
     var Child = React.createClass({
       mixins: [mixin],
       render: function() {
-        assert(typeof this.context.tree === 'object');
-
         return <span id="test">Hello {this.context.tree.get('name')}</span>;
       }
     });
@@ -63,8 +61,6 @@ describe('Mixin', function() {
     var Child = React.createClass({
       mixins: [mixin],
       render: function() {
-        assert(typeof this.context.tree === 'object');
-
         return <span id="test">Hello {this.context.tree.get('name')}</span>;
       }
     });
@@ -72,5 +68,57 @@ describe('Mixin', function() {
     React.render(<Root tree={tree} component={UpperChild} />, document.mount);
 
     assert.selectorText('#test', 'Hello John');
+  });
+
+  it('should be possible to bind several cursors to a component.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    var Child = React.createClass({
+      mixins: [mixin],
+      cursors: {
+        name: ['name'],
+        surname: ['surname']
+      },
+      render: function() {
+
+        return (
+          <span id="test">
+            Hello {this.state.name} {this.state.surname}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
+  it('bound components should update along with the cursor.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    var Child = React.createClass({
+      mixins: [mixin],
+      cursors: {
+        name: ['name'],
+        surname: ['surname']
+      },
+      render: function() {
+
+        return (
+          <span id="test">
+            Hello {this.state.name} {this.state.surname}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+
+    tree.set('surname', 'the Third');
+
+    assert.selectorText('#test', 'Hello John the Third');
   });
 });

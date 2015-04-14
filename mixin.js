@@ -6,7 +6,6 @@
  */
 var React = require('react'),
     PropTypes = React.PropTypes,
-    Baobab = require('baobab'),
     type = require('./type.js');
 
 /**
@@ -14,12 +13,14 @@ var React = require('react'),
  */
 var RootMixin = {
 
+  // Component Prop Type
+  propTypes: {
+    tree: type.BaobabPropType
+  },
+
   // Context prop types
   childContextTypes: {
-    tree: function(props, propName, componentName) {
-      if (!(props[propName] instanceof Baobab))
-        return new Error('baobab-react.mixin.root: the given tree is not a Baobab instance.');
-    }
+    tree: type.BaobabPropType
   },
 
   // Handling child context
@@ -37,7 +38,7 @@ var ChildMixin = {
 
   // Context prop types
   contextTypes: {
-    tree: PropTypes.object
+    tree: type.BaobabPropType
   },
 
   // Building initial state
@@ -50,6 +51,32 @@ var ChildMixin = {
 
     if (!type.Map(map))
       throw Error('baobab-react.mixin: wrong "cursors" property (should be object or function).');
+
+    // Creating facet
+    this.__facet = this.context.tree.createFacet({cursors: map});
+
+    return this.__facet.get();
+  },
+
+  // When component is mounted
+  componentDidMount: function() {
+    if (!this.__facet)
+      return;
+
+    var handler = (function() {
+      this.setState(this.__facet.get());
+    }).bind(this);
+
+    this.__facet.on('update', handler);
+  },
+
+  // On component unmount
+  componentWillUnmount: function() {
+    if (!this.__facet)
+      return;
+
+    this.__facet.release();
+    this.__facet = null;
   }
 };
 
