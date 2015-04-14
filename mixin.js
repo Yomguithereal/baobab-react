@@ -13,7 +13,7 @@ var React = require('react'),
  */
 var RootMixin = {
 
-  // Component Prop Type
+  // Component prop Type
   propTypes: {
     tree: type.BaobabPropType
   },
