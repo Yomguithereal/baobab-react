@@ -134,6 +134,7 @@ describe('Mixin', function() {
         };
       },
       render: function() {
+
         return (
           <span id="test">
             Hello {this.state.name} {this.state.surname}
@@ -171,6 +172,30 @@ describe('Mixin', function() {
     });
 
     React.render(<Root tree={tree} component={Child} arg={['name']} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
+  it('should be possible to access the cursors within the component.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    var Child = React.createClass({
+      mixins: [mixin],
+      cursors: {
+        name: ['name'],
+        surname: ['surname']
+      },
+      render: function() {
+
+        return (
+          <span id="test">
+            Hello {this.cursors.name.get()} {this.cursors.surname.get()}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
