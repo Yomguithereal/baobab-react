@@ -2,4 +2,20 @@
 
 # React integration for Baobab
 
-WIP
+WIP Draft.
+
+## Principles
+
+## Usage
+
+## Strategies
+
+### Mixins
+
+### Higher Order Components
+
+### Wrapper Components
+
+## Interrogations
+
+* Passing props as arguments?
