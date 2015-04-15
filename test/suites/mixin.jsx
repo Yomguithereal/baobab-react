@@ -21,7 +21,7 @@ var Root = React.createClass({
   render: function() {
     var Component = this.props.component;
 
-    return <Component arg={this.props.arg || null}/>;
+    return <Component arg={this.props.arg || null} />;
   }
 });
 
@@ -68,6 +68,19 @@ describe('Mixin', function() {
     React.render(<Root tree={tree} component={UpperChild} />, document.mount);
 
     assert.selectorText('#test', 'Hello John');
+  });
+
+  it('should fail if the tree is not passed through context.', function() {
+    var Child = React.createClass({
+      mixins: [mixin],
+      render: function() {
+        return <span id="test">Hello John</span>;
+      }
+    });
+
+    assert.throws(function() {
+      React.render(<Child />, document.mount);
+    }, /through context/);
   });
 
   it('should be possible to bind several cursors to a component.', function() {

@@ -7,13 +7,16 @@
 import React from 'react';
 import type from './src/type.js';
 
-export function Root(Component) {
+/**
+ * Root component
+ */
+export function Root(Component, tree) {
   var ComposedComponent = class extends React.Component {
 
     // Handling child context
     getChildContext() {
       return {
-        tree: this.props.tree
+        tree: tree
       };
     }
 
@@ -23,11 +26,7 @@ export function Root(Component) {
     }
   };
 
-  // Prop types
-  ComposedComponent.propTypes = {
-    tree: type.BaobabPropType
-  };
-
+  // Child context types
   ComposedComponent.childContextTypes = {
     tree: type.BaobabPropType
   };
@@ -35,76 +34,25 @@ export function Root(Component) {
   return ComposedComponent;
 }
 
-export function Bind(Component) {
+/**
+ * Branch component
+ */
+export function Branch(Component, specs) {
+  if (specs && !type.Object(specs))
+    throw Error('baobab-react.higher-order: invalid specifications (should be an object with cursors and/or facets key).')
+
   var ComposedComponent = class extends React.Component {
 
     // Building initial state
     constructor(props, context) {
       super(props, context);
 
-      var map = this.cursors;
-
-      // No map, we return an empty object
-      if (!map) {
-        this.state = {};
-        return this;
-      }
-
-      if (typeof map === 'function')
-        map = map.call(this);
-
-      if (!type.Object(map))
-        throw Error('baobab-react.mixin: wrong "cursors" property (should be object or function).');
-
-      this.cursors = {};
-
-      var o = {},
-          k;
-
-      for (k in map) {
-
-        // Solving
-        if (typeof map[k] === 'function')
-          o[k] = map[k].call(this);
-        else
-          o[k] = map[k];
-
-        // Binding cursor
-        this.cursors[k] = this.context.tree.select(o[k]);
-      }
-
-      map = o;
-
-      // Creating facet
-      this.__facet = this.context.tree.createFacet({cursors: map});
-
-      this.state = this.__facet.get();
-    }
-
-    // When component is mounted
-    componentDidMount() {
-      if (!this.__facet)
-        return;
-
-      var handler = (function() {
-        this.setState(this.__facet.get());
-      }).bind(this);
-
-      this.__facet.on('update', handler);
-    }
-
-    // On component unmount
-    componentWillUnmount() {
-      if (!this.__facet)
-        return;
-
-      this.__facet.release();
-      this.__facet = null;
+      this.state = {name: 'Hey', surname: 'Jude'};
     }
 
     // Render shim
     render() {
-      return <Component {...this.props} />;
+      return <Component {...this.props} {...this.state}/>;
     }
   };
 

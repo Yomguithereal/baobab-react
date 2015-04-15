@@ -6,7 +6,7 @@
 import assert from 'assert';
 import React, {Component} from 'react';
 import Baobab from 'baobab';
-import {Root, Bind} from '../../higher-order.js';
+import {Root, Branch} from '../../higher-order.js';
 
 // Components
 class DummyRoot extends Component {
@@ -15,41 +15,47 @@ class DummyRoot extends Component {
   }
 }
 
-DummyRoot = Root(DummyRoot);
-
 class BasicRoot extends Component {
   render() {
     var Component = this.props.component;
 
-    return <Component arg={this.props.arg || null}/>;
+    return <Component arg={this.props.arg || null} />;
   }
 }
-
-BasicRoot = Root(BasicRoot);
 
 describe('Higher Order Component', function() {
 
   it('should fail if passing a wrong tree to the root mixin.', function() {
+    var RootComponent = Root(DummyRoot, {hello: 'world'});
 
     assert.throws(function() {
-      React.render(<DummyRoot tree={{hello: 'world'}} />, document.mount);
+      React.render(<RootComponent />, document.mount);
     }, /Baobab/);
   });
 
-  // it('the tree should be propagated through context.', function() {
-  //   var tree = new Baobab({name: 'John'}, {asynchronous: false});
+  it('should be possible to bind several cursors to a component.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
+        RootComponent = Root(BasicRoot, tree);
 
-  //   class Child extends Component {
-  //     render() {
-  //       console.log(this.context);
-  //       return <span id="test">Hello {this.context.tree.get('name')}</span>;
-  //     }
-  //   }
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name} {this.props.surname}
+          </span>
+        );
+      }
+    }
 
-  //   var EnhancedChild = Bind(Child);
+    var ComposedComponent = Branch(Child, {
+      cursors: {
+        name: ['name'],
+        surname: ['surname']
+      }
+    });
 
-  //   React.render(<BasicRoot tree={tree} component={EnhancedChild} />, document.mount);
+    React.render(<RootComponent component={ComposedComponent} />, document.mount);
 
-  //   assert.selectorText('#test', 'Hello John');
-  // });
+    // console.log(document.querySelector('#test').textContent);
+  });
 });

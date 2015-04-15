@@ -6,7 +6,8 @@
  */
 var React = require('react'),
     PropTypes = React.PropTypes,
-    type = require('./src/type.js');
+    type = require('./src/type.js'),
+    abstract = require('./src/abstract.js');
 
 /**
  * Root mixin
@@ -38,49 +39,23 @@ var ChildMixin = {
 
   // Context prop types
   contextTypes: {
-    tree: type.BaobabPropType
+    tree: type.BaobabContextType
   },
 
   // Building initial state
   getInitialState: function() {
-    var map = this.cursors;
+    var o = abstract.init.call(this, this.context.tree, this.cursors);
 
-    // No map, we return an empty object
-    if (!map)
-      return {};
+    // Setting properties
+    this.__facet = o.facet;
+    this.cursors = o.cursors;
 
-    if (typeof map === 'function')
-      map = map.call(this);
-
-    if (!type.Object(map))
-      throw Error('baobab-react.mixin: wrong "cursors" property (should be object or function).');
-
-    this.cursors = {};
-
-    var o = {},
-        k;
-
-    for (k in map) {
-
-      // Solving
-      if (typeof map[k] === 'function')
-        o[k] = map[k].call(this);
-      else
-        o[k] = map[k];
-
-      // Binding cursor
-      this.cursors[k] = this.context.tree.select(o[k]);
-    }
-
-    map = o;
-
-    // Creating facet
-    this.__facet = this.context.tree.createFacet({cursors: map});
-
-    return this.__facet.get();
+    if (this.__facet)
+      return this.__facet.get();
+    return {};
   },
 
-  // When component is mounted
+  // On component mount
   componentDidMount: function() {
     if (!this.__facet)
       return;
@@ -97,8 +72,14 @@ var ChildMixin = {
     if (!this.__facet)
       return;
 
+    // Releasing facet
     this.__facet.release();
     this.__facet = null;
+
+    // Releasing cursors
+    for (var k in this.cursors)
+      this.cursors[k].release();
+    this.cursors = null;
   }
 };
 
