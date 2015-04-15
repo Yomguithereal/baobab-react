@@ -6,7 +6,7 @@
  */
 var React = require('react'),
     PropTypes = React.PropTypes,
-    type = require('./type.js');
+    type = require('./src/type.js');
 
 /**
  * Root mixin

@@ -38,4 +38,4 @@ afterEach(function() {
 
 // Suites
 require('./suites/mixin.jsx');
-require('./suites/hoc.jsx');
+require('./suites/higher-order.jsx');
