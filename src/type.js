@@ -13,12 +13,20 @@ type.Object = function(value) {
          !(value instanceof Function);
 };
 
-type.BaobabPropType = function(props, propName, componentName) {
-  var p = props[propName];
+type.Baobab = function(value) {
+	return value &&
+         typeof value.toString === 'function' &&
+         value.toString() === '[object Baobab]';
+};
 
-  if (!(p &&
-        typeof p.toString === 'function' &&
-        p.toString() === '[object Baobab]'))
+type.Cursor = function(value) {
+  return value &&
+         typeof value.toString === 'function' &&
+         value.toString() === '[object Cursor]';
+};
+
+type.BaobabPropType = function(props, propName, componentName) {
+  if (!type.Baobab(props[propName]))
     return new Error('baobab-react: the given tree is not a Baobab instance.');
 };
 
