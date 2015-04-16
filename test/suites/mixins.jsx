@@ -6,7 +6,7 @@
 var assert = require('assert'),
     React = require('react'),
     Baobab = require('baobab'),
-    mixin = require('../../mixin.js');
+    mixin = require('../../mixins.js');
 
 // Components
 var DummyRoot = React.createClass({

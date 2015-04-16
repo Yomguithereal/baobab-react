@@ -37,5 +37,5 @@ afterEach(function() {
 });
 
 // Suites
-require('./suites/mixin.jsx');
+require('./suites/mixins.jsx');
 require('./suites/higher-order.jsx');
