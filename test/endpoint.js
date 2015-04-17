@@ -1,3 +1,5 @@
+/* global beforeEach, afterEach */
+
 /**
  * Baobab-React Unit Tests Endpoint
  * =================================
@@ -18,7 +20,7 @@ assert.selectorText = function(sel, txt) {
 
 console.warn = function(msg) {
   throw Error(msg);
-}
+};
 
 // Setup
 beforeEach(function() {

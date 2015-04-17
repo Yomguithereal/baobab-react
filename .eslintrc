@@ -1,0 +1,19 @@
+{
+  "ecmaFeatures": {
+    "jsx": true,
+    "modules": true
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "max_len": 80,
+  "rules": {
+    "curly": 0,
+    "quotes": "single",
+    "new-cap": 0,
+    "no-underscore-dangle": 0,
+    "no-wrap-func": 0
+  }
+}

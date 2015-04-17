@@ -86,7 +86,7 @@ function Root(Component, tree) {
 }
 
 function Branch(Component, specs) {
-  if (specs && !_type2['default'].Object(specs)) throw Error('baobab-react.higher-order: invalid specifications (should be an object with cursors and/or facets key).');
+  if (specs && !_type2['default'].Object(specs)) throw Error('baobab-react.higher-order: invalid specifications ' + '(should be an object with cursors and/or facets key).');
 
   var ComposedComponent = (function (_React$Component2) {
     var _class2 =
@@ -97,8 +97,7 @@ function Branch(Component, specs) {
 
       _get(Object.getPrototypeOf(_class2.prototype), 'constructor', this).call(this, props, context);
 
-      this.state = { name: 'Hey', surname: 'Jude' };
-      this.test = 'Hello';
+      //...
     };
 
     _inherits(_class2, _React$Component2);

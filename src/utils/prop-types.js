@@ -8,7 +8,7 @@ var type = require('./type.js');
 
 var PropTypes = {};
 
-PropTypes.baobab = function(props, propName, componentName) {
+PropTypes.baobab = function(props, propName) {
   if (!type.Baobab(props[propName]))
     return new Error('prop type `' + propName + '` is invalid; it must be a Baobab tree.');
 };

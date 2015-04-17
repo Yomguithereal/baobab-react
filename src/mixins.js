@@ -4,9 +4,7 @@
  *
  * Old style react mixins.
  */
-var React = require('react'),
-    type = require('./utils/type.js'),
-    PropTypes = require('./utils/prop-types.js'),
+var PropTypes = require('./utils/prop-types.js'),
     abstract = require('./utils/abstract.js');
 
 /**

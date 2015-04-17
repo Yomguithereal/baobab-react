@@ -23,7 +23,7 @@ export function Root(Component, tree) {
 
     // Render shim
     render() {
-      return <Component {...this.props} />
+      return <Component {...this.props} />;
     }
   };
 
@@ -40,7 +40,8 @@ export function Root(Component, tree) {
  */
 export function Branch(Component, specs) {
   if (specs && !type.Object(specs))
-    throw Error('baobab-react.higher-order: invalid specifications (should be an object with cursors and/or facets key).')
+    throw Error('baobab-react.higher-order: invalid specifications ' +
+                '(should be an object with cursors and/or facets key).');
 
   var ComposedComponent = class extends React.Component {
 
@@ -48,8 +49,7 @@ export function Branch(Component, specs) {
     constructor(props, context) {
       super(props, context);
 
-      this.state = {name: 'Hey', surname: 'Jude'};
-      this.test = 'Hello';
+      //...
     }
 
     // Render shim
@@ -62,5 +62,5 @@ export function Branch(Component, specs) {
     tree: PropTypes.baobab
   };
 
-  return ComposedComponent
+  return ComposedComponent;
 }
