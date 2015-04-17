@@ -80,7 +80,7 @@ describe('Mixin', function() {
 
     assert.throws(function() {
       React.render(<Child />, document.mount);
-    }, /through context/);
+    }, /Baobab/);
   });
 
   it('should be possible to bind several cursors to a component.', function() {

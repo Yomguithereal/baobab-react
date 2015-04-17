@@ -6,6 +6,7 @@
  */
 import React from 'react';
 import type from './utils/type.js';
+import PropTypes from './utils/prop-types.js';
 
 /**
  * Root component
@@ -28,7 +29,7 @@ export function Root(Component, tree) {
 
   // Child context types
   ComposedComponent.childContextTypes = {
-    tree: type.BaobabPropType
+    tree: PropTypes.baobab
   };
 
   return ComposedComponent;
@@ -58,7 +59,7 @@ export function Branch(Component, specs) {
   };
 
   ComposedComponent.contextTypes = {
-    tree: type.BaobabPropType
+    tree: PropTypes.baobab
   };
 
   return ComposedComponent

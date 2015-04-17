@@ -40,6 +40,10 @@ var _type = require('./utils/type.js');
 
 var _type2 = _interopRequireWildcard(_type);
 
+var _PropTypes = require('./utils/prop-types.js');
+
+var _PropTypes2 = _interopRequireWildcard(_PropTypes);
+
 function Root(Component, tree) {
   var ComposedComponent = (function (_React$Component) {
     var _class = function ComposedComponent() {
@@ -75,7 +79,7 @@ function Root(Component, tree) {
 
   // Child context types
   ComposedComponent.childContextTypes = {
-    tree: _type2['default'].BaobabPropType
+    tree: _PropTypes2['default'].baobab
   };
 
   return ComposedComponent;
@@ -112,7 +116,7 @@ function Branch(Component, specs) {
   })(_React2['default'].Component);
 
   ComposedComponent.contextTypes = {
-    tree: _type2['default'].BaobabPropType
+    tree: _PropTypes2['default'].baobab
   };
 
   return ComposedComponent;

@@ -5,8 +5,8 @@
  * Old style react mixins.
  */
 var React = require('react'),
-    PropTypes = React.PropTypes,
     type = require('./utils/type.js'),
+    PropTypes = require('./utils/prop-types.js'),
     abstract = require('./utils/abstract.js');
 
 /**
@@ -16,12 +16,12 @@ var RootMixin = {
 
   // Component prop Type
   propTypes: {
-    tree: type.BaobabPropType
+    tree: PropTypes.baobab
   },
 
   // Context prop types
   childContextTypes: {
-    tree: type.BaobabPropType
+    tree: PropTypes.baobab
   },
 
   // Handling child context
@@ -39,7 +39,7 @@ var BranchMixin = {
 
   // Context prop types
   contextTypes: {
-    tree: type.BaobabContextType
+    tree: PropTypes.baobab
   },
 
   // Building initial state
