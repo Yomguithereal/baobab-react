@@ -39,16 +39,16 @@ describe('Higher Order Component', function() {
         RootComponent = root(BasicRoot, tree);
 
     class Child extends Component {
+      static contextTypes = {
+        tree: PropTypes.baobab
+      };
+
       render() {
         var name = this.context.tree.get('name');
 
         return <span id="test">Hello {name}</span>;
       }
     }
-
-    Child.contextTypes = {
-      tree: PropTypes.baobab
-    };
 
     React.render(<RootComponent tree={tree} component={Child} />, document.mount);
 
