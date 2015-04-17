@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./dist-modules/wrapper');
+module.exports = require('./dist-modules/wrapper.js');

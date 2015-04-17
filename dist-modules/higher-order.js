@@ -36,6 +36,10 @@ var _React = require('react');
 
 var _React2 = _interopRequireWildcard(_React);
 
+var _abstract = require('./utils/abstract.js');
+
+var _abstract2 = _interopRequireWildcard(_abstract);
+
 var _type = require('./utils/type.js');
 
 var _type2 = _interopRequireWildcard(_type);
@@ -45,6 +49,8 @@ var _PropTypes = require('./utils/prop-types.js');
 var _PropTypes2 = _interopRequireWildcard(_PropTypes);
 
 function root(Component, tree) {
+  if (!_type2['default'].Baobab(tree)) throw Error('baobab-react:higher-order.root: given tree is not a Baobab.');
+
   var ComposedComponent = (function (_React$Component) {
     var _class = function ComposedComponent() {
       _classCallCheck(this, _class);
@@ -85,8 +91,10 @@ function root(Component, tree) {
   return ComposedComponent;
 }
 
-function branch(Component, specs) {
-  if (specs && !_type2['default'].Object(specs)) throw Error('baobab-react.higher-order: invalid specifications ' + '(should be an object with cursors and/or facets key).');
+function branch(Component) {
+  var specs = arguments[1] === undefined ? {} : arguments[1];
+
+  if (!_type2['default'].Object(specs)) throw Error('baobab-react.higher-order: invalid specifications ' + '(should be an object with cursors and/or facets key).');
 
   var ComposedComponent = (function (_React$Component2) {
     var _class2 =
@@ -97,17 +105,61 @@ function branch(Component, specs) {
 
       _get(Object.getPrototypeOf(_class2.prototype), 'constructor', this).call(this, props, context);
 
-      //...
+      var _abstract$init$call = _abstract2['default'].init.call(this, context.tree, specs.cursors);
+
+      var facet = _abstract$init$call.facet;
+      var cursors = _abstract$init$call.cursors;
+
+      if (facet) this.state = facet.get();
+
+      this.facet = facet;
+      this.cursors = cursors;
     };
 
     _inherits(_class2, _React$Component2);
 
     _createClass(_class2, [{
+      key: 'getChildContext',
+
+      // Child context
+      value: function getChildContext() {
+        return {
+          cursors: this.cursors
+        };
+      }
+    }, {
+      key: 'componentDidMount',
+
+      // On component mount
+      value: function componentDidMount() {
+        if (!this.facet) {
+          return;
+        }var handler = (function () {
+          this.setState(this.facet.get());
+        }).bind(this);
+
+        this.facet.on('update', handler);
+      }
+    }, {
       key: 'render',
 
       // Render shim
       value: function render() {
         return _React2['default'].createElement(Component, _extends({}, this.props, this.state));
+      }
+    }, {
+      key: 'componentWillUnmount',
+
+      // On component unmount
+      value: function componentWillUnmount() {
+        if (!this.facet) {
+          return;
+        } // Releasing facet
+        this.facet.release();
+        this.facet = null;
+
+        // Releasing cursors
+        this.cursors = null;
       }
     }]);
 
@@ -116,6 +168,10 @@ function branch(Component, specs) {
 
   ComposedComponent.contextTypes = {
     tree: _PropTypes2['default'].baobab
+  };
+
+  ComposedComponent.childContextTypes = {
+    cursors: _PropTypes2['default'].cursors
   };
 
   return ComposedComponent;

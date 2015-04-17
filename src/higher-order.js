@@ -13,6 +13,9 @@ import PropTypes from './utils/prop-types.js';
  * Root component
  */
 export function root(Component, tree) {
+  if (!type.Baobab(tree))
+    throw Error('baobab-react:higher-order.root: given tree is not a Baobab.');
+
   var ComposedComponent = class extends React.Component {
 
     // Handling child context
@@ -39,8 +42,8 @@ export function root(Component, tree) {
 /**
  * Branch component
  */
-export function branch(Component, specs) {
-  if (specs && !type.Object(specs))
+export function branch(Component, specs = {}) {
+  if (!type.Object(specs))
     throw Error('baobab-react.higher-order: invalid specifications ' +
                 '(should be an object with cursors and/or facets key).');
 
@@ -84,7 +87,7 @@ export function branch(Component, specs) {
 
     // Render shim
     render() {
-      return <Component {...this.props} {...this.state}/>;
+      return <Component {...this.props} {...this.state} />;
     }
 
     // On component unmount

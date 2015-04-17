@@ -74,8 +74,7 @@ var BranchMixin = {
     this.__facet.release();
     this.__facet = null;
 
-    // Releasing cursors
-    for (var k in this.cursors) this.cursors[k].release();
+    // Deleting cursors
     this.cursors = null;
   }
 };
