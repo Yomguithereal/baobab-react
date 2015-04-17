@@ -13,7 +13,7 @@ exports.init = function(tree, map) {
     return {cursors: {}, facet: null};
 
   if (typeof map === 'function')
-      map = map.call(this);
+    map = map.call(this);
 
   if (!type.Object(map))
     throw Error('baobab-react: wrong "cursors" or "facets" property ' +
