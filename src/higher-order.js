@@ -5,7 +5,7 @@
  * ES6 higher order component to enchance one's component.
  */
 import React from 'react';
-import type from './src/type.js';
+import type from './utils/type.js';
 
 /**
  * Root component
