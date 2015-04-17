@@ -2,8 +2,9 @@
   "name": "baobab-react",
   "version": "1.0.0",
   "description": "React integration for Baobab.",
-  "main": "./mixin.js",
+  "main": "dist-modules/index.js",
   "scripts": {
+    "dist": "babel ./src --out-dir dist-modules",
     "test": "mocha -R spec --compilers jsx:babel/register ./test/endpoint.js"
   },
   "repository": {
@@ -24,7 +25,7 @@
   },
   "homepage": "https://github.com/Yomguithereal/baobab-react",
   "devDependencies": {
-    "babel": "^5.1.8",
+    "babel": "^5.1.10",
     "baobab": "git+https://github.com/Yomguithereal/baobab.git#v1",
     "cheerio": "^0.19.0",
     "jsdom": "^3.1.0",
@@ -32,6 +33,6 @@
     "react": "0.13.x"
   },
   "peerDependencies": {
-    "react": "0.13.x"
+    "react": ">=0.13.0 <1.0.0"
   }
 }

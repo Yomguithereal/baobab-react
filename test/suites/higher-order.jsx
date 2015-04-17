@@ -6,7 +6,7 @@
 import assert from 'assert';
 import React, {Component} from 'react';
 import Baobab from 'baobab';
-import {Root, Branch} from '../../higher-order.js';
+import {Root, Branch} from '../../src/higher-order';
 
 // Components
 class DummyRoot extends Component {

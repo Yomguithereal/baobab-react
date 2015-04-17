@@ -1,6 +1,3 @@
-/**
- * Baobab-React Wrapper Component
- * ===============================
- *
- * ES6 wrapper component.
- */
+'use strict';
+
+module.exports = require('./dist-modules/wrapper');

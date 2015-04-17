@@ -6,8 +6,8 @@
  */
 var React = require('react'),
     PropTypes = React.PropTypes,
-    type = require('./src/type.js'),
-    abstract = require('./src/abstract.js');
+    type = require('./utils/type.js'),
+    abstract = require('./utils/abstract.js');
 
 /**
  * Root mixin
