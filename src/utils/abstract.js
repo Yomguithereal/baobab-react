@@ -39,7 +39,6 @@ exports.init = function(tree, map) {
   // Creating facet
   var facet = tree.createFacet({cursors: o});
 
-
   return {
     cursors: cursors,
     facet: facet
