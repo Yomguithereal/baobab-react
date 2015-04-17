@@ -5,6 +5,7 @@
  * ES6 higher order component to enchance one's component.
  */
 import React from 'react';
+import abstract from './utils/abstract.js';
 import type from './utils/type.js';
 import PropTypes from './utils/prop-types.js';
 
@@ -45,21 +46,67 @@ export function branch(Component, specs) {
 
   var ComposedComponent = class extends React.Component {
 
+    // Child context
+    getChildContext() {
+      return {
+        cursors: this.cursors
+      };
+    }
+
     // Building initial state
     constructor(props, context) {
       super(props, context);
 
-      //...
+      var {facet, cursors} = abstract.init.call(
+        this,
+        context.tree,
+        specs.cursors
+      );
+
+      if (facet)
+        this.state = facet.get();
+
+      this.facet = facet;
+      this.cursors = cursors;
+    }
+
+    // On component mount
+    componentDidMount() {
+      if (!this.facet)
+        return;
+
+      var handler = (function() {
+        this.setState(this.facet.get());
+      }).bind(this);
+
+      this.facet.on('update', handler);
     }
 
     // Render shim
     render() {
       return <Component {...this.props} {...this.state}/>;
     }
+
+    // On component unmount
+    componentWillUnmount() {
+      if (!this.facet)
+        return;
+
+      // Releasing facet
+      this.facet.release();
+      this.facet = null;
+
+      // Releasing cursors
+      this.cursors = null;
+    }
   };
 
   ComposedComponent.contextTypes = {
     tree: PropTypes.baobab
+  };
+
+  ComposedComponent.childContextTypes = {
+    cursors: PropTypes.cursors
   };
 
   return ComposedComponent;

@@ -8,7 +8,6 @@
     "node": true,
     "es6": true
   },
-  "max_len": 80,
   "rules": {
     "curly": 0,
     "quotes": "single",
