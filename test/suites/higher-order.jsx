@@ -6,7 +6,8 @@
 import assert from 'assert';
 import React, {Component} from 'react';
 import Baobab from 'baobab';
-import {Root, Branch} from '../../src/higher-order';
+import {root, branch} from '../../src/higher-order.js';
+import PropTypes from '../../src/utils/prop-types.js';
 
 // Components
 class DummyRoot extends Component {
@@ -26,36 +27,31 @@ class BasicRoot extends Component {
 describe('Higher Order Component', function() {
 
   it('should fail if passing a wrong tree to the root mixin.', function() {
-    var RootComponent = Root(DummyRoot, {hello: 'world'});
+    var RootComponent = root(DummyRoot, {hello: 'world'});
 
     assert.throws(function() {
       React.render(<RootComponent />, document.mount);
     }, /Baobab/);
   });
 
-  it('should be possible to bind several cursors to a component.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
-        RootComponent = Root(BasicRoot, tree);
+  it('the tree should be propagated through context.', function() {
+    var tree = new Baobab({name: 'John'}, {asynchronous: false}),
+        RootComponent = root(BasicRoot, tree);
 
     class Child extends Component {
       render() {
-        return (
-          <span id="test">
-            Hello {this.props.name} {this.props.surname}
-          </span>
-        );
+        var name = this.context.tree.get('name');
+
+        return <span id="test">Hello {name}</span>;
       }
     }
 
-    var ComposedComponent = Branch(Child, {
-      cursors: {
-        name: ['name'],
-        surname: ['surname']
-      }
-    });
+    Child.contextTypes = {
+      tree: PropTypes.baobab
+    };
 
-    React.render(<RootComponent component={ComposedComponent} />, document.mount);
+    React.render(<RootComponent tree={tree} component={Child} />, document.mount);
 
-    // console.log(document.querySelector('#test').textContent);
+    assert.selectorText('#test', 'Hello John');
   });
 });

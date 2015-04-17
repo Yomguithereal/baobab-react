@@ -19,12 +19,12 @@ Object.defineProperty(exports, '__esModule', {
 /**
  * Root component
  */
-exports.Root = Root;
+exports.root = root;
 
 /**
  * Branch component
  */
-exports.Branch = Branch;
+exports.branch = branch;
 /**
  * Baobab-React Higher Order Component
  * ====================================
@@ -44,7 +44,7 @@ var _PropTypes = require('./utils/prop-types.js');
 
 var _PropTypes2 = _interopRequireWildcard(_PropTypes);
 
-function Root(Component, tree) {
+function root(Component, tree) {
   var ComposedComponent = (function (_React$Component) {
     var _class = function ComposedComponent() {
       _classCallCheck(this, _class);
@@ -85,7 +85,7 @@ function Root(Component, tree) {
   return ComposedComponent;
 }
 
-function Branch(Component, specs) {
+function branch(Component, specs) {
   if (specs && !_type2['default'].Object(specs)) throw Error('baobab-react.higher-order: invalid specifications ' + '(should be an object with cursors and/or facets key).');
 
   var ComposedComponent = (function (_React$Component2) {

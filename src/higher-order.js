@@ -11,7 +11,7 @@ import PropTypes from './utils/prop-types.js';
 /**
  * Root component
  */
-export function Root(Component, tree) {
+export function root(Component, tree) {
   var ComposedComponent = class extends React.Component {
 
     // Handling child context
@@ -38,7 +38,7 @@ export function Root(Component, tree) {
 /**
  * Branch component
  */
-export function Branch(Component, specs) {
+export function branch(Component, specs) {
   if (specs && !type.Object(specs))
     throw Error('baobab-react.higher-order: invalid specifications ' +
                 '(should be an object with cursors and/or facets key).');
