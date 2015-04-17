@@ -27,6 +27,7 @@
   "homepage": "https://github.com/Yomguithereal/baobab-react",
   "devDependencies": {
     "babel": "^5.1.10",
+    "babel-eslint": "^3.0.1",
     "baobab": "git+https://github.com/Yomguithereal/baobab.git#v1",
     "cheerio": "^0.19.0",
     "eslint": "^0.19.0",

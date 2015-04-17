@@ -8,6 +8,7 @@
     "node": true,
     "es6": true
   },
+  "parser": "babel-eslint",
   "rules": {
     "curly": 0,
     "quotes": "single",

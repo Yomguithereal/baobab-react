@@ -12,8 +12,6 @@ exports.branch = branch;
  * ES7 decorators sugar for higher order components.
  */
 
-var _Component = require('react');
-
 var _Root$Branch = require('./higher-order.js');
 
 function root(tree) {

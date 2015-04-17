@@ -4,7 +4,6 @@
  *
  * ES7 decorators sugar for higher order components.
  */
-import {Component} from 'react';
 import {
   root as Root,
   branch as Branch
