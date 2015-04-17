@@ -2,11 +2,11 @@
 
 # baobab-react
 
-This repository holds [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://facebook.github.io/react/) integration.
+This repository is home to [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://facebook.github.io/react/) integration.
 
 It aims at implementing a handful of popular React patterns so that anyone remain free to choose the one he wants rather than being imposed one by the library.
 
-Current implemented patterns being:
+Currently implemented patterns being:
 
 * [Mixins](#mixins)
 * [Higher Order Components](#higher-order-components)
@@ -23,7 +23,7 @@ npm install baobab-react
 npm install git+https://github.com/Yomguithereal/baobab-react.git
 ```
 
-Then require the desired pattern and only this one will be loaded (meaning that you browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
+Then require the desired pattern and only this one will be loaded (this means that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
 
 *Example*
 
@@ -33,12 +33,12 @@ var mixins = require('baobab-react/mixins');
 
 ## On root & branches
 
-In order to keep component definitions detaches from any particular instance of Baobab, tI divided each time the mixins, higher order components etc. into two:
+In order to keep component definitions detached from any particular instance of Baobab, I divided the mixins, higher order components etc. into two:
 
-* The **Root** aims at passing a baobab tree through the context so that child component (branches) may use it. Typically, you'll need to make a root of your app's top level component.
-* The **Branches** get their data from the tree they received from the root.
+* The **Root** aims at passing a baobab tree through context so that child component (branches) may use it. Typically, your app's top-level component will probably be a root.
+* The **Branches**, bound to cursors, get their data from the tree given by the root.
 
-This is necessary so that isomorphism can remain a friendly stroll in the park.
+This is necessary so that isomorphism can remain an enjoyable stroll in the park (you UI would remain a pure function).
 
 ## Patterns
 
@@ -67,7 +67,7 @@ var Application = React.createClass({
   render: function() {
     return (
       <div>
-        <OtheComponent />
+        <OtherComponent />
       </div>
     );
   }
@@ -163,6 +163,10 @@ var MyComponent = React.createClass({
 
 ### Higher Order Components
 
+```js
+import {root, branch} from 'baobab-react/higher-order';
+```
+
 #### Root
 
 ```js
@@ -179,7 +183,7 @@ class Application extends Component {
   render() {
     return (
       <div>
-        <OtheComponent />
+        <OtherComponent />
       </div>
     );
   }
@@ -294,7 +298,11 @@ export default branch(MyComponent, {
 
 ### Decorators
 
-**Warning**: decorators are a work-in-progress [proposition](https://github.com/wycats/javascript-decorators) for ES7 (they are pretty well handed by [Babel](https://babeljs.io/)). You have been warned!
+**Warning**: decorators are a work-in-progress [proposition](https://github.com/wycats/javascript-decorators) for ES7 (they are pretty well handed by [babel](https://babeljs.io/) still). You have been warned!
+
+```js
+import {root, branch} from 'baobab-react/decorators';
+```
 
 #### Root
 
@@ -313,7 +321,7 @@ class Application extends Component {
   render() {
     return (
       <div>
-        <OtheComponent />
+        <OtherComponent />
       </div>
     );
   }
