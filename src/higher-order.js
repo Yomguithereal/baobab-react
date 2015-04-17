@@ -48,6 +48,7 @@ export function Branch(Component, specs) {
       super(props, context);
 
       this.state = {name: 'Hey', surname: 'Jude'};
+      this.test = 'Hello';
     }
 
     // Render shim

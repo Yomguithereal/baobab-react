@@ -6,18 +6,18 @@
 var assert = require('assert'),
     React = require('react'),
     Baobab = require('baobab'),
-    mixin = require('../../src/mixin');
+    mixins = require('../../src/mixins');
 
 // Components
 var DummyRoot = React.createClass({
-  mixins: [mixin.root],
+  mixins: [mixins.root],
   render: function() {
     return <div />;
   }
 });
 
 var Root = React.createClass({
-  mixins: [mixin.root],
+  mixins: [mixins.root],
   render: function() {
     var Component = this.props.component;
 
@@ -38,7 +38,7 @@ describe('Mixin', function() {
     var tree = new Baobab({name: 'John'}, {asynchronous: false});
 
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       render: function() {
         return <span id="test">Hello {this.context.tree.get('name')}</span>;
       }
@@ -59,7 +59,7 @@ describe('Mixin', function() {
     });
 
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       render: function() {
         return <span id="test">Hello {this.context.tree.get('name')}</span>;
       }
@@ -72,7 +72,7 @@ describe('Mixin', function() {
 
   it('should fail if the tree is not passed through context.', function() {
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       render: function() {
         return <span id="test">Hello John</span>;
       }
@@ -87,7 +87,7 @@ describe('Mixin', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       cursors: {
         name: ['name'],
         surname: ['surname']
@@ -111,7 +111,7 @@ describe('Mixin', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       cursors: {
         name: ['name'],
         surname: ['surname']
@@ -139,7 +139,7 @@ describe('Mixin', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       cursors: function() {
         return {
           name: this.props.arg,
@@ -165,7 +165,7 @@ describe('Mixin', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       cursors: {
         name: function() {
           return this.props.arg;
@@ -193,7 +193,7 @@ describe('Mixin', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     var Child = React.createClass({
-      mixins: [mixin],
+      mixins: [mixins.branch],
       cursors: {
         name: ['name'],
         surname: ['surname']

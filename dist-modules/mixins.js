@@ -35,9 +35,9 @@ var RootMixin = {
 };
 
 /**
- * Child mixin
+ * Branch mixin
  */
-var ChildMixin = {
+var BranchMixin = {
 
   // Context prop types
   contextTypes: {
@@ -83,6 +83,5 @@ var ChildMixin = {
 };
 
 // Exporting
-ChildMixin.root = RootMixin;
-
-module.exports = ChildMixin;
+exports.root = RootMixin;
+exports.branch = BranchMixin;
