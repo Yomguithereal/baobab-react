@@ -77,4 +77,20 @@ describe('Wrapper', function() {
 
     assert.selectorText('#test', 'Hello John');
   });
+
+  it('should fail if the tree is not passed through context.', function() {
+    class Child extends Component {
+      static contextTypes = {
+        tree: PropTypes.baobab
+      }
+
+      render() {
+        return <span id="test">Hello {this.context.tree.get('name')}</span>;
+      }
+    }
+
+    assert.throws(function() {
+      React.render(<Child />, document.mount);
+    }, /Baobab/);
+  });
 });

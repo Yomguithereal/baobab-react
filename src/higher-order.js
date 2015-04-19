@@ -17,6 +17,9 @@ export function root(Component, tree) {
     throw Error('baobab-react:higher-order.root: given tree is not a Baobab.');
 
   var ComposedComponent = class extends React.Component {
+    static childContextTypes = {
+      tree: PropTypes.baobab
+    };
 
     // Handling child context
     getChildContext() {
@@ -31,11 +34,6 @@ export function root(Component, tree) {
     }
   };
 
-  // Child context types
-  ComposedComponent.childContextTypes = {
-    tree: PropTypes.baobab
-  };
-
   return ComposedComponent;
 }
 
@@ -48,6 +46,13 @@ export function branch(Component, specs = {}) {
                 '(should be an object with cursors and/or facets key).');
 
   var ComposedComponent = class extends React.Component {
+    static contextTypes = {
+      tree: PropTypes.baobab
+    };
+
+    static childContextTypes = {
+      cursors: PropTypes.cursors
+    };
 
     // Child context
     getChildContext() {
@@ -102,14 +107,6 @@ export function branch(Component, specs = {}) {
       // Releasing cursors
       this.cursors = null;
     }
-  };
-
-  ComposedComponent.contextTypes = {
-    tree: PropTypes.baobab
-  };
-
-  ComposedComponent.childContextTypes = {
-    cursors: PropTypes.cursors
   };
 
   return ComposedComponent;

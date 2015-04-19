@@ -10,15 +10,24 @@ import PropTypes from './utils/prop-types.js';
 /**
  * Helpers
  */
-function renderChildren(children) {
+function pass(props, state) {
+  const {
+    children,
+    ...otherProps
+  } = props;
+
+  return {...otherProps, ...state};
+}
+
+function renderChildren(children, props) {
   if (!children)
     return null;
 
   if (!Array.isArray(children))
-    return React.addons.cloneWithProps(children);
+    return React.addons.cloneWithProps(children, props);
   else
     return React.Children.map(children, function(child) {
-      return React.addons.cloneWithProps(child);
+      return React.addons.cloneWithProps(child, props);
     });
 }
 
@@ -26,6 +35,13 @@ function renderChildren(children) {
  * Root wrapper
  */
 export class Root extends React.Component {
+  static propTypes = {
+    tree: PropTypes.baobab
+  };
+
+  static childContextTypes = {
+    tree: PropTypes.baobab
+  };
 
   // Handling child context
   getChildContext() {
@@ -36,21 +52,73 @@ export class Root extends React.Component {
 
   // Rendering children
   render() {
-    return renderChildren(this.props.children);
+    return renderChildren(this.props.children, pass(this.props));
   }
 }
-
-Root.propTypes = {
-  tree: PropTypes.baobab
-};
-
-Root.childContextTypes = {
-  tree: PropTypes.baobab
-};
 
 /**
  * Branch wrapper
  */
 export class Branch extends React.Component {
+  static contextTypes = {
+    tree: PropTypes.tree
+  };
 
+  static childContextTypes = {
+    cursors: PropTypes.cursors
+  };
+
+  // Child context
+  getChildContext() {
+    return {
+      cursors: this.cursors
+    };
+  }
+
+  // Building initial state
+  constructor(props, context) {
+    super(props, context);
+
+    var {facet, cursors} = abstract.init.call(
+      this,
+      context.tree,
+      props.cursors
+    );
+
+    if (facet)
+      this.state = facet.get();
+
+    this.facet = facet;
+    this.cursors = cursors;
+  }
+
+  // On component mount
+  componentDidMount() {
+    if (!this.facet)
+      return;
+
+    var handler = (function() {
+      this.setState(this.facet.get());
+    }).bind(this);
+
+    this.facet.on('update', handler);
+  }
+
+  // Render shim
+  render() {
+    return renderChildren(this.props.children, pass(this.props, this.state));
+  }
+
+  // On component unmount
+  componentWillUnmount() {
+    if (!this.facet)
+      return;
+
+    // Releasing facet
+    this.facet.release();
+    this.facet = null;
+
+    // Releasing cursors
+    this.cursors = null;
+  }
 }
