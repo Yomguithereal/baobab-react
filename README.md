@@ -11,6 +11,7 @@ Currently implemented patterns being:
 * [Mixins](#mixins)
 * [Higher Order Components](#higher-order-components)
 * [Decorators](#decorators)
+* [Wrapper Components](#wrapper-components)
 
 ## Installation
 
@@ -424,6 +425,122 @@ class MyComponent extends Component {
       <span onClick={this.handleClick}>
         Hello {this.props.name} {this.props.surname}
       </span>
+    );
+  }
+}
+```
+
+### Wrapper Components
+
+#### Root
+
+```js
+import React, {Component} from 'react';
+import Baobab from 'baobab';
+import {Root} from 'baobab-react/wrappers';
+
+var tree = new Baobab({
+  name: 'John',
+  surname: 'Talbot'
+});
+
+class Application extends Component {
+  render() {
+    return (
+      <div>
+        <OtherComponent />
+      </div>
+    );
+  }
+}
+
+React.render(
+  (
+    <Root tree={tree}>
+      <Application />
+    </Root>
+  ),
+  mountNode
+);
+```
+
+#### Branch
+
+*Bind a component to cursors*
+
+```js
+import React, {Component} from 'react';
+import {Branch} from 'baobab-react/wrappers';
+
+class MyComponent extends Component {
+  render() {
+
+    // Cursor data is passed through props
+    return (
+      <span>
+        Hello {this.props.name} {this.props.surname}
+      </span>
+    );
+  }
+}
+
+class SuperiorComponent extends Component {
+  render() {
+    return (
+      <Branch cursors={{
+        name: ['name'],
+        surname: ['surname']
+      }}>
+        <MyComponent />
+      </Branch>
+    );
+  }
+}
+```
+
+*Access the tree or the cursors from the component*
+
+```js
+import React, {Component} from 'react';
+import {Branch} from 'baobab-react/wrappers';
+import PropTypes from 'baobab-react/prop-types';
+
+class MyComponent extends Component {
+  static contextTypes = {
+    tree: PropTypes.tree,
+    cursors: PropTypes.cursor
+  };
+
+  handleClick() {
+
+    // Tree available through the context
+    this.context.tree.emit('customEvent');
+
+    // I am not saying this is what you should do but
+    // anyway, if you need to access cursors:
+    this.context.cursors.name.set('Jack');
+  }
+
+  render() {
+
+    // Cursor data is passed through props
+    return (
+      <span onClick={this.handleClick}>
+        Hello {this.props.name} {this.props.surname}
+      </span>
+    );
+  }
+}
+
+class SuperiorComponent extends Component {
+  render() {
+    return (
+      <Branch cursors={{
+        name: ['name'],
+        surname: ['surname']
+      }}>
+        <MyComponent />
+      </Branch>
     );
   }
 }

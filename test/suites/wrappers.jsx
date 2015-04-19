@@ -6,7 +6,7 @@
 import assert from 'assert';
 import React, {Component} from 'react';
 import Baobab from 'baobab';
-import {Root, Branch} from '../../src/wrapper.js';
+import {Root, Branch} from '../../src/wrappers.js';
 import PropTypes from '../../src/utils/prop-types.js';
 
 describe('Wrapper', function() {

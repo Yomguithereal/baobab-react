@@ -41,4 +41,4 @@ afterEach(function() {
 // Suites
 require('./suites/mixins.jsx');
 require('./suites/higher-order.jsx');
-require('./suites/wrapper.jsx');
+require('./suites/wrappers.jsx');
