@@ -18,13 +18,28 @@ Object.defineProperty(exports, '__esModule', {
  * ES6 wrapper component.
  */
 
-var _React = require('react');
+var _React = require('react/addons');
 
 var _React2 = _interopRequireWildcard(_React);
 
 var _PropTypes = require('./utils/prop-types.js');
 
 var _PropTypes2 = _interopRequireWildcard(_PropTypes);
+
+/**
+ * Helpers
+ */
+function renderChildren(children) {
+  if (!children) {
+    return null;
+  }if (!Array.isArray(children)) {
+    return _React2['default'].addons.cloneWithProps(children);
+  } else {
+    return _React2['default'].Children.map(children, function (child) {
+      return _React2['default'].addons.cloneWithProps(child);
+    });
+  }
+}
 
 /**
  * Root wrapper
@@ -55,7 +70,7 @@ var Root = (function (_React$Component) {
 
     // Rendering children
     value: function render() {
-      return this.props.children;
+      return renderChildren(this.props.children);
     }
   }]);
 
@@ -91,7 +106,3 @@ var Branch = (function (_React$Component2) {
 })(_React2['default'].Component);
 
 exports.Branch = Branch;
-
-Root.contextTypes = {
-  tree: _PropTypes2['default'].baobab
-};

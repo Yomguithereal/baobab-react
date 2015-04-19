@@ -4,8 +4,23 @@
  *
  * ES6 wrapper component.
  */
-import React from 'react';
+import React from 'react/addons';
 import PropTypes from './utils/prop-types.js';
+
+/**
+ * Helpers
+ */
+function renderChildren(children) {
+  if (!children)
+    return null;
+
+  if (!Array.isArray(children))
+    return React.addons.cloneWithProps(children);
+  else
+    return React.Children.map(children, function(child) {
+      return React.addons.cloneWithProps(child);
+    });
+}
 
 /**
  * Root wrapper
@@ -21,7 +36,7 @@ export class Root extends React.Component {
 
   // Rendering children
   render() {
-    return this.props.children;
+    return renderChildren(this.props.children);
   }
 }
 
@@ -39,7 +54,3 @@ Root.childContextTypes = {
 export class Branch extends React.Component {
 
 }
-
-Root.contextTypes = {
-  tree: PropTypes.baobab
-};

@@ -27,7 +27,7 @@ class BasicRoot extends Component {
 
 describe('Higher Order Component', function() {
 
-  it('should fail if passing a wrong tree to the root mixin.', function() {
+  it('should fail if passing a wrong tree to the root component.', function() {
     assert.throws(function() {
       var RootComponent = root(DummyRoot, {hello: 'world'});
     }, /Baobab/);
