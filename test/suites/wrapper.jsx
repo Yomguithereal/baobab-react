@@ -93,4 +93,178 @@ describe('Wrapper', function() {
       React.render(<Child />, document.mount);
     }, /Baobab/);
   });
+
+  it('should be possible to bind several cursors to a component.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name} {this.props.surname}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch cursors={{
+          name: ['name'],
+          surname: ['surname']
+        }}>
+          <Child />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
+  it('bound components should update along with the cursor.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name} {this.props.surname}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch cursors={{
+          name: ['name'],
+          surname: ['surname']
+        }}>
+          <Child />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+
+    tree.set('surname', 'the Third');
+
+    assert.selectorText('#test', 'Hello John the Third');
+  });
+
+  it('should be possible to pass props directly to the nested component.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name} {this.props.surname} {this.props.title}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch cursors={{
+          name: ['name'],
+          surname: ['surname']
+        }}>
+          <Child title="the third" />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot the third');
+
+    var group = (
+      <Root tree={tree}>
+        <Branch cursors={{
+          name: ['name'],
+          surname: ['surname']
+        }} title="the second">
+          <Child />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot the second');
+  });
+
+  it('should be possible to propagate data to several children.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    class Child extends Component {
+      render() {
+        return (
+          <span id={this.props.id}>
+            Hello {this.props.name} {this.props.surname} {this.props.title}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch cursors={{
+          name: ['name'],
+          surname: ['surname']
+        }}>
+          <Child title="the first" id="one" />
+          <Child title="the second" id="two" />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#one', 'Hello John Talbot the first');
+    assert.selectorText('#two', 'Hello John Talbot the second');
+  });
+
+  it('should be possible to access the cursors within the component.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+    class Child extends Component {
+      static contextTypes = {
+        cursors: PropTypes.cursors
+      };
+
+      render() {
+        const {
+          name,
+          surname
+        } = this.context.cursors;
+        return (
+          <span id="test">
+            Hello {name.get()} {surname.get()}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch cursors={{
+          name: ['name'],
+          surname: ['surname']
+        }}>
+          <Child />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
 });

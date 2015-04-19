@@ -78,15 +78,16 @@ function root(Component, tree) {
       value: function render() {
         return _React2['default'].createElement(Component, this.props);
       }
+    }], [{
+      key: 'childContextTypes',
+      value: {
+        tree: _PropTypes2['default'].baobab
+      },
+      enumerable: true
     }]);
 
     return _class;
   })(_React2['default'].Component);
-
-  // Child context types
-  ComposedComponent.childContextTypes = {
-    tree: _PropTypes2['default'].baobab
-  };
 
   return ComposedComponent;
 }
@@ -161,18 +162,22 @@ function branch(Component) {
         // Releasing cursors
         this.cursors = null;
       }
+    }], [{
+      key: 'contextTypes',
+      value: {
+        tree: _PropTypes2['default'].baobab
+      },
+      enumerable: true
+    }, {
+      key: 'childContextTypes',
+      value: {
+        cursors: _PropTypes2['default'].cursors
+      },
+      enumerable: true
     }]);
 
     return _class2;
   })(_React2['default'].Component);
-
-  ComposedComponent.contextTypes = {
-    tree: _PropTypes2['default'].baobab
-  };
-
-  ComposedComponent.childContextTypes = {
-    cursors: _PropTypes2['default'].cursors
-  };
 
   return ComposedComponent;
 }

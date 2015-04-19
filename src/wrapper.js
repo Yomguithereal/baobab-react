@@ -5,14 +5,27 @@
  * ES6 wrapper component.
  */
 import React from 'react/addons';
+import abstract from './utils/abstract.js';
 import PropTypes from './utils/prop-types.js';
 
 /**
  * Helpers
  */
-function pass(props, state) {
+function rootPass(props) {
   const {
     children,
+    tree,
+    ...otherProps
+  } = props;
+
+  return {...otherProps};
+}
+
+function branchPass(props, state) {
+  const {
+    children,
+    cursors,
+    facets,
     ...otherProps
   } = props;
 
@@ -23,12 +36,16 @@ function renderChildren(children, props) {
   if (!children)
     return null;
 
-  if (!Array.isArray(children))
+  if (!Array.isArray(children)) {
     return React.addons.cloneWithProps(children, props);
-  else
-    return React.Children.map(children, function(child) {
+  }
+  else {
+    var group = React.Children.map(children, function(child) {
       return React.addons.cloneWithProps(child, props);
     });
+
+    return <span>{group}</span>;
+  }
 }
 
 /**
@@ -52,7 +69,7 @@ export class Root extends React.Component {
 
   // Rendering children
   render() {
-    return renderChildren(this.props.children, pass(this.props));
+    return renderChildren(this.props.children, rootPass(this.props));
   }
 }
 
@@ -61,7 +78,7 @@ export class Root extends React.Component {
  */
 export class Branch extends React.Component {
   static contextTypes = {
-    tree: PropTypes.tree
+    tree: PropTypes.baobab
   };
 
   static childContextTypes = {
@@ -106,7 +123,7 @@ export class Branch extends React.Component {
 
   // Render shim
   render() {
-    return renderChildren(this.props.children, pass(this.props, this.state));
+    return renderChildren(this.props.children, branchPass(this.props, this.state));
   }
 
   // On component unmount
