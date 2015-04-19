@@ -48,29 +48,33 @@ describe('Wrapper', function() {
     assert.selectorText('#test', 'Hello John');
   });
 
-  // it('the should be propagated to nested components.', function() {
-  //   var tree = new Baobab({name: 'John'}, {asynchronous: false});
+  it('the should be propagated to nested components.', function() {
+    var tree = new Baobab({name: 'John'}, {asynchronous: false});
 
-  //   class Child extends Component {
-  //     static contextTypes = {
-  //       tree: PropTypes.baobab
-  //     }
+    class Child extends Component {
+      static contextTypes = {
+        tree: PropTypes.baobab
+      }
 
-  //     render() {
-  //       return <span id="test">Hello {this.context.tree.get('name')}</span>;
-  //     }
-  //   }
+      render() {
+        return <span id="test">Hello {this.context.tree.get('name')}</span>;
+      }
+    }
 
-  //   var group = (
-  //     <Root tree={tree}>
-  //       <div>
-  //         <Child />
-  //       </div>
-  //     </Root>
-  //   );
+    class UpperChild extends Component {
+      render() {
+        return <Child />;
+      }
+    }
 
-  //   React.render(group, document.mount);
+    var group = (
+      <Root tree={tree}>
+        <UpperChild />
+      </Root>
+    );
 
-  //   assert.selectorText('#test', 'Hello John');
-  // });
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John');
+  });
 });
