@@ -2,7 +2,7 @@
 
 # baobab-react
 
-This repository is home to [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://facebook.github.io/react/) integration.
+This repository is home to [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://facebook.github.io/react/) integration (from v1.0.0 and onwards).
 
 It aims at implementing a handful of popular React patterns so that anyone remain free to choose the one he wants rather than being imposed one by the library.
 
