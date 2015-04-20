@@ -5,7 +5,6 @@
  * ES6 wrapper component.
  */
 import React from 'react/addons';
-import abstract from './utils/abstract.js';
 import PropTypes from './utils/prop-types.js';
 
 /**
@@ -88,7 +87,7 @@ export class Branch extends React.Component {
   // Child context
   getChildContext() {
     return {
-      cursors: this.cursors
+      cursors: this.facet.cursors
     };
   }
 
@@ -96,17 +95,12 @@ export class Branch extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    var {facet, cursors} = abstract.init.call(
-      this,
-      context.tree,
-      props.cursors
-    );
+    var facet = context.tree.createFacet({cursors: props.cursors}, this);
 
     if (facet)
       this.state = facet.get();
 
     this.facet = facet;
-    this.cursors = cursors;
   }
 
   // On component mount
@@ -134,8 +128,5 @@ export class Branch extends React.Component {
     // Releasing facet
     this.facet.release();
     this.facet = null;
-
-    // Releasing cursors
-    this.cursors = null;
   }
 }

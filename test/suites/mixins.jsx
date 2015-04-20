@@ -135,31 +135,31 @@ describe('Mixin', function() {
     assert.selectorText('#test', 'Hello John the Third');
   });
 
-  it('should be possible to set cursors with a function.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+  // it('should be possible to set cursors with a function.', function() {
+  //   var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
-    var Child = React.createClass({
-      mixins: [mixins.branch],
-      cursors: function() {
-        return {
-          name: this.props.arg,
-          surname: ['surname']
-        };
-      },
-      render: function() {
+  //   var Child = React.createClass({
+  //     mixins: [mixins.branch],
+  //     cursors: function() {
+  //       return {
+  //         name: this.props.arg,
+  //         surname: ['surname']
+  //       };
+  //     },
+  //     render: function() {
 
-        return (
-          <span id="test">
-            Hello {this.state.name} {this.state.surname}
-          </span>
-        );
-      }
-    });
+  //       return (
+  //         <span id="test">
+  //           Hello {this.state.name} {this.state.surname}
+  //         </span>
+  //       );
+  //     }
+  //   });
 
-    React.render(<Root tree={tree} component={Child} arg={['name']} />, document.mount);
+  //   React.render(<Root tree={tree} component={Child} arg={['name']} />, document.mount);
 
-    assert.selectorText('#test', 'Hello John Talbot');
-  });
+  //   assert.selectorText('#test', 'Hello John Talbot');
+  // });
 
   it('should be possible to access the cursors within the component.', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});

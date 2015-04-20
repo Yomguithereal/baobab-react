@@ -18,9 +18,8 @@ Currently implemented patterns being:
 You can install `baobab-react` through npm:
 
 ```
-npm install baobab-react
-
-# Or for the latest dev version
+# The module is not yet published on npm but will be soon
+# for the time being, you can install from git
 npm install git+https://github.com/Yomguithereal/baobab-react.git
 ```
 

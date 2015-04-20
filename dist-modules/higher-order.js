@@ -36,10 +36,6 @@ var _React = require('react');
 
 var _React2 = _interopRequireWildcard(_React);
 
-var _abstract = require('./utils/abstract.js');
-
-var _abstract2 = _interopRequireWildcard(_abstract);
-
 var _type = require('./utils/type.js');
 
 var _type2 = _interopRequireWildcard(_type);
@@ -106,15 +102,11 @@ function branch(Component) {
 
       _get(Object.getPrototypeOf(_class2.prototype), 'constructor', this).call(this, props, context);
 
-      var _abstract$init$call = _abstract2['default'].init.call(this, context.tree, specs.cursors);
-
-      var facet = _abstract$init$call.facet;
-      var cursors = _abstract$init$call.cursors;
+      var facet = context.tree.createFacet(specs, this);
 
       if (facet) this.state = facet.get();
 
       this.facet = facet;
-      this.cursors = cursors;
     };
 
     _inherits(_class2, _React$Component2);
@@ -125,7 +117,7 @@ function branch(Component) {
       // Child context
       value: function getChildContext() {
         return {
-          cursors: this.cursors
+          cursors: this.facet.cursors
         };
       }
     }, {
@@ -158,9 +150,6 @@ function branch(Component) {
         } // Releasing facet
         this.facet.release();
         this.facet = null;
-
-        // Releasing cursors
-        this.cursors = null;
       }
     }], [{
       key: 'contextTypes',

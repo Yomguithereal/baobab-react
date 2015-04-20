@@ -6,8 +6,7 @@
  */
 'use strict';
 
-var PropTypes = require('./utils/prop-types.js'),
-    abstract = require('./utils/abstract.js');
+var PropTypes = require('./utils/prop-types.js');
 
 /**
  * Root mixin
@@ -44,11 +43,10 @@ var BranchMixin = {
 
   // Building initial state
   getInitialState: function getInitialState() {
-    var o = abstract.init.call(this, this.context.tree, this.cursors);
 
     // Setting properties
-    this.__facet = o.facet;
-    this.cursors = o.cursors;
+    this.__facet = this.context.tree.createFacet({ cursors: this.cursors }, this);
+    this.cursors = this.__facet.cursors;
 
     if (this.__facet) {
       return this.__facet.get();
@@ -73,9 +71,6 @@ var BranchMixin = {
     } // Releasing facet
     this.__facet.release();
     this.__facet = null;
-
-    // Deleting cursors
-    this.cursors = null;
   }
 };
 

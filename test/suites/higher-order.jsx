@@ -155,32 +155,32 @@ describe('Higher Order Component', function() {
     assert.selectorText('#test', 'Hello John the Third');
   });
 
-  it('should be possible to set cursors with a function.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
-        RootComponent = root(BasicRoot, tree);
+  // it('should be possible to set cursors with a function.', function() {
+  //   var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
+  //       RootComponent = root(BasicRoot, tree);
 
-    @branchDecorator({
-      cursors: function() {
-        return {
-          name: this.props.arg,
-          surname: ['surname']
-        };
-      }
-    })
-    class Child extends Component {
-      render() {
-        return (
-          <span id="test">
-            Hello {this.props.name} {this.props.surname}
-          </span>
-        );
-      }
-    }
+  //   @branchDecorator({
+  //     cursors: function() {
+  //       return {
+  //         name: this.props.arg,
+  //         surname: ['surname']
+  //       };
+  //     }
+  //   })
+  //   class Child extends Component {
+  //     render() {
+  //       return (
+  //         <span id="test">
+  //           Hello {this.props.name} {this.props.surname}
+  //         </span>
+  //       );
+  //     }
+  //   }
 
-    React.render(<RootComponent component={Child} arg={['name']} />, document.mount);
+  //   React.render(<RootComponent component={Child} arg={['name']} />, document.mount);
 
-    assert.selectorText('#test', 'Hello John Talbot');
-  });
+  //   assert.selectorText('#test', 'Hello John Talbot');
+  // });
 
   it('should be possible to access the cursors within the component.', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
@@ -188,9 +188,7 @@ describe('Higher Order Component', function() {
 
     @branchDecorator({
       cursors: {
-        name: function() {
-          return this.props.arg;
-        },
+        name: ['name'],
         surname: ['surname']
       }
     })

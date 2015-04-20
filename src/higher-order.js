@@ -5,7 +5,6 @@
  * ES6 higher order component to enchance one's component.
  */
 import React from 'react';
-import abstract from './utils/abstract.js';
 import type from './utils/type.js';
 import PropTypes from './utils/prop-types.js';
 
@@ -57,7 +56,7 @@ export function branch(Component, specs = {}) {
     // Child context
     getChildContext() {
       return {
-        cursors: this.cursors
+        cursors: this.facet.cursors
       };
     }
 
@@ -65,17 +64,12 @@ export function branch(Component, specs = {}) {
     constructor(props, context) {
       super(props, context);
 
-      var {facet, cursors} = abstract.init.call(
-        this,
-        context.tree,
-        specs.cursors
-      );
+      var facet = context.tree.createFacet(specs, this);
 
       if (facet)
         this.state = facet.get();
 
       this.facet = facet;
-      this.cursors = cursors;
     }
 
     // On component mount
@@ -103,9 +97,6 @@ export function branch(Component, specs = {}) {
       // Releasing facet
       this.facet.release();
       this.facet = null;
-
-      // Releasing cursors
-      this.cursors = null;
     }
   };
 
