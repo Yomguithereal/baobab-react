@@ -4,5 +4,4 @@ node_modules
 .npmignore
 .travis.yml
 test/
-build/
 *.log

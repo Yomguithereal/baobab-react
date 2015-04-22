@@ -4,7 +4,7 @@
   "description": "React integration for Baobab.",
   "main": "dist-modules/index.js",
   "scripts": {
-    "dist": "babel ./src --out-dir dist-modules",
+    "prepublish": "babel ./src --out-dir dist-modules",
     "lint": "eslint ./*.js && eslint ./src && eslint ./test",
     "test": "mocha -R spec --compilers jsx:babel/register ./test/endpoint.js"
   },
