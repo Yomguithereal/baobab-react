@@ -182,6 +182,32 @@ describe('Higher Order Component', function() {
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
+  it('should be possible to pass cursors directly.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
+        cursor = tree.select('name'),
+        RootComponent = root(BasicRoot, tree);
+
+    @branchDecorator({
+      cursors: {
+        name: cursor,
+        surname: ['surname']
+      }
+    })
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name} {this.props.surname}
+          </span>
+        );
+      }
+    }
+
+    React.render(<RootComponent component={Child} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
   it('should be possible to access the cursors within the component.', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
         RootComponent = root(BasicRoot, tree);

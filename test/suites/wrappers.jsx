@@ -156,6 +156,36 @@ describe('Wrapper', function() {
     assert.selectorText('#test', 'Hello John the Third');
   });
 
+  it('should be possible to pass cursors directly.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
+        cursor = tree.select('name');
+
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name} {this.props.surname}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch cursors={{
+          name: cursor,
+          surname: ['surname']
+        }}>
+          <Child />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
   it('should be possible to pass props directly to the nested component.', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 

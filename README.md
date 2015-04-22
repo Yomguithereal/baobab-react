@@ -6,12 +6,21 @@ This repository is home to [baobab](https://github.com/Yomguithereal/baobab)'s [
 
 It aims at implementing a handful of popular React patterns so that anyone remain free to choose the one he wants rather than being imposed one by the library.
 
-Currently implemented patterns being:
+Currently implemented patterns being: mixins, higher order components, ES7 decorators and wrapper components.
 
-* [Mixins](#mixins)
-* [Higher Order Components](#higher-order-components)
-* [Decorators](#decorators)
-* [Wrapper Components](#wrapper-components)
+## Summary
+
+* [Installation](#installation)
+* [On root & branches](#on-root--branches)
+  * [Patterns](#patterns)
+  * [Mixins](#mixins)
+  * [Higher Order Components](#higher-order-components)
+  * [Decorators](#decorators)
+  * [Wrapper Components](#wrapper-components)
+* [General usage](#general-usage)
+  * [Cursors mapping](#cursors-mapping)
+* [Contribution](#contribution)
+* [License](#license)
 
 ## Installation
 
@@ -89,32 +98,6 @@ var MyComponent = React.createClass({
   cursors: {
     name: ['name'],
     surname: ['surname']
-  },
-  render: function() {
-
-    // Cursor data is passed through state
-    return (
-      <span>
-        Hello {this.state.name} {this.state.surname}
-      </span>
-    );
-  }
-});
-```
-
-*Using props to define cursor path*
-
-```js
-var React = require('react'),
-    mixin = require('baobab-react/mixins').branch;
-
-var MyComponent = React.createClass({
-  mixins: [mixin],
-  cursors: function() {
-    return {
-      name: [this.props.namePath],
-      surname: ['surname']
-    };
   },
   render: function() {
 
@@ -222,34 +205,6 @@ export default branch(MyComponent, {
 });
 ```
 
-*Using props to define cursor path*
-
-```js
-import React, {Component} from 'react';
-import {branch} from 'baobab-react/higher-order';
-
-class MyComponent extends Component {
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
-
-export default branch(MyComponent, {
-  cursors: function() {
-    return {
-      name: this.props.namePath,
-      surname: ['surname']
-    };
-  }
-});
-```
-
 *Access the tree or the cursors from the component*
 
 You can access the tree or the cursors from the context. However, you'll have to define `contextTypes` for your component if you want to be able to do so.
@@ -342,33 +297,6 @@ import {branch} from 'baobab-react/decorators';
   cursors: {
     name: ['name'],
     surname: ['surname']
-  }
-})
-class MyComponent extends Component {
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
-```
-
-*Using props to define cursor path*
-
-```js
-import React, {Component} from 'react';
-import {branch} from 'baobab-react/decorators';
-
-@branch({
-  cursors: function() {
-    return {
-      name: this.props.namePath,
-      surname: ['surname']
-    };
   }
 })
 class MyComponent extends Component {
@@ -543,6 +471,64 @@ class SuperiorComponent extends Component {
     );
   }
 }
+```
+
+## General usage
+
+### Cursors mapping
+
+Each of the pattern described above can receive a `cursors` mapping that will associate a key of your state/props to the value of the given cursor.
+
+Considering the following tree:
+
+```js
+var tree = new Baobab({
+  user: {
+    name: 'John'
+  },
+  palette: {
+    colors: ['blue', 'yellow']
+  }
+});
+```
+
+Those mappings can be defined likewise:
+
+*Using paths*
+
+```js
+var mapping = {
+  cursors: {
+    name: ['user', 'name'],
+    color: ['palette', 'colors', 1]
+  }
+};
+```
+
+*Using cursors*
+
+```js
+var cursor = tree.select('user', 'name');
+
+var mapping = {
+  cursors: {
+    name: cursor,
+    color: ['palette', 'colors', 1]
+  }
+};
+```
+
+*Using a function*
+
+This is very useful when what you need is to build the bound cursors' path from the component's props.
+
+```js
+var mapping = function() {
+  return {
+    name: ['user', 'name'],
+    color: ['palette', 'colors', 1]
+  };
+};
 ```
 
 ## Contribution

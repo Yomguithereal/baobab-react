@@ -161,6 +161,31 @@ describe('Mixin', function() {
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
+  it('should be possible to pass cursors directly.', function() {
+    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
+        cursor = tree.select('name');
+
+    var Child = React.createClass({
+      mixins: [mixins.branch],
+      cursors: {
+        name: cursor,
+        surname: ['surname']
+      },
+      render: function() {
+
+        return (
+          <span id="test">
+            Hello {this.state.name} {this.state.surname}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
   it('should be possible to access the cursors within the component.', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
