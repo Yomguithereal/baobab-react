@@ -19,6 +19,7 @@ Currently implemented patterns being: mixins, higher order components, ES7 decor
   * [Wrapper Components](#wrapper-components)
 * [General usage](#general-usage)
   * [Cursors mapping](#cursors-mapping)
+  * [Common pitfalls](#common-pitfalls)
 * [Contribution](#contribution)
 * [License](#license)
 
@@ -494,7 +495,7 @@ var tree = new Baobab({
 
 Those mappings can be defined likewise:
 
-*Using paths*
+**Using paths**
 
 ```js
 var mapping = {
@@ -505,7 +506,7 @@ var mapping = {
 };
 ```
 
-*Using cursors*
+**Using cursors**
 
 ```js
 var cursor = tree.select('user', 'name');
@@ -518,7 +519,7 @@ var mapping = {
 };
 ```
 
-*Using a function*
+**Using a function**
 
 This is very useful when what you need is to build the bound cursors' path from the component's props.
 
@@ -529,6 +530,32 @@ var mapping = function() {
     color: ['palette', 'colors', 1]
   };
 };
+```
+
+### Common pitfalls
+
+**Controlled input state**
+
+If you need to store a react controlled input's state into a baobab tree, remember you have to commit changes synchronously through the `tree.commit` method or else you'll observe nasty cursor jumps in some cases.
+
+```js
+var Input = React.createClass({
+  mixins: [mixins.branch],
+  cursor: ['inputValue'],
+  onChange: function(e) {
+    var newValue = e.target.value;
+
+    // If one edits the tree normally, i.e. asynchronously, the cursor will hop
+    this.cursor.edit(newValue);
+
+    // One has to commit synchronously the update for the input to work correctly
+    this.cursor.edit(newValue);
+    this.tree.commit();
+  },
+  render: function() {
+    return <input onChange={this.onChange} value={this.state.inputValue} />;
+  }
+});
 ```
 
 ## Contribution
