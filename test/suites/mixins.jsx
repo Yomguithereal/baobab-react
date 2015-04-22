@@ -186,6 +186,90 @@ describe('Mixin', function() {
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
+  it('should be possible to use facets.', function() {
+    var tree = new Baobab(
+      {
+        name: 'John',
+        surname: 'Talbot'
+      },
+      {
+        asynchronous: false,
+        facets: {
+          name: {
+            cursors: {
+              value: ['name']
+            },
+            get: function(data) {
+              return data.value;
+            }
+          }
+        }
+      }
+    );
+
+    var Child = React.createClass({
+      mixins: [mixins.branch],
+      cursors: {
+        surname: ['surname']
+      },
+      facets: {
+        name: 'name'
+      },
+      render: function() {
+
+        return (
+          <span id="test">
+            Hello {this.state.name} {this.state.surname}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
+  it('cursors should take precedence over facets.', function() {
+    var tree = new Baobab(
+      {
+        name: 'Jack',
+        surname: 'Talbot'
+      },
+      {
+        asynchronous: false,
+        facets: {
+          name: {
+            get: function(data) {
+              return 'John'
+            }
+          }
+        }
+      }
+    );
+
+    var Child = React.createClass({
+      mixins: [mixins.branch],
+      cursors: {
+        name: ['name']
+      },
+      facets: {
+        name: 'name'
+      },
+      render: function() {
+        return (
+          <span id="test">
+            Hello {this.state.name}
+          </span>
+        );
+      }
+    });
+
+    React.render(<Root tree={tree} component={Child} />, document.mount);
+
+    assert.selectorText('#test', 'Hello Jack');
+  });
+
   it('should be possible to access the cursors within the component.', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 

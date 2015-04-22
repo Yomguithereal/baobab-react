@@ -186,6 +186,103 @@ describe('Wrapper', function() {
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
+  it('should be possible to use facets.', function() {
+    var tree = new Baobab(
+      {
+        name: 'John',
+        surname: 'Talbot'
+      },
+      {
+        asynchronous: false,
+        facets: {
+          name: {
+            cursors: {
+              value: ['name']
+            },
+            get: function(data) {
+              return data.value;
+            }
+          }
+        }
+      }
+    );
+
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name} {this.props.surname}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch
+          cursors={{
+            surname: ['surname']
+          }}
+          facets={{
+            name: 'name'
+          }}>
+          <Child />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello John Talbot');
+  });
+
+  it('cursors should take precedence over facets.', function() {
+    var tree = new Baobab(
+      {
+        name: 'Jack',
+        surname: 'Talbot'
+      },
+      {
+        asynchronous: false,
+        facets: {
+          name: {
+            get: function(data) {
+              return 'John';
+            }
+          }
+        }
+      }
+    );
+
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.name}
+          </span>
+        );
+      }
+    }
+
+    var group = (
+      <Root tree={tree}>
+        <Branch
+          cursors={{
+            name: ['name']
+          }}
+          facets={{
+            name: 'name'
+          }}>
+          <Child />
+        </Branch>
+      </Root>
+    );
+
+    React.render(group, document.mount);
+
+    assert.selectorText('#test', 'Hello Jack');
+  });
+
   it('should be possible to pass props directly to the nested component.', function() {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 

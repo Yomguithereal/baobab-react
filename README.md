@@ -19,6 +19,7 @@ Currently implemented patterns being: mixins, higher order components, ES7 decor
   * [Wrapper Components](#wrapper-components)
 * [General usage](#general-usage)
   * [Cursors mapping](#cursors-mapping)
+  * [Facets mapping](#facets-mapping)
   * [Common pitfalls](#common-pitfalls)
 * [Contribution](#contribution)
 * [License](#license)
@@ -529,6 +530,61 @@ var mapping = function() {
     name: ['user', 'name'],
     color: ['palette', 'colors', 1]
   };
+};
+```
+
+### Facets mapping
+
+Know that you can also bind facets to components if needed.
+
+Considering the following tree:
+
+```js
+var tree = new Baobab(
+  {
+    user: {
+      name: 'John',
+      surname: 'Talbot'
+    },
+    fruit: 'banana'
+  },
+  {
+    facets: {
+      fullname: {
+        cursors: {
+          user: ['user']
+        },
+        get: function(data) {
+          return `${data.name} ${data.surname}`;
+        }
+      }
+    }
+  }
+);
+```
+
+**Binding facets**
+
+```js
+var mappings = {
+  facets: {
+    fullname: 'fullname'
+  }
+};
+```
+
+**Binding both cursors and facets**
+
+Note that in case of overlapping keys, cursors will win over facets.
+
+```js
+var mappings = {
+  cursors: {
+    fruit: 'fruit'
+  },
+  facets: {
+    fullname: 'fullname'
+  }
 };
 ```
 

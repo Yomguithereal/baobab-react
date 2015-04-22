@@ -95,7 +95,10 @@ export class Branch extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    var facet = context.tree.createFacet({cursors: props.cursors}, this);
+    var facet = context.tree.createFacet({
+      cursors: props.cursors,
+      facets: props.facets
+    }, this);
 
     if (facet)
       this.state = facet.get();

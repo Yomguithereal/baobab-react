@@ -43,7 +43,10 @@ var BranchMixin = {
   getInitialState: function() {
 
     // Setting properties
-    this.__facet = this.context.tree.createFacet({cursors: this.cursors}, this);
+    this.__facet = this.context.tree.createFacet({
+      cursors: this.cursors,
+      facets: this.facets
+    }, this);
     this.cursors = this.__facet.cursors;
 
     if (this.__facet)
