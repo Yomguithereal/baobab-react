@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -34,15 +34,15 @@ exports.branch = branch;
 
 var _React = require('react');
 
-var _React2 = _interopRequireWildcard(_React);
+var _React2 = _interopRequireDefault(_React);
 
 var _type = require('./utils/type.js');
 
-var _type2 = _interopRequireWildcard(_type);
+var _type2 = _interopRequireDefault(_type);
 
 var _PropTypes = require('./utils/prop-types.js');
 
-var _PropTypes2 = _interopRequireWildcard(_PropTypes);
+var _PropTypes2 = _interopRequireDefault(_PropTypes);
 
 function root(Component, tree) {
   if (!_type2['default'].Baobab(tree)) throw Error('baobab-react:higher-order.root: given tree is not a Baobab.');

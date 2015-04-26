@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _objectWithoutProperties = function (obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; };
 
@@ -26,11 +26,11 @@ Object.defineProperty(exports, '__esModule', {
 
 var _React = require('react/addons');
 
-var _React2 = _interopRequireWildcard(_React);
+var _React2 = _interopRequireDefault(_React);
 
 var _PropTypes = require('./utils/prop-types.js');
 
-var _PropTypes2 = _interopRequireWildcard(_PropTypes);
+var _PropTypes2 = _interopRequireDefault(_PropTypes);
 
 /**
  * Helpers
