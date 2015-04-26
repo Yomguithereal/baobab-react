@@ -8,19 +8,17 @@ It aims at implementing a handful of popular React patterns so that anyone remai
 
 Currently implemented patterns being: mixins, higher order components, ES7 decorators and wrapper components.
 
+Please go to main [baobab](https://github.com/Yomguithereal/baobab) repo for more information on using Baobab.
+
 ## Summary
 
 * [Installation](#installation)
-* [On root & branches](#on-root--branches)
+* [The concept](#the-concept)
 * [Patterns](#patterns)
   * [Mixins](#mixins)
   * [Higher Order Components](#higher-order-components)
   * [Decorators](#decorators)
   * [Wrapper Components](#wrapper-components)
-* [General usage](#general-usage)
-  * [Cursors mapping](#cursors-mapping)
-  * [Facets mapping](#facets-mapping)
-  * [Common pitfalls](#common-pitfalls)
 * [Contribution](#contribution)
 * [License](#license)
 
@@ -42,576 +40,307 @@ Then require the desired pattern and only this one will be loaded (this means th
 var mixins = require('baobab-react/mixins');
 ```
 
-## On root & branches
+## The concept
+All the patterns share two concepts, a **root** and **branch**. 
 
-In order to keep component definitions detached from any particular instance of Baobab, I divided the mixins, higher order components etc. into two:
+* The **root** aims at passing a baobab tree through context so that child component (branches) may use it. Typically, your app's top-level component is the root
+* A **branch** bind to cursors and/or facets to get their data from the tree passed down by the **root**
 
-* The **Root** aims at passing a baobab tree through context so that child component (branches) may use it. Typically, your app's top-level component will probably be a root.
-* The **Branches**, bound to cursors, get their data from the tree given by the root.
-
-This is necessary so that isomorphism can remain an enjoyable stroll in the park (you UI would remain a pure function).
+The background fo using these two concepts is two fold. First of all none of your components will be depending on the Baobab tree instance of your application. This decoupling makes it easier to load the components on the server side. Second any tree can be passed down through your top component, rendering the UI in different states. This makes it easier for you to create new instances of trees on the server and pass down the components to render the UI.
 
 ## Patterns
+All of these patterns are introduced with the use of the following tree, using both cursors and facets:
+
+*tree.js*
+```js
+import Baobab from 'baobab';
+
+let tree = new Baobab({
+  user: {
+    name: 'john'
+  },
+  projects: {},
+  projectsRowsIds: []
+}, {
+  facets: {
+    projectsRows: {
+      cursors: {
+        ids: ['projectsTableRows']
+        projects: ['projects']
+      },
+      get(state) {
+        return state.ids.map(function (id) {
+          return state.projects[id];
+      });
+    }
+  }
+});
+
+export default tree;
+```
+
+You should choose one of these patterns for your application. There are not really any mentionable performance differences, it is just a matter of taste and compatability with your environment.
 
 ### Mixins
 
+*App.js*
 ```js
-var mixins = require('baobab-react/mixins');
-```
+import React from 'react';
+import Projects from './Projects.js';
+import {root} from 'baobab-react/mixins';
 
-#### Root
-
-With mixins, you need to pass your tree through props.
-
-```js
-var React = require('react'),
-    Baobab = require('baobab'),
-    mixin = require('baobab-react/mixins').root;
-
-var tree = new Baobab({
-  name: 'John',
-  surname: 'Talbot'
+let App = React.createClass({
+  mixins: [root],
+  render() {
+    return (
+      <Projects/>
+    );
+  }
 });
 
-var Application = React.createClass({
-  mixins: [mixin],
-  render: function() {
+export default App;
+```
+
+*Projects.js*
+```js
+import React from 'react';
+import {branch} from 'baobab-react/mixins';
+
+let Projects = React.createClass({
+  mixins: [branch],
+  cursors: {
+    user: ['user']
+  },
+  facets: {
+    projects: 'projectsRows'
+  },
+  renderProject(project) {
+    return (
+      <li key={project.id}>{project.title}</li>
+    );
+  },
+  render() {
     return (
       <div>
-        <OtherComponent />
+        <h1>Showing projects for {this.state.user.name}</h1>
+        <ul>
+          {this.state.projects.map(this.renderProject)}
+        </ul>
       </div>
     );
   }
 });
 
-React.render(<Application tree={tree} />, mountNode);
+export default Projects;
 ```
 
-#### Branch
-
-*Binding a component to cursors*
-
+*main.js*
 ```js
-var React = require('react'),
-    mixin = require('baobab-react/mixins').branch;
+import React from 'react';
+import App from './App.js';
+import tree from './tree.js';
 
-var MyComponent = React.createClass({
-  mixins: [mixin],
-  cursors: {
-    name: ['name'],
-    surname: ['surname']
-  },
-  render: function() {
-
-    // Cursor data is passed through state
-    return (
-      <span>
-        Hello {this.state.name} {this.state.surname}
-      </span>
-    );
-  }
-});
-```
-
-*Accessing the tree or the cursors from the component*
-
-```js
-var React = require('react'),
-    mixin = require('baobab-react/mixins').branch;
-
-var MyComponent = React.createClass({
-  mixins: [mixin],
-  cursors: {
-    name: ['name'],
-    surname: ['surname']
-  },
-  handleClick: function() {
-
-    // Tree available through the context
-    this.context.tree.emit('customEvent');
-
-    // I am not saying this is what you should do but
-    // anyway, if you need to access cursors:
-    this.cursors.name.set('Jack');
-  },
-  render: function() {
-
-    // Cursor data is passed through state
-    return (
-      <span onClick={this.handleClick}>
-        Hello {this.state.name} {this.state.surname}
-      </span>
-    );
-  }
-});
+React.render(<App tree={tree}/>, document.body);
 ```
 
 ### Higher Order Components
 
+*App.js*
 ```js
-import {root, branch} from 'baobab-react/higher-order';
-```
-
-#### Root
-
-```js
-import React, {Component} from 'react';
-import Baobab from 'baobab';
+import {Component} from 'react';
+import Projects from './Projects.js';
+import tree from './tree.js';
 import {root} from 'baobab-react/higher-order';
 
-var tree = new Baobab({
-  name: 'John',
-  surname: 'Talbot'
-});
+class App extends Component {
+  render() {
+    return (
+      <Projects/>
+    );
+  }  
+}
 
-class Application extends Component {
+export default root(App, tree);
+```
+
+*Projects.js*
+```js
+import React from 'react';
+import {branch} from 'baobab-react/higher-order';
+
+class Projects extends Component {
+  renderProject(project) {
+    return (
+      <li key={project.id}>{project.title}</li>
+    );
+  }
   render() {
     return (
       <div>
-        <OtherComponent />
+        <h1>Showing projects for {this.state.user.name}</h1>
+        <ul>
+          {this.state.projects.map(this.renderProject)}
+        </ul>
       </div>
     );
   }
 }
 
-var ComposedComponent = root(Application, tree);
-
-React.render(<ComposedComponent />, mountNode);
-```
-
-#### Branch
-
-*Bind a component to cursors*
-
-```js
-import React, {Component} from 'react';
-import {branch} from 'baobab-react/higher-order';
-
-class MyComponent extends Component {
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
-
-export default branch(MyComponent, {
+export default branch(Projects, {
   cursors: {
-    name: ['name'],
-    surname: ['surname']
+    user: ['user']
+  },
+  facets: {
+    projects: 'projectsRows'
   }
 });
 ```
 
-*Access the tree or the cursors from the component*
-
-You can access the tree or the cursors from the context. However, you'll have to define `contextTypes` for your component if you want to be able to do so.
-
-Some handy prop types wait for you in `baobab-react/prop-types` if you need them.
-
+*main.js*
 ```js
-import React, {Component} from 'react';
-import {branch} from 'baobab-react/higher-order';
-import PropTypes from 'baobab-react/prop-types';
+import React from 'react';
+import App from './App.js';
 
-class MyComponent extends Component {
-  static contextTypes = {
-    tree: PropTypes.baobab,
-    cursors: PropTypes.cursor
-  }
-
-  handleClick() {
-
-    // Tree available through the context
-    this.context.tree.emit('customEvent');
-
-    // I am not saying this is what you should do but
-    // anyway, if you need to access cursors:
-    this.context.cursors.name.set('Jack');
-  }
-
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span onClick={this.handleClick}>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
-
-export default branch(MyComponent, {
-  cursors: {
-    name: ['name'],
-    surname: ['surname']
-  }
-});
+React.render(<App/>, document.body);
 ```
 
 ### Decorators
 
 **Warning**: decorators are a work-in-progress [proposition](https://github.com/wycats/javascript-decorators) for ES7 (they are pretty well handed by [babel](https://babeljs.io/) still). You have been warned!
 
+*App.js*
 ```js
-import {root, branch} from 'baobab-react/decorators';
-```
-
-#### Root
-
-```js
-import React, {Component} from 'react';
-import Baobab from 'baobab';
+import {Component} from 'react';
+import Projects from './Projects.js';
+import tree from './tree.js';
 import {root} from 'baobab-react/decorators';
 
-var tree = new Baobab({
-  name: 'John',
-  surname: 'Talbot'
-});
-
 @root(tree)
-class Application extends Component {
+class App extends Component {
+  render() {
+    return (
+      <Projects/>
+    );
+  }  
+}
+
+export default App;
+```
+
+*Projects.js*
+```js
+import React from 'react';
+import {branch} from 'baobab-react/decorators';
+
+@branch({
+  cursors: {
+    user: ['user']
+  },
+  facets: {
+    projects: 'projectsRows'
+  }  
+})
+class Projects extends Component {
+  renderProject(project) {
+    return (
+      <li key={project.id}>{project.title}</li>
+    );
+  }
   render() {
     return (
       <div>
-        <OtherComponent />
+        <h1>Showing projects for {this.state.user.name}</h1>
+        <ul>
+          {this.state.projects.map(this.renderProject)}
+        </ul>
       </div>
     );
   }
 }
 
-React.render(<Application />, mountNode);
+export default Projects;
 ```
 
-#### Branch
-
-*Bind a component to cursors*
-
+*main.js*
 ```js
-import React, {Component} from 'react';
-import {branch} from 'baobab-react/decorators';
+import React from 'react';
+import App from './App.js';
 
-@branch({
-  cursors: {
-    name: ['name'],
-    surname: ['surname']
-  }
-})
-class MyComponent extends Component {
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
-```
-
-*Access the tree or the cursors from the component*
-
-You can access the tree or the cursors from the context. However, you'll have to define `contextTypes` for your component if you want to be able to do so.
-
-Some handy prop types wait for you in `baobab-react/prop-types` if you need them.
-
-```js
-import React, {Component} from 'react';
-import {branch} from 'baobab-react/decorators';
-import PropTypes from 'baobab-react/prop-types';
-
-@branch({
-  cursors: {
-    name: ['name'],
-    surname: ['surname']
-  }
-})
-class MyComponent extends Component {
-  static contextTypes = {
-    tree: PropTypes.baobab,
-    cursors: PropTypes.cursor
-  }
-
-  handleClick() {
-
-    // Tree available through the context
-    this.context.tree.emit('customEvent');
-
-    // I am not saying this is what you should do but
-    // anyway, if you need to access cursors:
-    this.context.cursors.name.set('Jack');
-  }
-
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span onClick={this.handleClick}>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
+React.render(<App/>, document.body);
 ```
 
 ### Wrapper Components
 
-#### Root
-
+*App.js*
 ```js
-import React, {Component} from 'react';
-import Baobab from 'baobab';
+import {Component} from 'react';
+import Projects from './Projects.js';
+import tree from './tree.js';
 import {Root} from 'baobab-react/wrappers';
 
-var tree = new Baobab({
-  name: 'John',
-  surname: 'Talbot'
-});
+class App extends Component {
+  render() {
+    return (
+      <Root tree={tree}>
+        <Projects/>
+      </Root>
+    );
+  }  
+}
 
-class Application extends Component {
+export default App;
+```
+
+*Projects.js*
+```js
+import React from 'react';
+import {Branch} from 'baobab-react/wrappers';
+
+let cursors = {
+  user: ['user']
+};
+
+let facets = {
+  projects: 'projectsRows'  
+};
+
+class ProjectsWrapper extends Component {
+  render() {
+    return (
+      <Branch cursors={cursors} facets={facets}>
+        <Projects/>
+      </Branch>
+    );
+  }
+}
+
+class Projects extends Component {
+  renderProject(project) {
+    return (
+      <li key={project.id}>{project.title}</li>
+    );
+  }
   render() {
     return (
       <div>
-        <OtherComponent />
+        <h1>Showing projects for {this.state.user.name}</h1>
+        <ul>
+          {this.state.projects.map(this.renderProject)}
+        </ul>
       </div>
     );
   }
 }
 
-React.render(
-  (
-    <Root tree={tree}>
-      <Application />
-    </Root>
-  ),
-  mountNode
-);
+export default ProjectsWrapper;
 ```
 
-#### Branch
-
-*Bind a component to cursors*
-
+*main.js*
 ```js
-import React, {Component} from 'react';
-import {Branch} from 'baobab-react/wrappers';
+import React from 'react';
+import App from './App.js';
 
-class MyComponent extends Component {
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
-
-class SuperiorComponent extends Component {
-  render() {
-    return (
-      <Branch cursors={{
-        name: ['name'],
-        surname: ['surname']
-      }}>
-        <MyComponent />
-      </Branch>
-    );
-  }
-}
-```
-
-*Access the tree or the cursors from the component*
-
-```js
-import React, {Component} from 'react';
-import {Branch} from 'baobab-react/wrappers';
-import PropTypes from 'baobab-react/prop-types';
-
-class MyComponent extends Component {
-  static contextTypes = {
-    tree: PropTypes.tree,
-    cursors: PropTypes.cursor
-  };
-
-  handleClick() {
-
-    // Tree available through the context
-    this.context.tree.emit('customEvent');
-
-    // I am not saying this is what you should do but
-    // anyway, if you need to access cursors:
-    this.context.cursors.name.set('Jack');
-  }
-
-  render() {
-
-    // Cursor data is passed through props
-    return (
-      <span onClick={this.handleClick}>
-        Hello {this.props.name} {this.props.surname}
-      </span>
-    );
-  }
-}
-
-class SuperiorComponent extends Component {
-  render() {
-    return (
-      <Branch cursors={{
-        name: ['name'],
-        surname: ['surname']
-      }}>
-        <MyComponent />
-      </Branch>
-    );
-  }
-}
-```
-
-## General usage
-
-### Cursors mapping
-
-Each of the pattern described above can receive a `cursors` mapping that will associate a key of your state/props to the value of the given cursor.
-
-Considering the following tree:
-
-```js
-var tree = new Baobab({
-  user: {
-    name: 'John'
-  },
-  palette: {
-    colors: ['blue', 'yellow']
-  }
-});
-```
-
-Those mappings can be defined likewise:
-
-**Using paths**
-
-```js
-var mapping = {
-  cursors: {
-    name: ['user', 'name'],
-    color: ['palette', 'colors', 1]
-  }
-};
-```
-
-**Using cursors**
-
-```js
-var cursor = tree.select('user', 'name');
-
-var mapping = {
-  cursors: {
-    name: cursor,
-    color: ['palette', 'colors', 1]
-  }
-};
-```
-
-**Using a function**
-
-This is very useful when what you need is to build the bound cursors' path from the component's props.
-
-```js
-var mapping = function() {
-  return {
-    name: ['user', 'name'],
-    color: ['palette', 'colors', 1]
-  };
-};
-```
-
-### Facets mapping
-
-Know that you can also bind facets to components if needed.
-
-Considering the following tree:
-
-```js
-var tree = new Baobab(
-  {
-    user: {
-      name: 'John',
-      surname: 'Talbot'
-    },
-    fruit: 'banana'
-  },
-  {
-    facets: {
-      fullname: {
-        cursors: {
-          user: ['user']
-        },
-        get: function(data) {
-          return `${data.name} ${data.surname}`;
-        }
-      }
-    }
-  }
-);
-```
-
-**Binding facets**
-
-```js
-var mappings = {
-  facets: {
-    fullname: 'fullname'
-  }
-};
-```
-
-**Binding both cursors and facets**
-
-Note that in case of overlapping keys, cursors will win over facets.
-
-```js
-var mappings = {
-  cursors: {
-    fruit: 'fruit'
-  },
-  facets: {
-    fullname: 'fullname'
-  }
-};
-```
-
-### Common pitfalls
-
-**Controlled input state**
-
-If you need to store a react controlled input's state into a baobab tree, remember you have to commit changes synchronously through the `tree.commit` method or else you'll observe nasty cursor jumps in some cases.
-
-```js
-var Input = React.createClass({
-  mixins: [mixins.branch],
-  cursor: ['inputValue'],
-  onChange: function(e) {
-    var newValue = e.target.value;
-
-    // If one edits the tree normally, i.e. asynchronously, the cursor will hop
-    this.cursor.edit(newValue);
-
-    // One has to commit synchronously the update for the input to work correctly
-    this.cursor.edit(newValue);
-    this.tree.commit();
-  },
-  render: function() {
-    return <input onChange={this.onChange} value={this.state.inputValue} />;
-  }
-});
+React.render(<App/>, document.body);
 ```
 
 ## Contribution
