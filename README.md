@@ -41,12 +41,12 @@ var mixins = require('baobab-react/mixins');
 ```
 
 ## The concept
-All the patterns share two concepts, a **root** and **branch**. 
+All the patterns share two concepts, **root** and **branch**. 
 
-* The **root** aims at passing a baobab tree through context so that child component (branches) may use it. Typically, your app's top-level component is the root
-* A **branch** bind to cursors and/or facets to get their data from the tree passed down by the **root**
+* The **root** aims at passing a baobab tree through the context of your React componen tree. That way any child component can use the tree without depending on a parent wrapper and you do not depend on the tree itself when defining a component
+* A **branch** binds to cursors and/or facets to get their data from the tree passed down by the **root**
 
-The background fo using these two concepts is two fold. First of all none of your components will be depending on the Baobab tree instance of your application. This decoupling makes it easier to load the components on the server side. Second any tree can be passed down through your top component, rendering the UI in different states. This makes it easier for you to create new instances of trees on the server and pass down the components to render the UI.
+The background for using these two concepts is two fold. First of all none of your components will be depending on the Baobab tree instance of your application. This decoupling makes it easier to load the components on the server side. Second any tree can be passed down through your top component, rendering the UI in different states. This makes it easier for you to create new instances of trees on the server and pass down the components to render the UI.
 
 ## Patterns
 All of these patterns are introduced with the use of the following tree, using both cursors and facets:
@@ -65,7 +65,7 @@ let tree = new Baobab({
   facets: {
     projectsRows: {
       cursors: {
-        ids: ['projectsTableRows']
+        ids: ['projectsRowsIds']
         projects: ['projects']
       },
       get(state) {
@@ -79,7 +79,7 @@ let tree = new Baobab({
 export default tree;
 ```
 
-You should choose one of these patterns for your application. There are not really any mentionable performance differences, it is just a matter of taste and compatability with your environment.
+**You should choose one of these patterns for your application.** There are not really any mentionable performance differences, it is just a matter of taste and compatability with your environment.
 
 ### Mixins
 
