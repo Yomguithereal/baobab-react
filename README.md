@@ -578,12 +578,14 @@ var mappings = {
 Note that in case of overlapping keys, cursors will win over facets.
 
 ```js
+// In this case, 'name' will resolve to the cursor's value.
 var mappings = {
   cursors: {
-    fruit: 'fruit'
+    name: ['user', 'name'],
+    surname: ['user', 'surname']
   },
   facets: {
-    fullname: 'fullname'
+    name: 'fullname'
   }
 };
 ```
