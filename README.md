@@ -635,7 +635,7 @@ npm test
 
 # Linting, building
 npm run lint
-npm run dist
+npm run prepublish
 ```
 
 ## License
