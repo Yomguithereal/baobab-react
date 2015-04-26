@@ -74,6 +74,15 @@ var BranchMixin = {
     // Releasing facet
     this.__facet.release();
     this.__facet = null;
+  },
+
+  // On new props
+  componentWillReceiveProps: function(props) {
+    if (!this.__facet)
+      return;
+
+    this.__facet.refresh([props, this.context]);
+    this.setState(this.__facet.get());
   }
 };
 

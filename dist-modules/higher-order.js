@@ -151,6 +151,16 @@ function branch(Component) {
         this.facet.release();
         this.facet = null;
       }
+    }, {
+      key: 'componentWillReceiveProps',
+
+      // On new props
+      value: function componentWillReceiveProps(props) {
+        if (!this.facet) {
+          return;
+        }this.facet.refresh([props, this.context]);
+        this.setState(this.facet.get());
+      }
     }], [{
       key: 'contextTypes',
       value: {

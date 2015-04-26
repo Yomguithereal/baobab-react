@@ -132,4 +132,13 @@ export class Branch extends React.Component {
     this.facet.release();
     this.facet = null;
   }
+
+  // On new props
+  componentWillReceiveProps(props) {
+    if (!this.facet)
+      return;
+
+    this.facet.refresh([props, this.context]);
+    this.setState(this.facet.get());
+  }
 }

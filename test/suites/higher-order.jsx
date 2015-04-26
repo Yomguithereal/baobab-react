@@ -330,4 +330,54 @@ describe('Higher Order Component', function() {
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
+
+  it('should be possible to update the component\'s internal facet.', function(done) {
+    var tree = new Baobab({value1: 'John', value2: 'Jack'}, {asynchronous: false}),
+        RootComponent = root(BasicRoot, tree);
+
+    @branchDecorator({
+      cursors: function(props) {
+        return {
+          value: props.path
+        };
+      }
+    })
+    class Child extends Component {
+      render() {
+        return (
+          <span id="test">
+            Hello {this.props.value}
+          </span>
+        );
+      }
+    }
+
+    class Wrapper extends Component {
+      constructor(props) {
+        super(props);
+
+        var self = this;
+
+        setTimeout(function() {
+          self.setState({path: ['value2']});
+        }, 50);
+
+        this.state = {
+          path: ['value1']
+        };
+      }
+      render() {
+        return <Child path={this.state.path} />;
+      }
+    }
+
+    React.render(<RootComponent tree={tree} component={Wrapper} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John');
+
+    setTimeout(function() {
+      assert.selectorText('#test', 'Hello Jack');
+      done();
+    }, 100);
+  });
 });
