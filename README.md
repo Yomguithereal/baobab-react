@@ -29,9 +29,7 @@ Currently implemented patterns being: mixins, higher order components, ES7 decor
 You can install `baobab-react` through npm:
 
 ```
-# The module is not yet published on npm but will be soon
-# for the time being, you can install from git
-npm install git+https://github.com/Yomguithereal/baobab-react.git
+npm install baobab-react
 ```
 
 Then require the desired pattern and only this one will be loaded (this means that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
