@@ -525,10 +525,10 @@ var mapping = {
 This is very useful when what you need is to build the bound cursors' path from the component's props.
 
 ```js
-var mapping = function() {
+var mapping = function(props, context) {
   return {
-    name: ['user', 'name'],
-    color: ['palette', 'colors', 1]
+    name: props.namePath,
+    color: props.colorCursor
   };
 };
 ```

@@ -140,9 +140,9 @@ describe('Mixin', function() {
 
     var Child = React.createClass({
       mixins: [mixins.branch],
-      cursors: function() {
+      cursors: function(props, context) {
         return {
-          name: this.props.arg,
+          name: props.arg,
           surname: ['surname']
         };
       },

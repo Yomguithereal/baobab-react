@@ -46,7 +46,7 @@ var BranchMixin = {
     this.__facet = this.context.tree.createFacet({
       cursors: this.cursors,
       facets: this.facets
-    }, this);
+    }, [this.props, this.context]);
     this.cursors = this.__facet.cursors;
 
     if (this.__facet)

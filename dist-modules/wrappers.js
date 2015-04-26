@@ -138,7 +138,7 @@ var Branch = (function (_React$Component2) {
     var facet = context.tree.createFacet({
       cursors: props.cursors,
       facets: props.facets
-    }, this);
+    }, [props, context]);
 
     if (facet) this.state = facet.get();
 

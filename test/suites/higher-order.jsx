@@ -160,9 +160,9 @@ describe('Higher Order Component', function() {
         RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
-      cursors: function() {
+      cursors: function(props, context) {
         return {
-          name: this.props.arg,
+          name: props.arg,
           surname: ['surname']
         };
       }

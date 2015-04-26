@@ -102,7 +102,7 @@ function branch(Component) {
 
       _get(Object.getPrototypeOf(_class2.prototype), 'constructor', this).call(this, props, context);
 
-      var facet = context.tree.createFacet(specs, this);
+      var facet = context.tree.createFacet(specs, [props, context]);
 
       if (facet) this.state = facet.get();
 
