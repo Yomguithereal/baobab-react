@@ -82,6 +82,7 @@ export default tree;
 **You should choose one of these patterns for your application.** There are not really any mentionable performance differences, it is just a matter of taste and compatability with your environment.
 
 ### Mixins
+Note that mixins expose the cursor and facet data on the **state** object.
 
 *App.js*
 ```js
@@ -144,6 +145,7 @@ React.render(<App tree={tree}/>, document.body);
 ```
 
 ### Higher Order Components
+Note that higher order components expose the cursor and facet data on the **props** object.
 
 *App.js*
 ```js
@@ -177,9 +179,9 @@ class Projects extends Component {
   render() {
     return (
       <div>
-        <h1>Showing projects for {this.state.user.name}</h1>
+        <h1>Showing projects for {this.props.user.name}</h1>
         <ul>
-          {this.state.projects.map(this.renderProject)}
+          {this.props.projects.map(this.renderProject)}
         </ul>
       </div>
     );
@@ -205,6 +207,7 @@ React.render(<App/>, document.body);
 ```
 
 ### Decorators
+Note that decorators expose the cursor and facet data on the **props** object.
 
 **Warning**: decorators are a work-in-progress [proposition](https://github.com/wycats/javascript-decorators) for ES7 (they are pretty well handed by [babel](https://babeljs.io/) still). You have been warned!
 
@@ -249,9 +252,9 @@ class Projects extends Component {
   render() {
     return (
       <div>
-        <h1>Showing projects for {this.state.user.name}</h1>
+        <h1>Showing projects for {this.props.user.name}</h1>
         <ul>
-          {this.state.projects.map(this.renderProject)}
+          {this.props.projects.map(this.renderProject)}
         </ul>
       </div>
     );
@@ -270,6 +273,7 @@ React.render(<App/>, document.body);
 ```
 
 ### Wrapper Components
+Note that wrapper components exposes the cursor and facet data on the **state** object.
 
 *App.js*
 ```js
@@ -323,9 +327,9 @@ class Projects extends Component {
   render() {
     return (
       <div>
-        <h1>Showing projects for {this.state.user.name}</h1>
+        <h1>Showing projects for {this.props.user.name}</h1>
         <ul>
-          {this.state.projects.map(this.renderProject)}
+          {this.props.projects.map(this.renderProject)}
         </ul>
       </div>
     );
