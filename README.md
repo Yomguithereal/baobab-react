@@ -4,7 +4,7 @@
 
 This repository is home to [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://facebook.github.io/react/) integration (from v1.0.0 and onwards).
 
-It aims at implementing a handful of popular React patterns so that anyone remain free to choose the one he wants rather than being imposed one by the library.
+It aims at implementing a handful of popular React patterns so that you're free to choose the one you want rather than being imposed one by the library.
 
 Currently implemented patterns being: mixins, higher order components, ES7 decorators and wrapper components.
 
