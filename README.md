@@ -361,6 +361,10 @@ class MyComponent extends Component {
 
 ### Wrapper Components
 
+```js
+import {Root, Branch} from 'baobab-react/wrappers';
+```
+
 #### Root
 
 ```js
