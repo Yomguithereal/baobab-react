@@ -64,7 +64,7 @@ export function branch(Component, specs = {}) {
     constructor(props, context) {
       super(props, context);
 
-      var facet = context.tree.createFacet(specs, this);
+      var facet = context.tree.createFacet(specs, [props, context]);
 
       if (facet)
         this.state = facet.get();
@@ -97,6 +97,15 @@ export function branch(Component, specs = {}) {
       // Releasing facet
       this.facet.release();
       this.facet = null;
+    }
+
+    // On new props
+    componentWillReceiveProps(props) {
+      if (!this.facet)
+        return;
+
+      this.facet.refresh([props, this.context]);
+      this.setState(this.facet.get());
     }
   };
 

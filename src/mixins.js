@@ -46,7 +46,7 @@ var BranchMixin = {
     this.__facet = this.context.tree.createFacet({
       cursors: this.cursors,
       facets: this.facets
-    }, this);
+    }, [this.props, this.context]);
     this.cursors = this.__facet.cursors;
 
     if (this.__facet)
@@ -74,6 +74,15 @@ var BranchMixin = {
     // Releasing facet
     this.__facet.release();
     this.__facet = null;
+  },
+
+  // On new props
+  componentWillReceiveProps: function(props) {
+    if (!this.__facet)
+      return;
+
+    this.__facet.refresh([props, this.context]);
+    this.setState(this.__facet.get());
   }
 };
 

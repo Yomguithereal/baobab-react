@@ -29,9 +29,7 @@ Currently implemented patterns being: mixins, higher order components, ES7 decor
 You can install `baobab-react` through npm:
 
 ```
-# The module is not yet published on npm but will be soon
-# for the time being, you can install from git
-npm install git+https://github.com/Yomguithereal/baobab-react.git
+npm install baobab-react
 ```
 
 Then require the desired pattern and only this one will be loaded (this means that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
@@ -529,10 +527,10 @@ var mapping = {
 This is very useful when what you need is to build the bound cursors' path from the component's props.
 
 ```js
-var mapping = function() {
+var mapping = function(props, context) {
   return {
-    name: ['user', 'name'],
-    color: ['palette', 'colors', 1]
+    name: props.namePath,
+    color: props.colorCursor
   };
 };
 ```
@@ -582,12 +580,14 @@ var mappings = {
 Note that in case of overlapping keys, cursors will win over facets.
 
 ```js
+// In this case, 'name' will resolve to the cursor's value.
 var mappings = {
   cursors: {
-    fruit: 'fruit'
+    name: ['user', 'name'],
+    surname: ['user', 'surname']
   },
   facets: {
-    fullname: 'fullname'
+    name: 'fullname'
   }
 };
 ```
@@ -637,7 +637,7 @@ npm test
 
 # Linting, building
 npm run lint
-npm run dist
+npm run prepublish
 ```
 
 ## License

@@ -98,7 +98,7 @@ export class Branch extends React.Component {
     var facet = context.tree.createFacet({
       cursors: props.cursors,
       facets: props.facets
-    }, this);
+    }, [props, context]);
 
     if (facet)
       this.state = facet.get();
@@ -131,5 +131,14 @@ export class Branch extends React.Component {
     // Releasing facet
     this.facet.release();
     this.facet = null;
+  }
+
+  // On new props
+  componentWillReceiveProps(props) {
+    if (!this.facet)
+      return;
+
+    this.facet.refresh([props, this.context]);
+    this.setState(this.facet.get());
   }
 }
