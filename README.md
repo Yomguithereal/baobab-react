@@ -221,7 +221,7 @@ import PropTypes from 'baobab-react/prop-types';
 class MyComponent extends Component {
   static contextTypes = {
     tree: PropTypes.baobab,
-    cursors: PropTypes.cursor
+    cursors: PropTypes.cursors
   }
 
   handleClick() {
@@ -334,7 +334,7 @@ import PropTypes from 'baobab-react/prop-types';
 class MyComponent extends Component {
   static contextTypes = {
     tree: PropTypes.baobab,
-    cursors: PropTypes.cursor
+    cursors: PropTypes.cursors
   }
 
   handleClick() {
@@ -441,7 +441,7 @@ import PropTypes from 'baobab-react/prop-types';
 class MyComponent extends Component {
   static contextTypes = {
     tree: PropTypes.tree,
-    cursors: PropTypes.cursor
+    cursors: PropTypes.cursors
   };
 
   handleClick() {
