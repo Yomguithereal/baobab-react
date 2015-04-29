@@ -1,0 +1,1 @@
+BaobabReactMixins = require('./mixins.js');
