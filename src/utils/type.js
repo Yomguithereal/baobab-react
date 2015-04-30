@@ -10,7 +10,8 @@ type.Object = function(value) {
   return value &&
          typeof value === 'object' &&
          !Array.isArray(value) &&
-         !(value instanceof Function);
+         !(value instanceof Date) &&
+         !(value instanceof RegExp);
 };
 
 type.Baobab = function(value) {
