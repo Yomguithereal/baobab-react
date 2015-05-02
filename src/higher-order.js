@@ -7,6 +7,9 @@
 import React from 'react';
 import type from './utils/type.js';
 import PropTypes from './utils/prop-types.js';
+import mixin from './utils/mixin.js';
+
+let isHot = false;
 
 /**
  * Root component
@@ -39,8 +42,10 @@ export function root(Component, tree) {
 /**
  * Branch component
  */
-export function branch(Component, specs = {}) {
-  if (!type.Object(specs))
+
+
+export function branch(Component, spec = {}) {
+  if (!type.Object(spec))
     throw Error('baobab-react.higher-order: invalid specifications ' +
                 '(should be an object with cursors and/or facets key).');
 
@@ -56,32 +61,25 @@ export function branch(Component, specs = {}) {
     // Child context
     getChildContext() {
       return {
-        cursors: this.facet.cursors
+        cursors: this.__facet.cursors
       };
     }
 
     // Building initial state
     constructor(props, context) {
       super(props, context);
+      this.state = mixin.createFacetAndReturnState.call(this, spec);
+    }
 
-      var facet = context.tree.createFacet(specs, this);
-
-      if (facet)
-        this.state = facet.get();
-
-      this.facet = facet;
+    componentWillUpdate() {
+      if (isHot) {
+        mixin.resetCursorsAndFacets.call(this, spec);
+      }
     }
 
     // On component mount
-    componentDidMount() {
-      if (!this.facet)
-        return;
-
-      var handler = (function() {
-        this.setState(this.facet.get());
-      }).bind(this);
-
-      this.facet.on('update', handler);
+    componentWillMount() {
+      mixin.registerListener.call(this);
     }
 
     // Render shim
@@ -91,14 +89,22 @@ export function branch(Component, specs = {}) {
 
     // On component unmount
     componentWillUnmount() {
-      if (!this.facet)
+      mixin.releaseFacet.call(this);
+    }
+
+    // On new props
+    componentWillReceiveProps(props) {
+      if (!this.__facet)
         return;
 
-      // Releasing facet
-      this.facet.release();
-      this.facet = null;
+      this.__facet.refresh([props, this.context]);
+      this.setState(this.__facet.get());
     }
   };
 
   return ComposedComponent;
+}
+
+export function makeHot() {
+  isHot = true;
 }

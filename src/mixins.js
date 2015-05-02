@@ -5,6 +5,12 @@
  * Old style react mixins.
  */
 var PropTypes = require('./utils/prop-types.js');
+var mixin = require('./utils/mixin.js');
+
+/**
+ * Hot flag
+ */
+var isHot = false;
 
 /**
  * Root mixin
@@ -41,42 +47,35 @@ var BranchMixin = {
 
   // Building initial state
   getInitialState: function() {
-
-    // Setting properties
-    this.__facet = this.context.tree.createFacet({
+    return mixin.createFacetAndReturnState.call(this, {
       cursors: this.cursors,
       facets: this.facets
-    }, this);
-    this.cursors = this.__facet.cursors;
+    });
+  },
 
-    if (this.__facet)
-      return this.__facet.get();
-    return {};
+  componentWillUpdate: function() {
+    if (isHot) {
+      mixin.resetCursorsAndFacets.call(this, {
+        cursors: this.cursors,
+        facets: this.facets
+      });
+    }
   },
 
   // On component mount
-  componentDidMount: function() {
-    if (!this.__facet)
-      return;
-
-    var handler = (function() {
-      this.setState(this.__facet.get());
-    }).bind(this);
-
-    this.__facet.on('update', handler);
+  componentWillMount: function() {
+    mixin.registerListener.call(this);
   },
 
   // On component unmount
   componentWillUnmount: function() {
-    if (!this.__facet)
-      return;
-
-    // Releasing facet
-    this.__facet.release();
-    this.__facet = null;
+    mixin.releaseFacet.call(this);
   }
 };
 
 // Exporting
 exports.root = RootMixin;
 exports.branch = BranchMixin;
+exports.makeHot = function () {
+  isHot = true;
+};
