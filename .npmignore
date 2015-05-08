@@ -3,6 +3,7 @@ node_modules
 .gitignore
 .npmignore
 .travis.yml
+build/
 test/
 *.log
 src

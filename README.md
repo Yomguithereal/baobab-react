@@ -635,9 +635,17 @@ npm install
 # Running the tests
 npm test
 
-# Linting, building
+# Linting
 npm run lint
-npm run prepublish
+
+# Building a independent version
+npm run build
+
+# or per pattern
+npm run build-mixins
+npm run build-higher-order
+npm run build wrappers
+npm run build-decorators
 ```
 
 ## License
