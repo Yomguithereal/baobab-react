@@ -55,7 +55,7 @@ var BranchMixin = {
   },
 
   // On component mount
-  componentDidMount: function() {
+  componentWillMount: function() {
     if (!this.__facet)
       return;
 

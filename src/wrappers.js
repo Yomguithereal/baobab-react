@@ -107,7 +107,7 @@ export class Branch extends React.Component {
   }
 
   // On component mount
-  componentDidMount() {
+  componentWillMount() {
     if (!this.facet)
       return;
 
