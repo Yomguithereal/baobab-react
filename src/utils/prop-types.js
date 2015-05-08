@@ -28,4 +28,15 @@ PropTypes.cursors = function(props, propName) {
     return new Error(errorMessage(propName, 'Baobab cursors'));
 };
 
+PropTypes.facets = function(props, propName) {
+  var p = props[propName];
+
+  var valid = type.Object(p) && Object.keys(p).every(function(k) {
+    return type.Facet(p[k]);
+  });
+
+  if (!valid)
+    return new Error(errorMessage(propName, 'Baobab facets'));
+};
+
 module.exports = PropTypes;

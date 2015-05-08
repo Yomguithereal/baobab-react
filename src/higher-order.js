@@ -50,13 +50,15 @@ export function branch(Component, specs = {}) {
     };
 
     static childContextTypes = {
-      cursors: PropTypes.cursors
+      cursors: PropTypes.cursors,
+      facets: PropTypes.facets
     };
 
     // Child context
     getChildContext() {
       return {
-        cursors: this.facet.cursors
+        cursors: this.facet.cursors,
+        facets: this.facet.facets
       };
     }
 

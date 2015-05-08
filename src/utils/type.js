@@ -4,6 +4,10 @@
  *
  * Some helpers to perform runtime validations.
  */
+var Baobab = require('baobab'),
+    Cursor = Baobab.Cursor,
+    Facet = Baobab.Facet;
+
 var type = {};
 
 type.Object = function(value) {
@@ -15,15 +19,15 @@ type.Object = function(value) {
 };
 
 type.Baobab = function(value) {
-	return value &&
-         typeof value.toString === 'function' &&
-         value.toString() === '[object Baobab]';
+  return value instanceof Baobab;
 };
 
 type.Cursor = function(value) {
-  return value &&
-         typeof value.toString === 'function' &&
-         value.toString() === '[object Cursor]';
+  return value instanceof Cursor;
+};
+
+type.Facet = function(value) {
+  return value instanceof Facet;
 };
 
 module.exports = type;
