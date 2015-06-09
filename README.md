@@ -606,10 +606,10 @@ var Input = React.createClass({
     var newValue = e.target.value;
 
     // If one edits the tree normally, i.e. asynchronously, the cursor will hop
-    this.cursor.edit(newValue);
+    this.cursor.set(newValue);
 
     // One has to commit synchronously the update for the input to work correctly
-    this.cursor.edit(newValue);
+    this.cursor.set(newValue);
     this.tree.commit();
   },
   render: function() {
