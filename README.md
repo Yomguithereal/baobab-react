@@ -236,7 +236,7 @@ class MyComponent extends Component {
 
     // Cursor data is passed through props
     return (
-      <span onClick={this.handleClick}>
+      <span onClick={this.handleClick.bind(this)}>
         Hello {this.props.name} {this.props.surname}
       </span>
     );
@@ -349,7 +349,7 @@ class MyComponent extends Component {
 
     // Cursor data is passed through props
     return (
-      <span onClick={this.handleClick}>
+      <span onClick={this.handleClick.bind(this)}>
         Hello {this.props.name} {this.props.surname}
       </span>
     );
@@ -456,7 +456,7 @@ class MyComponent extends Component {
 
     // Cursor data is passed through props
     return (
-      <span onClick={this.handleClick}>
+      <span onClick={this.handleClick.bind(this)}>
         Hello {this.props.name} {this.props.surname}
       </span>
     );
