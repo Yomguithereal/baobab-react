@@ -601,7 +601,9 @@ If you need to store a react controlled input's state into a baobab tree, rememb
 ```js
 var Input = React.createClass({
   mixins: [mixins.branch],
-  cursor: ['inputValue'],
+  cursors: {
+    inputValue: ['inputValue']
+  },
   onChange: function(e) {
     var newValue = e.target.value;
 
