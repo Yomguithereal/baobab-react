@@ -6,6 +6,8 @@
  */
 import React from 'react/addons';
 import PropTypes from './utils/prop-types.js';
+import helpers from './utils/helpers.js';
+import type from './utils/type.js';
 
 /**
  * Helpers
@@ -81,15 +83,13 @@ export class Branch extends React.Component {
   };
 
   static childContextTypes = {
-    cursors: PropTypes.cursors,
-    facets: PropTypes.facets
+    cursors: PropTypes.cursors
   };
 
   // Child context
   getChildContext() {
     return {
-      cursors: this.facet.cursors,
-      facets: this.facet.facets
+      cursors: this.cursors
     };
   }
 
@@ -97,27 +97,42 @@ export class Branch extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    const facet = context.tree.createFacet({
-      cursors: props.cursors,
-      facets: props.facets
-    }, [props, context]);
+    if (props.cursors) {
+      const solvedMapping = helpers.solveMapping(props.cursors, props, context);
 
-    if (facet)
-      this.state = facet.get();
+      if (!solvedMapping)
+        throw helpers.makeError(
+          'baobab-react:higher-order.branch: given mapping is invalid.',
+          {mapping: solvedMapping}
+        );
 
-    this.facet = facet;
+      // Creating the watcher
+      this.watcher = this.context.tree.watch(solvedMapping);
+
+      // Instantiating cursors
+      this.cursors = {};
+
+      let k;
+      for (k in solvedMapping)
+        if (type.cursor(solvedMapping[k]))
+          this.cursors[k] = solvedMapping[k];
+        else
+          this.cursors[k] = this.context.tree.select(solvedMapping[k]);
+
+      this.state = this.watcher.get();
+    }
   }
 
   // On component mount
   componentWillMount() {
-    if (!this.facet)
+    if (!this.watcher)
       return;
 
     const handler = (function() {
-      this.setState(this.facet.get());
+      this.setState(this.watcher.get());
     }).bind(this);
 
-    this.facet.on('update', handler);
+    this.watcher.on('update', handler);
   }
 
   // Render shim
@@ -127,20 +142,40 @@ export class Branch extends React.Component {
 
   // On component unmount
   componentWillUnmount() {
-    if (!this.facet)
+    if (!this.watcher)
       return;
 
-    // Releasing facet
-    this.facet.release();
-    this.facet = null;
+    // Releasing watcher
+    this.watcher.release();
+    this.watcher = null;
   }
 
   // On new props
   componentWillReceiveProps(props) {
-    if (!this.facet)
+    if (!this.watcher)
       return;
 
-    this.facet.refresh([props, this.context]);
-    this.setState(this.facet.get());
+    const solvedMapping = helpers.solveMapping(props.cursors, props, this.context);
+
+    if (!solvedMapping)
+      throw helpers.makeError(
+        'baobab-react:higher-order.branch: given mapping is invalid.',
+        {mapping: solvedMapping}
+      );
+
+    // Creating the watcher
+    this.watcher = this.context.tree.watch(solvedMapping);
+
+    // Instantiating cursors
+    this.cursors = {};
+
+    let k;
+    for (k in solvedMapping)
+      if (type.cursor(solvedMapping[k]))
+        this.cursors[k] = solvedMapping[k];
+      else
+        this.cursors[k] = this.context.tree.select(solvedMapping[k]);
+
+    this.setState(this.watcher.get());
   }
 }
