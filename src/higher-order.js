@@ -19,7 +19,14 @@ export function root(Component, tree) {
       {target: tree}
     );
 
+  const componentDisplayName =
+    Component.name ||
+    Component.displayName ||
+    'Component';
+
   const ComposedComponent = class extends React.Component {
+    static displayName = 'Rooted' + componentDisplayName;
+
     static childContextTypes = {
       tree: PropTypes.baobab
     };
@@ -44,7 +51,14 @@ export function root(Component, tree) {
  * Branch component
  */
 export function branch(Component, mapping=null) {
+  const componentDisplayName =
+    Component.name ||
+    Component.displayName ||
+    'Component';
+
   const ComposedComponent = class extends React.Component {
+    static displayName = 'Branched' + componentDisplayName;
+
     static contextTypes = {
       tree: PropTypes.baobab
     };
