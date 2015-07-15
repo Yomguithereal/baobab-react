@@ -10,19 +10,13 @@ import {
 } from './higher-order.js';
 
 export function root(tree) {
-  if (typeof tree === 'function')
-    return Root(tree);
-
-  return function(target) {
-    return Root(target, tree);
+  return function(Component) {
+    return Root(Component, tree);
   };
 }
 
 export function branch(specs) {
-  if (typeof specs === 'function')
-    return Branch(specs);
-
-  return function(target) {
-    return Branch(target, specs);
+  return function(Component) {
+    return Branch(Component, specs);
   };
 }

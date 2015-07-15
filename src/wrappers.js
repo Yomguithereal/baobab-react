@@ -39,7 +39,7 @@ function renderChildren(children, props) {
     return React.addons.cloneWithProps(children, props);
   }
   else {
-    var group = React.Children.map(children, function(child) {
+    const group = React.Children.map(children, function(child) {
       return React.addons.cloneWithProps(child, props);
     });
 
@@ -97,7 +97,7 @@ export class Branch extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    var facet = context.tree.createFacet({
+    const facet = context.tree.createFacet({
       cursors: props.cursors,
       facets: props.facets
     }, [props, context]);
@@ -113,7 +113,7 @@ export class Branch extends React.Component {
     if (!this.facet)
       return;
 
-    var handler = (function() {
+    const handler = (function() {
       this.setState(this.facet.get());
     }).bind(this);
 

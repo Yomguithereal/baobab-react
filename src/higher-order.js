@@ -6,16 +6,20 @@
  */
 import React from 'react';
 import type from './utils/type.js';
+import helpers from './utils/helpers.js';
 import PropTypes from './utils/prop-types.js';
 
 /**
  * Root component
  */
 export function root(Component, tree) {
-  if (!type.Baobab(tree))
-    throw Error('baobab-react:higher-order.root: given tree is not a Baobab.');
+  if (!type.baobab(tree))
+    throw helpers.makeError(
+      'baobab-react:higher-order.root: given tree is not a Baobab.',
+      {target: tree}
+    );
 
-  var ComposedComponent = class extends React.Component {
+  const ComposedComponent = class extends React.Component {
     static childContextTypes = {
       tree: PropTypes.baobab
     };
@@ -39,26 +43,20 @@ export function root(Component, tree) {
 /**
  * Branch component
  */
-export function branch(Component, specs = {}) {
-  if (!type.Object(specs))
-    throw Error('baobab-react.higher-order: invalid specifications ' +
-                '(should be an object with cursors and/or facets key).');
-
-  var ComposedComponent = class extends React.Component {
+export function branch(Component, mapping=null) {
+  const ComposedComponent = class extends React.Component {
     static contextTypes = {
       tree: PropTypes.baobab
     };
 
     static childContextTypes = {
-      cursors: PropTypes.cursors,
-      facets: PropTypes.facets
+      cursors: PropTypes.cursors
     };
 
     // Child context
     getChildContext() {
       return {
-        cursors: this.facet.cursors,
-        facets: this.facet.facets
+        cursors: this.cursors
       };
     }
 
@@ -66,24 +64,42 @@ export function branch(Component, specs = {}) {
     constructor(props, context) {
       super(props, context);
 
-      var facet = context.tree.createFacet(specs, [props, context]);
+      if (mapping) {
+        const solvedMapping = helpers.solveMapping(mapping, props, context);
 
-      if (facet)
-        this.state = facet.get();
+        if (!solvedMapping)
+          throw helpers.makeError(
+            'baobab-react:higher-order.branch: given mapping is invalid.',
+            {mapping: solvedMapping}
+          );
 
-      this.facet = facet;
+        // Creating the watcher
+        this.watcher = this.context.tree.watch(solvedMapping);
+
+        // Instantiating cursors
+        this.cursors = {};
+
+        let k;
+        for (k in solvedMapping)
+          if (type.cursor(solvedMapping[k]))
+            this.cursors[k] = solvedMapping[k];
+          else
+            this.cursors[k] = this.context.tree.select(solvedMapping[k]);
+
+        this.state = this.watcher.get();
+      }
     }
 
     // On component mount
     componentWillMount() {
-      if (!this.facet)
+      if (!this.watcher)
         return;
 
-      var handler = (function() {
-        this.setState(this.facet.get());
+      const handler = (function() {
+        this.setState(this.watcher.get());
       }).bind(this);
 
-      this.facet.on('update', handler);
+      this.watcher.on('update', handler);
     }
 
     // Render shim
@@ -93,21 +109,41 @@ export function branch(Component, specs = {}) {
 
     // On component unmount
     componentWillUnmount() {
-      if (!this.facet)
+      if (!this.watcher)
         return;
 
-      // Releasing facet
-      this.facet.release();
-      this.facet = null;
+      // Releasing watcher
+      this.watcher.release();
+      this.watcher = null;
     }
 
     // On new props
     componentWillReceiveProps(props) {
-      if (!this.facet)
+      if (!this.watcher)
         return;
 
-      this.facet.refresh([props, this.context]);
-      this.setState(this.facet.get());
+      const solvedMapping = helpers.solveMapping(mapping, props, this.context);
+
+      if (!solvedMapping)
+        throw helpers.makeError(
+          'baobab-react:higher-order.branch: given mapping is invalid.',
+          {mapping: solvedMapping}
+        );
+
+      // Creating the watcher
+      this.watcher = this.context.tree.watch(solvedMapping);
+
+      // Instantiating cursors
+      this.cursors = {};
+
+      let k;
+      for (k in solvedMapping)
+        if (type.cursor(solvedMapping[k]))
+          this.cursors[k] = solvedMapping[k];
+        else
+          this.cursors[k] = this.context.tree.select(solvedMapping[k]);
+
+      this.setState(this.watcher.get());
     }
   };
 

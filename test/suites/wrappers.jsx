@@ -14,7 +14,7 @@ describe('Wrapper', function() {
   it('should fail if passing a wrong tree to the root wrapper', function() {
 
     assert.throws(function() {
-      var group = (
+      const group = (
         <Root tree={{hello: 'world'}}>
           <div />
         </Root>
@@ -25,7 +25,7 @@ describe('Wrapper', function() {
   });
 
   it('the tree should be propagated through context.', function() {
-    var tree = new Baobab({name: 'John'}, {asynchronous: false});
+    const tree = new Baobab({name: 'John'}, {asynchronous: false});
 
     class Child extends Component {
       static contextTypes = {
@@ -37,7 +37,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Child />
       </Root>
@@ -49,7 +49,7 @@ describe('Wrapper', function() {
   });
 
   it('the should be propagated to nested components.', function() {
-    var tree = new Baobab({name: 'John'}, {asynchronous: false});
+    const tree = new Baobab({name: 'John'}, {asynchronous: false});
 
     class Child extends Component {
       static contextTypes = {
@@ -67,7 +67,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <UpperChild />
       </Root>
@@ -95,7 +95,7 @@ describe('Wrapper', function() {
   });
 
   it('should be possible to bind several cursors to a component.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+    const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     class Child extends Component {
       render() {
@@ -107,7 +107,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch cursors={{
           name: ['name'],
@@ -124,7 +124,7 @@ describe('Wrapper', function() {
   });
 
   it('bound components should update along with the cursor.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+    const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     class Child extends Component {
       render() {
@@ -136,7 +136,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch cursors={{
           name: ['name'],
@@ -157,7 +157,7 @@ describe('Wrapper', function() {
   });
 
   it('should be possible to pass cursors directly.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
+    const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
         cursor = tree.select('name');
 
     class Child extends Component {
@@ -170,7 +170,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch cursors={{
           name: cursor,
@@ -187,7 +187,7 @@ describe('Wrapper', function() {
   });
 
   it('should be possible to use facets.', function() {
-    var tree = new Baobab(
+    const tree = new Baobab(
       {
         name: 'John',
         surname: 'Talbot'
@@ -217,7 +217,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch
           cursors={{
@@ -237,7 +237,7 @@ describe('Wrapper', function() {
   });
 
   it('cursors should take precedence over facets.', function() {
-    var tree = new Baobab(
+    const tree = new Baobab(
       {
         name: 'Jack',
         surname: 'Talbot'
@@ -264,7 +264,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch
           cursors={{
@@ -284,7 +284,7 @@ describe('Wrapper', function() {
   });
 
   it('should be possible to pass props directly to the nested component.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+    const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     class Child extends Component {
       render() {
@@ -296,7 +296,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch cursors={{
           name: ['name'],
@@ -311,7 +311,7 @@ describe('Wrapper', function() {
 
     assert.selectorText('#test', 'Hello John Talbot the third');
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch cursors={{
           name: ['name'],
@@ -328,7 +328,7 @@ describe('Wrapper', function() {
   });
 
   it('should be possible to propagate data to several children.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+    const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     class Child extends Component {
       render() {
@@ -340,7 +340,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch cursors={{
           name: ['name'],
@@ -359,7 +359,7 @@ describe('Wrapper', function() {
   });
 
   it('should be possible to access the cursors within the component.', function() {
-    var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+    const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     class Child extends Component {
       static contextTypes = {
@@ -379,7 +379,7 @@ describe('Wrapper', function() {
       }
     }
 
-    var group = (
+    const group = (
       <Root tree={tree}>
         <Branch cursors={{
           name: ['name'],
