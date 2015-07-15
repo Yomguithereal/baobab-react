@@ -4,13 +4,13 @@
  *
  * Some helpers to perform runtime validations.
  */
-var Baobab = require('baobab'),
-    Cursor = Baobab.Cursor,
-    Facet = Baobab.Facet;
+var Baobab = require('baobab');
+
+var Cursor = Baobab.Cursor;
 
 var type = {};
 
-type.Object = function(value) {
+type.object = function(value) {
   return value &&
          typeof value === 'object' &&
          !Array.isArray(value) &&
@@ -18,16 +18,23 @@ type.Object = function(value) {
          !(value instanceof RegExp);
 };
 
-type.Baobab = function(value) {
+type.baobab = function(value) {
   return value instanceof Baobab;
 };
 
-type.Cursor = function(value) {
+type.cursor = function(value) {
   return value instanceof Cursor;
 };
 
-type.Facet = function(value) {
-  return value instanceof Facet;
+type.mapping = function(value) {
+  return type.object(value) && Object.keys(value).every(function(s) {
+    return Array.isArray(s) ||
+           type.cursor(s) ||
+           typeof s === 'string' ||
+           typeof s === 'number' ||
+           typeof s === 'function' ||
+           typeof s === 'object';
+  });
 };
 
 module.exports = type;

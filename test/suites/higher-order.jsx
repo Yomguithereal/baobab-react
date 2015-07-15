@@ -331,7 +331,7 @@ describe('Higher Order Component', function() {
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
-  it('should be possible to update the component\'s internal facet.', function(done) {
+  it('should be possible to update the component\'s internal watcher.', function(done) {
     var tree = new Baobab({value1: 'John', value2: 'Jack'}, {asynchronous: false}),
         RootComponent = root(BasicRoot, tree);
 

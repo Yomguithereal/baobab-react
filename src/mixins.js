@@ -4,7 +4,9 @@
  *
  * Old style react mixins.
  */
-var PropTypes = require('./utils/prop-types.js');
+var PropTypes = require('./utils/prop-types.js'),
+    type = require('./utils/type.js'),
+    helpers = require('./utils/helpers.js');
 
 /**
  * Root mixin
@@ -42,49 +44,81 @@ var BranchMixin = {
   // Building initial state
   getInitialState: function() {
 
-    // Setting properties
-    this.__facet = this.context.tree.createFacet({
-      cursors: this.cursors,
-      facets: this.facets
-    }, [this.props, this.context]);
+    if (!this.cursors)
+      return {};
 
-    this.cursors = this.__facet.cursors;
-    this.facets = this.__facet.facets;
+    this.__cursors = this.cursors;
 
-    if (this.__facet)
-      return this.__facet.get();
-    return {};
+    var cursors = helpers.solveMapping(this.cursors, this.props, this.context);
+
+    // The given cursors should be an object
+    if (!cursors)
+      throw helpers.makeError(
+        'baobab-react:mixins.branch: `cursors` property is not a valid object or function.',
+        {cursors: cursors}
+      );
+
+    // Creating the watcher
+    this.__watcher = this.context.tree.watch(cursors);
+
+    // Instantiating cursors
+    this.cursors = {};
+
+    var k;
+    for (k in cursors)
+      if (type.cursor(cursors[k]))
+        this.cursors[k] = cursors[k];
+      else
+        this.cursors[k] = this.context.tree.select(cursors[k]);
+
+    // Setting initial state
+    if (this.__watcher)
+      return this.__watcher.get();
   },
 
   // On component mount
   componentWillMount: function() {
-    if (!this.__facet)
+    if (!this.__watcher)
       return;
 
     var handler = (function() {
-      this.setState(this.__facet.get());
+      this.setState(this.__watcher.get());
     }).bind(this);
 
-    this.__facet.on('update', handler);
+    this.__watcher.on('update', handler);
   },
 
   // On component unmount
   componentWillUnmount: function() {
-    if (!this.__facet)
+    if (!this.__watcher)
       return;
 
     // Releasing facet
-    this.__facet.release();
-    this.__facet = null;
+    this.__watcher.release();
+    this.__watcher = null;
   },
 
   // On new props
   componentWillReceiveProps: function(props) {
-    if (!this.__facet)
+    if (!this.__watcher)
       return;
 
-    this.__facet.refresh([props, this.context]);
-    this.setState(this.__facet.get());
+    // Refreshing watcher
+    this.__watcher.release();
+    var cursors = helpers.solveMapping(this.__cursors, props, this.context);
+    this.__watcher = this.context.tree.watch(cursors);
+
+    // Refreshing cursors
+    this.cursors = {};
+
+    var k;
+    for (k in cursors)
+      if (type.cursor(cursors[k]))
+        this.cursors[k] = cursors[k];
+      else
+        this.cursors[k] = this.context.tree.select(cursors[k]);
+
+    this.setState(this.__watcher.get());
   }
 };
 
