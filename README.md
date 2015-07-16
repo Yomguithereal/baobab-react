@@ -34,7 +34,7 @@ You can install `baobab-react` through npm:
 npm install baobab-react
 ```
 
-Then require the desired pattern and only this one will be loaded (this means that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
+Then require the desired pattern and only this one will be loaded (meaning that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
 
 *Example*
 
