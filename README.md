@@ -34,6 +34,10 @@ You can install `baobab-react` through npm:
 npm install baobab-react
 ```
 
+*Peer dependencies*
+
+This library necessitate that you install `baobab >= v2` and `react >= 0.13.x`.
+
 Then require the desired pattern and only this one will be loaded (meaning that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
 
 *Example*
@@ -62,8 +66,6 @@ This is necessary so that isomorphism can remain an enjoyable stroll in the park
 [Dedicated documentation](docs/higher-order.md)
 
 ### Decorators
-
-**Warning**: decorators are a work-in-progress [proposition](https://github.com/wycats/javascript-decorators) for ES7 (they are pretty well handed by [babel](https://babeljs.io/) still). You have been warned!
 
 [Dedicated documentation](docs/decorators.md)
 
