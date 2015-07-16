@@ -17,7 +17,7 @@ module.exports = new Baobab({
 
 ### Rooting our top-level component
 
-Now that the tree is created, we should bind our React app to it by "rooting" at top-level component.
+Now that the tree is created, we should bind our React app to it by "rooting" our top-level component.
 
 Under the hood, this component will simply propagate the tree to its descendants through context so that "branched" component may use data from the tree.
 
@@ -62,7 +62,7 @@ var React = require('react'),
 
 var List = React.createClass({
 
-  // Let's branch the component to the wanted list in the tree
+  // Let's branch the component
   mixins: [mixins.branch],
 
   // Mapping the paths we want to get from the tree.
@@ -117,6 +117,8 @@ And the list component will automatically update and we'll render the following:
   </ul>
 </div>
 ```
+
+Now you just need to add an action layer on top of that so that app's state can be updated and you've got yourself an atomic Flux!
 
 ### Dynamically set the list's path with props
 
