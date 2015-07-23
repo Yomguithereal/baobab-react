@@ -82,7 +82,8 @@ var BranchMixin = {
       return;
 
     var handler = (function() {
-      this.setState(this.__watcher.get());
+      if (this.__watcher)
+        this.setState(this.__watcher.get());
     }).bind(this);
 
     this.__watcher.on('update', handler);

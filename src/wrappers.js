@@ -129,7 +129,8 @@ export class Branch extends React.Component {
       return;
 
     const handler = (function() {
-      this.setState(this.watcher.get());
+      if (this.watcher)
+        this.setState(this.watcher.get());
     }).bind(this);
 
     this.watcher.on('update', handler);
