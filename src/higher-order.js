@@ -63,17 +63,6 @@ export function branch(Component, mapping=null) {
       tree: PropTypes.baobab
     };
 
-    static childContextTypes = {
-      cursors: PropTypes.cursors
-    };
-
-    // Child context
-    getChildContext() {
-      return {
-        cursors: this.cursors
-      };
-    }
-
     // Building initial state
     constructor(props, context) {
       super(props, context);
@@ -83,23 +72,12 @@ export function branch(Component, mapping=null) {
 
         if (!solvedMapping)
           throw helpers.makeError(
-            'baobab-react:higher-order.branch: given mapping is invalid.',
+            'baobab-react:higher-order.branch: given mapping is invalid (check the "' + displayName + '" component).',
             {mapping: solvedMapping}
           );
 
         // Creating the watcher
         this.watcher = this.context.tree.watch(solvedMapping);
-
-        // Instantiating cursors
-        this.cursors = {};
-
-        let k;
-        for (k in solvedMapping)
-          if (type.cursor(solvedMapping[k]))
-            this.cursors[k] = solvedMapping[k];
-          else
-            this.cursors[k] = this.context.tree.select(solvedMapping[k]);
-
         this.state = this.watcher.get();
       }
     }
@@ -141,23 +119,12 @@ export function branch(Component, mapping=null) {
 
       if (!solvedMapping)
         throw helpers.makeError(
-          'baobab-react:higher-order.branch: given mapping is invalid.',
+          'baobab-react:higher-order.branch: given mapping is invalid (check the "' + displayName + '" component).',
           {mapping: solvedMapping}
         );
 
-      // Creating the watcher
-      this.watcher = this.context.tree.watch(solvedMapping);
-
-      // Instantiating cursors
-      this.cursors = {};
-
-      let k;
-      for (k in solvedMapping)
-        if (type.cursor(solvedMapping[k]))
-          this.cursors[k] = solvedMapping[k];
-        else
-          this.cursors[k] = this.context.tree.select(solvedMapping[k]);
-
+      // Refreshing the watcher
+      this.watcher.refresh(solvedMapping);
       this.setState(this.watcher.get());
     }
   };

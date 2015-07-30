@@ -304,41 +304,4 @@ describe('Wrapper', function() {
     assert.selectorText('#one', 'Hello John Talbot the first');
     assert.selectorText('#two', 'Hello John Talbot the second');
   });
-
-  it('should be possible to access the cursors within the component.', function() {
-    const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
-
-    class Child extends Component {
-      static contextTypes = {
-        cursors: PropTypes.cursors
-      };
-
-      render() {
-        const {
-          name,
-          surname
-        } = this.context.cursors;
-        return (
-          <span id="test">
-            Hello {name.get()} {surname.get()}
-          </span>
-        );
-      }
-    }
-
-    const group = (
-      <Root tree={tree}>
-        <Branch cursors={{
-          name: ['name'],
-          surname: ['surname']
-        }}>
-          <Child />
-        </Branch>
-      </Root>
-    );
-
-    React.render(group, document.mount);
-
-    assert.selectorText('#test', 'Hello John Talbot');
-  });
 });

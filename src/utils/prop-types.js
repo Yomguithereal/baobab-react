@@ -17,15 +17,4 @@ PropTypes.baobab = function(props, propName) {
     return new Error(errorMessage(propName, 'a Baobab tree'));
 };
 
-PropTypes.cursors = function(props, propName) {
-  var p = props[propName];
-
-  var valid = type.object(p) && Object.keys(p).every(function(k) {
-    return type.cursor(p[k]);
-  });
-
-  if (!valid)
-    return new Error(errorMessage(propName, 'Baobab cursors'));
-};
-
 module.exports = PropTypes;

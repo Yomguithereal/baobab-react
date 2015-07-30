@@ -82,17 +82,6 @@ export class Branch extends React.Component {
     tree: PropTypes.baobab
   };
 
-  static childContextTypes = {
-    cursors: PropTypes.cursors
-  };
-
-  // Child context
-  getChildContext() {
-    return {
-      cursors: this.cursors
-    };
-  }
-
   // Building initial state
   constructor(props, context) {
     super(props, context);
@@ -108,17 +97,6 @@ export class Branch extends React.Component {
 
       // Creating the watcher
       this.watcher = this.context.tree.watch(solvedMapping);
-
-      // Instantiating cursors
-      this.cursors = {};
-
-      let k;
-      for (k in solvedMapping)
-        if (type.cursor(solvedMapping[k]))
-          this.cursors[k] = solvedMapping[k];
-        else
-          this.cursors[k] = this.context.tree.select(solvedMapping[k]);
-
       this.state = this.watcher.get();
     }
   }
@@ -164,19 +142,8 @@ export class Branch extends React.Component {
         {mapping: solvedMapping}
       );
 
-    // Creating the watcher
-    this.watcher = this.context.tree.watch(solvedMapping);
-
-    // Instantiating cursors
-    this.cursors = {};
-
-    let k;
-    for (k in solvedMapping)
-      if (type.cursor(solvedMapping[k]))
-        this.cursors[k] = solvedMapping[k];
-      else
-        this.cursors[k] = this.context.tree.select(solvedMapping[k]);
-
+    // Refreshing the watcher
+    this.watcher.refresh(solvedMapping);
     this.setState(this.watcher.get());
   }
 }

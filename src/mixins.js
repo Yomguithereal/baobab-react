@@ -9,6 +9,13 @@ var PropTypes = require('./utils/prop-types.js'),
     helpers = require('./utils/helpers.js');
 
 /**
+ * Helpers
+ */
+function displayName(instance) {
+  return (instance.constructor || {}).displayName || 'Component';
+}
+
+/**
  * Root mixin
  */
 var RootMixin = {
@@ -47,6 +54,8 @@ var BranchMixin = {
     if (!this.cursors)
       return {};
 
+    var name = displayName(this);
+
     this.__mapping = this.cursors;
 
     var solvedMapping = helpers.solveMapping(this.__mapping, this.props, this.context);
@@ -54,22 +63,12 @@ var BranchMixin = {
     // The given cursors property should be valid
     if (!solvedMapping)
       throw helpers.makeError(
-        'baobab-react:mixins.branch: given mapping is invalid.',
+        'baobab-react:mixins.branch: given mapping is invalid (check the "' + name + '" component).',
         {mapping: solvedMapping}
       );
 
     // Creating the watcher
     this.__watcher = this.context.tree.watch(solvedMapping);
-
-    // Instantiating cursors
-    this.cursors = {};
-
-    var k;
-    for (k in solvedMapping)
-      if (type.cursor(solvedMapping[k]))
-        this.cursors[k] = solvedMapping[k];
-      else
-        this.cursors[k] = this.context.tree.select(solvedMapping[k]);
 
     // Setting initial state
     if (this.__watcher)
@@ -104,28 +103,16 @@ var BranchMixin = {
     if (!this.__watcher)
       return;
 
-    // Refreshing watcher
-    this.__watcher.release();
+    // Refreshing the watcher
     var solvedMapping = helpers.solveMapping(this.__mapping, props, this.context);
 
     if (!solvedMapping)
       throw helpers.makeError(
-        'baobab-react:mixins.branch: `cursors` property is not a valid object or function.',
+        'baobab-react:mixins.branch: given mapping is invalid (check the "' + displayName(this) + '" component).',
         {mapping: solvedMapping}
       );
 
-    this.__watcher = this.context.tree.watch(solvedMapping);
-
-    // Refreshing cursors
-    this.cursors = {};
-
-    var k;
-    for (k in solvedMapping)
-      if (type.cursor(solvedMapping[k]))
-        this.cursors[k] = solvedMapping[k];
-      else
-        this.cursors[k] = this.context.tree.select(solvedMapping[k]);
-
+    this.__watcher.refresh(solvedMapping);
     this.setState(this.__watcher.get());
   }
 };
