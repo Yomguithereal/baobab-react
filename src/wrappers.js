@@ -91,7 +91,7 @@ export class Branch extends React.Component {
 
       if (!solvedMapping)
         throw helpers.makeError(
-          'baobab-react:higher-order.branch: given mapping is invalid.',
+          'baobab-react:wrappers.branch: given mapping is invalid.',
           {mapping: solvedMapping}
         );
 
@@ -138,7 +138,7 @@ export class Branch extends React.Component {
 
     if (!solvedMapping)
       throw helpers.makeError(
-        'baobab-react:higher-order.branch: given mapping is invalid.',
+        'baobab-react:wrappers.branch: given mapping is invalid.',
         {mapping: solvedMapping}
       );
 
