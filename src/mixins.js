@@ -84,6 +84,10 @@ var BranchMixin = {
       return;
 
     this.__facet.refresh([props, this.context]);
+
+    this.cursors = this.__facet.cursors;
+    this.facets = this.__facet.facets;
+
     this.setState(this.__facet.get());
   }
 };

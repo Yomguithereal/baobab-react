@@ -297,6 +297,8 @@ describe('Mixin', function() {
   it('should be possible to update the component\'s internal facet.', function(done) {
     var tree = new Baobab({value1: 'John', value2: 'Jack'}, {asynchronous: false});
 
+    var cursors = [];
+
     var Child = React.createClass({
       mixins: [mixins.branch],
       cursors: function(props, context) {
@@ -305,6 +307,7 @@ describe('Mixin', function() {
         };
       },
       render: function() {
+        cursors.push(this.cursors);
         return (
           <span id="test">
             Hello {this.state.value}
@@ -336,6 +339,7 @@ describe('Mixin', function() {
 
     setTimeout(function() {
       assert.selectorText('#test', 'Hello Jack');
+      assert(cursors[0] !== cursors[1], 'component this.cursors reference updated');
       done();
     }, 100);
   });
