@@ -1,16 +1,20 @@
 /**
- * Baobab-React Higher Order Component Test Suite
- * ===============================================
+ * Baobab-React Wrapper Components Test Suite
+ * ===========================================
  *
  */
 import assert from 'assert';
 import React, {Component} from 'react';
-import {render} from 'react-dom';
+import ReactDOM, {render} from 'react-dom';
 import Baobab, {monkey} from 'baobab';
 import {Root, Branch} from '../../src/wrappers.js';
 import PropTypes from '../../src/utils/prop-types.js';
 
 describe('Wrapper', function() {
+
+  afterEach(function() {
+    ReactDOM.unmountComponentAtNode(document.mount);
+  });
 
   it('should fail if passing a wrong tree to the root wrapper', function() {
 
@@ -49,7 +53,7 @@ describe('Wrapper', function() {
     assert.selectorText('#test', 'Hello John');
   });
 
-  it('the should be propagated to nested components.', function() {
+  it('the tree should be propagated to nested components.', function() {
     const tree = new Baobab({name: 'John'}, {asynchronous: false});
 
     class Child extends Component {
@@ -159,7 +163,7 @@ describe('Wrapper', function() {
 
   it('should be possible to pass cursors directly.', function() {
     const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
-        cursor = tree.select('name');
+          cursor = tree.select('name');
 
     class Child extends Component {
       render() {

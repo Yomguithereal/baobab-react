@@ -29,6 +29,10 @@ var Root = React.createClass({
 
 describe('Mixin', function() {
 
+  afterEach(function() {
+    ReactDOM.unmountComponentAtNode(document.mount);
+  });
+
   it('should fail if passing a wrong tree to the root mixin.', function() {
 
     assert.throws(function() {
@@ -51,7 +55,7 @@ describe('Mixin', function() {
     assert.selectorText('#test', 'Hello John');
   });
 
-  it('the should be propagated to nested components.', function() {
+  it('the tree should be propagated to nested components.', function() {
     var tree = new Baobab({name: 'John'}, {asynchronous: false});
 
     var UpperChild = React.createClass({
@@ -109,7 +113,7 @@ describe('Mixin', function() {
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
-  it('bound components should update along with the cursor.', function() {
+  it('bound components should update along with the cursor.', function(done) {
     var tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
     var Child = React.createClass({
@@ -134,7 +138,10 @@ describe('Mixin', function() {
 
     tree.set('surname', 'the Third');
 
-    assert.selectorText('#test', 'Hello John the Third');
+    setTimeout(function() {
+      assert.selectorText('#test', 'Hello John the Third');
+      done();
+    }, 50);
   });
 
   it('should be possible to set cursors with a function.', function() {
@@ -272,7 +279,7 @@ describe('Mixin', function() {
     }, 100);
   });
 
-  it('should be possible to access the component\'s cursors.', function() {
+  it('should be possible to access the component\'s cursors.', function(done) {
     var tree = new Baobab({value1: 'John', value2: 'Jack'}, {asynchronous: false});
 
     var Child = React.createClass({

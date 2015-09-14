@@ -50,32 +50,31 @@ var BranchMixin = {
 
   // Building initial state
   getInitialState: function() {
-
-    if (!this.cursors)
-      return {};
-
     var name = displayName(this);
 
-    this.__mapping = this.cursors;
+    if (this.cursors) {
+      this.__cursorsMapping = this.cursors;
 
-    var solvedMapping = helpers.solveMapping(this.__mapping, this.props, this.context);
+      var solvedMapping = helpers.solveMapping(this.__cursorsMapping, this.props, this.context);
 
-    // The given cursors property should be valid
-    if (!solvedMapping)
-      throw makeError(
-        'baobab-react:mixins.branch: given mapping is invalid (check the "' + name + '" component).',
-        {mapping: solvedMapping}
-      );
+      // The given cursors property should be valid
+      if (!solvedMapping)
+        throw makeError(
+          'baobab-react:mixins.branch: given mapping is invalid (check the "' + name + '" component).',
+          {mapping: solvedMapping}
+        );
 
-    // Creating the watcher
-    this.__watcher = this.context.tree.watch(solvedMapping);
+      // Creating the watcher
+      this.__watcher = this.context.tree.watch(solvedMapping);
 
-    // Binding cursors
-    this.cursors = this.__watcher.getCursors();
+      // Binding cursors
+      this.cursors = this.__watcher.getCursors();
 
-    // Setting initial state
-    if (this.__watcher)
+      // Setting initial state
       return this.__watcher.get();
+    }
+
+    return null;
   },
 
   // On component mount
@@ -107,7 +106,7 @@ var BranchMixin = {
       return;
 
     // Refreshing the watcher
-    var solvedMapping = helpers.solveMapping(this.__mapping, props, this.context);
+    var solvedMapping = helpers.solveMapping(this.__cursorsMapping, props, this.context);
 
     if (!solvedMapping)
       throw makeError(

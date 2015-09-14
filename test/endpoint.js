@@ -1,12 +1,10 @@
-/* global beforeEach, afterEach */
-
 /**
  * Baobab-React Unit Tests Endpoint
  * =================================
  *
  * Gathering and requiring test suites.
  */
-var jsdom = require('jsdom').jsdom,
+var jsdom = require('jsdom'),
     assert = require('assert'),
     $ = require('cheerio');
 
@@ -26,22 +24,31 @@ console.warn = throwMessage;
 console.error = throwMessage;
 
 // Setup
-beforeEach(function() {
-
-  var dom = jsdom('<div><div id="mount"></div></div>');
-  global.document = dom;
-  global.window = dom.parentWindow;
-  document.mount = dom.querySelector('#mount');
-
-  require('react/lib/ExecutionEnvironment').canUseDOM = true;
+jsdom.env({
+  html: '<!doctype html><html><head><meta charset="utf-8"></head><body><div id="mount"></div></body></html>',
+  done: function(err, w) {
+    global.window = w;
+    global.document = w.document;
+    global.navigator = w.navigator;
+    document.mount = document.querySelector('#mount');
+    start();
+  }
 });
 
-afterEach(function() {
-  delete global.document;
-  delete global.window;
-});
+function start() {
 
-// Suites
-require('./suites/mixins.jsx');
-require('./suites/higher-order.jsx');
-require('./suites/wrappers.jsx');
+  // Cleanup
+  after(function() {
+    global.window.close();
+    delete global.document;
+    delete global.navigator;
+    delete global.window;
+  });
+
+  // Suites
+  require('./suites/mixins.jsx');
+  require('./suites/higher-order.jsx');
+  require('./suites/wrappers.jsx');
+
+  run();
+}

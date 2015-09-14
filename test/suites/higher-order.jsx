@@ -5,7 +5,7 @@
  */
 import assert from 'assert';
 import React, {Component} from 'react';
-import {render} from 'react-dom';
+import ReactDOM, {render} from 'react-dom';
 import Baobab, {monkey} from 'baobab';
 import {root, branch} from '../../src/higher-order.js';
 import {root as rootDecorator, branch as branchDecorator} from '../../src/decorators.js';
@@ -27,6 +27,10 @@ class BasicRoot extends Component {
 }
 
 describe('Higher Order Component', function() {
+
+  afterEach(function() {
+    ReactDOM.unmountComponentAtNode(document.mount);
+  });
 
   it('should fail if passing a wrong tree to the root component.', function() {
     assert.throws(function() {
@@ -129,7 +133,7 @@ describe('Higher Order Component', function() {
 
   it('bound components should update along with the cursor.', function() {
     const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
-        RootComponent = root(BasicRoot, tree);
+          RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
       cursors: {
@@ -158,7 +162,7 @@ describe('Higher Order Component', function() {
 
   it('should be possible to set cursors with a function.', function() {
     const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
-        RootComponent = root(BasicRoot, tree);
+          RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
       cursors: function(props, context) {
@@ -185,8 +189,8 @@ describe('Higher Order Component', function() {
 
   it('should be possible to pass cursors directly.', function() {
     const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
-        cursor = tree.select('name'),
-        RootComponent = root(BasicRoot, tree);
+          cursor = tree.select('name'),
+          RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
       cursors: {
