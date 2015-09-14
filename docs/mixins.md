@@ -5,7 +5,7 @@ In this example, we'll build a simplistic React app showing a list of colors to 
 ### Summary
 
 * [Creating the app's state](#creating-the-apps-state)
-* [Rooting our top-level component](#rooting-out-top-level-component)
+* [Rooting our top-level component](#rooting-our-top-level-component)
 * [Branching our list](#branching-our-list)
 * [Actions](#actions)
 * [Dynamically set the list's path using props](#dynamically-set-the-lists-path-using-props)
@@ -30,7 +30,7 @@ module.exports = new Baobab({
 
 Now that the tree is created, we should bind our React app to it by "rooting" our top-level component.
 
-Under the hood, this component will simply propagate the tree to its descendants through React's context so that "branched" component may use data from the tree afterwards.
+Under the hood, this component will simply propagate the tree to its descendants using React's context so that "branched" component may subscribe to updates of parts of the tree afterwards.
 
 *main.jsx*
 
@@ -45,8 +45,7 @@ var React = require('react'),
 // Creating our top-level component
 var App = React.createClass({
 
-  // Let's bind the component to the tree through
-  // the `root` mixin
+  // Let's bind the component to the tree through the `root` mixin
   mixins: [mixins.root],
 
   render: function() {
@@ -54,14 +53,13 @@ var App = React.createClass({
   }
 });
 
-// Rendering the app and giving the tree to the
-// Application component through props
+// Rendering the app and giving the tree to the `App` component through props
 React.render(<Application tree={tree} />, document.querySelector('#mount'));
 ```
 
 ### Branching our list
 
-Now that we have "rooted" our top-level `Application` component, let's create the component displaying our colors' list and branch it to the tree's data.
+Now that we have "rooted" our top-level `App` component, let's create the component displaying our colors' list and branch it to the tree's data.
 
 *list.jsx*
 
@@ -82,7 +80,7 @@ var List = React.createClass({
 
   render() {
 
-    // Our colors are now lying within the component's state
+    // Our colors are now available through the component's state
     var colors = this.state.colors;
 
     function renderItem(color) {
@@ -148,9 +146,9 @@ Here is what we are trying to achieve:
         └────────────────────┘                           └────────────────────┘
 ```
 
-For the time being we do have a central state stored by a Baobab tree and a view layer built from React components.
+For the time being we only have a central state stored by a Baobab tree and a view layer composed of React components.
 
-What remains to be added is a way for the UI user to trigger actions and update the central state.
+What remains to be added is a way for the user to trigger actions and update the central state.
 
 To do so `baobab-react` proposes to create simple functions as actions:
 
@@ -173,9 +171,12 @@ var React = require('react'),
 
 var List = React.createClass({
   mixins: [mixins.branch],
+
+  // Mapping actions
   actions: {
     add: actions.addColor
   },
+
   cursors: {
     colors: ['colors']
   },
@@ -188,8 +189,7 @@ var List = React.createClass({
   // Adding a color
   handleClick() {
 
-    // You can access your actions now bound
-    // to the tree through context
+    // You can access your actions now bound to the tree
     this.actions.add(this.state.inputColor);
   }
 
@@ -217,7 +217,7 @@ module.exports = List;
 
 ### Dynamically set the list's path using props
 
-Sometimes, you might find yourself wanting that the paths of the selected data in your tree would change according to the props passed to your components.
+Sometimes, you might find yourself needing cursors paths changing along with your component's props.
 
 For instance, given the following state:
 
@@ -245,7 +245,7 @@ var React = require('react'),
 var List = React.createClass({
   mixins: [mixins.branch],
 
-  // Using a function so that your cursors' path are function of the props
+  // Using a function so that your cursors' path can use the component's props etc.
   cursors: function(props, context) {
     return {
       colors: [props.alternative ? 'alternativeColors', 'colors']
@@ -253,8 +253,6 @@ var List = React.createClass({
   },
 
   render() {
-
-    // Our colors are now lying within the component's state
     var colors = this.state.colors;
 
     function renderItem(color) {
@@ -270,7 +268,7 @@ module.exports = List;
 
 ### Accessing the tree and cursors
 
-For convenience, and if you want a quicker way to update your tree, you can always access it through the context or event use the cursors used by the branched component under the hood:
+For convenience, and if you want a quicker way to update your tree, you can always access this one through the context or even access the cursors used by the branched component under the hood:
 
 ```js
 var React = require('react'),
@@ -283,8 +281,7 @@ var List = React.createClass({
     colors: ['colors']
   },
 
-  // To access the tree through context, React obliges
-  // you to define `contextTypes`
+  // To access the tree through context, React obliges you to define `contextTypes`
   contextTypes: {
     tree: PropTypes.baobab
   },
@@ -304,7 +301,9 @@ var List = React.createClass({
 
 Now you know everything to use a Baobab tree efficiently with React.
 
-Just remember to clearly divide "clever" components, that knows about the tree's existence and "dumb" components, completely oblivious of it within your code base.
+However, the example app shown above is minimalist and should probably not be organized thusly in a real-life scenario.
+
+Indeed, whenever possible, one should try to separate "clever" components, that know about the tree's existence from "dumb" components, completely oblivious of it.
 
 Knowing when to branch/wrap a component and let some components ignore the existence of the tree is the key to a maintainable and scalable application.
 
