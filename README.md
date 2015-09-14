@@ -36,7 +36,7 @@ npm install baobab-react
 
 *Peer dependencies*
 
-This library necessitate that you install `baobab >= v2` and `react >= 0.13.x`.
+This library necessitate that you install `baobab >= 2.0.0` and `react >= 0.13.x`.
 
 Then require the desired pattern and only this one will be loaded (meaning that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
 
@@ -53,7 +53,7 @@ In order to keep component definitions detached from any particular instance of 
 * The **Root** aims at passing a baobab tree through context so that child component (branches) may use it. Typically, your app's top-level component will probably be a root.
 * The **Branches**, bound to cursors, get their data from the tree given by the root.
 
-This is necessary so that isomorphism can remain an enjoyable stroll in the park (you UI would remain a pure function).
+This is necessary so that isomorphism can remain an enjoyable stroll in the park (your UI would remain a pure function).
 
 ## Patterns
 
@@ -80,10 +80,15 @@ This is necessary so that isomorphism can remain an enjoyable stroll in the park
 If you need to store a react controlled input's state into a baobab tree, remember you have to commit changes synchronously through the `tree.commit` method or else you'll observe nasty cursor jumps in some cases.
 
 ```js
+var PropTypes = require('baobab-react/prop-types').PropTypes;
+
 var Input = React.createClass({
   mixins: [mixins.branch],
   cursors: {
     inputValue: ['inputValue']
+  },
+  contextTypes: {
+    tree: PropTypes.baobab
   },
   onChange: function(e) {
     var newValue = e.target.value;
@@ -93,7 +98,7 @@ var Input = React.createClass({
 
     // One has to commit synchronously the update for the input to work correctly
     this.cursor.set(newValue);
-    this.tree.commit();
+    this.context.tree.commit();
   },
   render: function() {
     return <input onChange={this.onChange} value={this.state.inputValue} />;
