@@ -11,7 +11,7 @@
   "parser": "babel-eslint",
   "rules": {
     "curly": 0,
-    "quotes": "single",
+    "quotes": [1, "single"],
     "new-cap": 0,
     "no-underscore-dangle": 0,
     "no-wrap-func": 0

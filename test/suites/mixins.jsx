@@ -5,7 +5,9 @@
  */
 var assert = require('assert'),
     React = require('react'),
+    ReactDOM = require('react-dom'),
     Baobab = require('baobab'),
+    monkey = Baobab.monkey,
     mixins = require('../../src/mixins.js');
 
 // Components
@@ -30,7 +32,7 @@ describe('Mixin', function() {
   it('should fail if passing a wrong tree to the root mixin.', function() {
 
     assert.throws(function() {
-      React.render(<DummyRoot tree={{hello: 'world'}} />, document.mount);
+      ReactDOM.render(<DummyRoot tree={{hello: 'world'}} />, document.mount);
     }, /Baobab/);
   });
 
@@ -44,7 +46,7 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={Child} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John');
   });
@@ -65,7 +67,7 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={UpperChild} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={UpperChild} />, document.mount);
 
     assert.selectorText('#test', 'Hello John');
   });
@@ -79,7 +81,7 @@ describe('Mixin', function() {
     });
 
     assert.throws(function() {
-      React.render(<Child />, document.mount);
+      ReactDOM.render(<Child />, document.mount);
     }, /Baobab/);
   });
 
@@ -102,7 +104,7 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={Child} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -126,7 +128,7 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={Child} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
 
@@ -156,7 +158,7 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={Child} arg={['name']} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={Child} arg={['name']} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -181,24 +183,24 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={Child} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
-  it('should be possible to use facets.', function() {
+  it('should be possible to use monkeys.', function() {
     var tree = new Baobab(
       {
         name: 'John',
         surname: 'Talbot',
-        $name: {
+        $name: monkey({
           cursors: {
             value: ['name']
           },
           get: function(data) {
             return data.value;
           }
-        }
+        })
       },
       {asynchronous: false}
     );
@@ -219,7 +221,7 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={Child} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -260,7 +262,7 @@ describe('Mixin', function() {
       }
     });
 
-    React.render(<Root tree={tree} component={Wrapper} />, document.mount);
+    ReactDOM.render(<Root tree={tree} component={Wrapper} />, document.mount);
 
     assert.selectorText('#test', 'Hello John');
 

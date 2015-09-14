@@ -5,8 +5,8 @@
  * Old style react mixins.
  */
 var PropTypes = require('./utils/prop-types.js'),
-    type = require('./utils/type.js'),
-    helpers = require('./utils/helpers.js');
+    helpers = require('./utils/helpers.js'),
+    makeError = require('baobab').helpers.makeError;
 
 /**
  * Helpers
@@ -62,13 +62,16 @@ var BranchMixin = {
 
     // The given cursors property should be valid
     if (!solvedMapping)
-      throw helpers.makeError(
+      throw makeError(
         'baobab-react:mixins.branch: given mapping is invalid (check the "' + name + '" component).',
         {mapping: solvedMapping}
       );
 
     // Creating the watcher
     this.__watcher = this.context.tree.watch(solvedMapping);
+
+    // Binding cursors
+    this.cursors = this.__watcher.getCursors();
 
     // Setting initial state
     if (this.__watcher)
@@ -107,12 +110,13 @@ var BranchMixin = {
     var solvedMapping = helpers.solveMapping(this.__mapping, props, this.context);
 
     if (!solvedMapping)
-      throw helpers.makeError(
+      throw makeError(
         'baobab-react:mixins.branch: given mapping is invalid (check the "' + displayName(this) + '" component).',
         {mapping: solvedMapping}
       );
 
     this.__watcher.refresh(solvedMapping);
+    this.cursors = this.__watcher.getCursors();
     this.setState(this.__watcher.get());
   }
 };
