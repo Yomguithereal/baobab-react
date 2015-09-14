@@ -5,16 +5,18 @@
  * ES6 higher order component to enchance one's component.
  */
 import React from 'react';
-import type from './utils/type.js';
-import helpers from './utils/helpers.js';
+import Baobab, {type} from 'baobab';
+import {solveMapping} from './utils/helpers.js';
 import PropTypes from './utils/prop-types.js';
+
+const makeError = Baobab.helpers.makeError;
 
 /**
  * Root component
  */
 export function root(Component, tree) {
-  if (!type.baobab(tree))
-    throw helpers.makeError(
+  if (!(tree instanceof Baobab))
+    throw makeError(
       'baobab-react:higher-order.root: given tree is not a Baobab.',
       {target: tree}
     );
@@ -63,21 +65,36 @@ export function branch(Component, mapping=null) {
       tree: PropTypes.baobab
     };
 
+    static childContextTypes = {
+      cursors: PropTypes.cursors
+    };
+
+    // Passing the component's cursors through context
+    getChildContext() {
+      return {
+        cursors: this.cursors
+      };
+    }
+
     // Building initial state
     constructor(props, context) {
       super(props, context);
 
-      if (mapping) {
-        const solvedMapping = helpers.solveMapping(mapping, props, context);
+      // Fallback
+      this.cursors = {};
+
+      if (mapping.cursors) {
+        const solvedMapping = solveMapping(mapping.cursors, props, context);
 
         if (!solvedMapping)
-          throw helpers.makeError(
-            'baobab-react:higher-order.branch: given mapping is invalid (check the "' + displayName + '" component).',
+          throw makeError(
+            'baobab-react:higher-order.branch: given cursors mapping is invalid (check the "' + displayName + '" component).',
             {mapping: solvedMapping}
           );
 
         // Creating the watcher
         this.watcher = this.context.tree.watch(solvedMapping);
+        this.cursors = this.watcher.getCursors();
         this.state = this.watcher.get();
       }
     }
@@ -112,19 +129,20 @@ export function branch(Component, mapping=null) {
 
     // On new props
     componentWillReceiveProps(props) {
-      if (!this.watcher)
+      if (!this.watcher || !mapping.cursors)
         return;
 
-      const solvedMapping = helpers.solveMapping(mapping, props, this.context);
+      const solvedMapping = solveMapping(mapping.cursors, props, this.context);
 
       if (!solvedMapping)
-        throw helpers.makeError(
+        throw makeError(
           'baobab-react:higher-order.branch: given mapping is invalid (check the "' + displayName + '" component).',
           {mapping: solvedMapping}
         );
 
       // Refreshing the watcher
       this.watcher.refresh(solvedMapping);
+      this.cursors = this.watcher.getCursors();
       this.setState(this.watcher.get());
     }
   };

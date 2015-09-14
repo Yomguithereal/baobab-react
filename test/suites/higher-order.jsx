@@ -5,7 +5,8 @@
  */
 import assert from 'assert';
 import React, {Component} from 'react';
-import Baobab from 'baobab';
+import {render} from 'react-dom';
+import Baobab, {monkey} from 'baobab';
 import {root, branch} from '../../src/higher-order.js';
 import {root as rootDecorator, branch as branchDecorator} from '../../src/decorators.js';
 import PropTypes from '../../src/utils/prop-types.js';
@@ -49,7 +50,7 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<RootComponent component={Child} />, document.mount);
+    render(<RootComponent component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John');
   });
@@ -64,7 +65,7 @@ describe('Higher Order Component', function() {
     }
 
     assert.throws(function() {
-      React.render(<Child />, document.mount);
+      render(<Child />, document.mount);
     }, /Baobab/);
   });
 
@@ -73,8 +74,10 @@ describe('Higher Order Component', function() {
         RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
-      name: ['name'],
-      surname: ['surname']
+      cursors: {
+        name: ['name'],
+        surname: ['surname']
+      }
     })
     class Child extends Component {
       render() {
@@ -86,7 +89,7 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<RootComponent component={Child} />, document.mount);
+    render(<RootComponent component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -104,8 +107,10 @@ describe('Higher Order Component', function() {
     }
 
     @branchDecorator({
-      name: ['name'],
-      surname: ['surname']
+      cursors: {
+        name: ['name'],
+        surname: ['surname']
+      }
     })
     class Child extends Component {
       render() {
@@ -117,7 +122,7 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<DecoratedRoot component={Child} />, document.mount);
+    render(<DecoratedRoot component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -127,8 +132,10 @@ describe('Higher Order Component', function() {
         RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
-      name: ['name'],
-      surname: ['surname']
+      cursors: {
+        name: ['name'],
+        surname: ['surname']
+      }
     })
     class Child extends Component {
       render() {
@@ -140,7 +147,7 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<RootComponent component={Child} />, document.mount);
+    render(<RootComponent component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
 
@@ -153,11 +160,13 @@ describe('Higher Order Component', function() {
     const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false}),
         RootComponent = root(BasicRoot, tree);
 
-    @branchDecorator(function(props, context) {
-      return {
-        name: props.arg,
-        surname: ['surname']
-      };
+    @branchDecorator({
+      cursors: function(props, context) {
+        return {
+          name: props.arg,
+          surname: ['surname']
+        };
+      }
     })
     class Child extends Component {
       render() {
@@ -169,7 +178,7 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<RootComponent component={Child} arg={['name']} />, document.mount);
+    render(<RootComponent component={Child} arg={['name']} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -180,8 +189,10 @@ describe('Higher Order Component', function() {
         RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
-      name: cursor,
-      surname: ['surname']
+      cursors: {
+        name: cursor,
+        surname: ['surname']
+      }
     })
     class Child extends Component {
       render() {
@@ -193,24 +204,24 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<RootComponent component={Child} />, document.mount);
+    render(<RootComponent component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
-  it('should be possible to use facets.', function() {
+  it('should be possible to use monkeys.', function() {
     const tree = new Baobab(
       {
         name: 'John',
         surname: 'Talbot',
-        $name: {
+        $name: monkey({
           cursors: {
             value: ['name']
           },
           get: function(data) {
             return data.value;
           }
-        }
+        })
       },
       {asynchronous: false}
     );
@@ -218,8 +229,10 @@ describe('Higher Order Component', function() {
     const RootComponent = root(BasicRoot, tree);
 
     @branchDecorator({
-      surname: ['surname'],
-      name: ['$name']
+      cursors: {
+        surname: ['surname'],
+        name: ['$name']
+      }
     })
     class Child extends Component {
       render() {
@@ -231,7 +244,7 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<RootComponent component={Child} />, document.mount);
+    render(<RootComponent component={Child} />, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -240,10 +253,12 @@ describe('Higher Order Component', function() {
     const tree = new Baobab({value1: 'John', value2: 'Jack'}, {asynchronous: false}),
           RootComponent = root(BasicRoot, tree);
 
-    @branchDecorator(function(props) {
-      return {
-        value: props.path
-      };
+    @branchDecorator({
+      cursors: function(props) {
+        return {
+          value: props.path
+        };
+      }
     })
     class Child extends Component {
       render() {
@@ -274,7 +289,61 @@ describe('Higher Order Component', function() {
       }
     }
 
-    React.render(<RootComponent tree={tree} component={Wrapper} />, document.mount);
+    render(<RootComponent tree={tree} component={Wrapper} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John');
+
+    setTimeout(function() {
+      assert.selectorText('#test', 'Hello Jack');
+      done();
+    }, 100);
+  });
+
+  it('should be possible to access the component\'s cursors through context.', function(done) {
+    const tree = new Baobab({value1: 'John', value2: 'Jack'}, {asynchronous: false}),
+          RootComponent = root(BasicRoot, tree);
+
+    @branchDecorator({
+      cursors: function(props) {
+        return {
+          value: props.path
+        };
+      }
+    })
+    class Child extends Component {
+      static contextTypes = {
+        cursors: PropTypes.cursors
+      };
+
+      render() {
+        return (
+          <span id="test">
+            Hello {this.context.cursors.value.get()}
+          </span>
+        );
+      }
+    }
+
+    class Wrapper extends Component {
+      constructor(props) {
+        super(props);
+
+        const self = this;
+
+        setTimeout(function() {
+          self.setState({path: ['value2']});
+        }, 50);
+
+        this.state = {
+          path: ['value1']
+        };
+      }
+      render() {
+        return <Child path={this.state.path} />;
+      }
+    }
+
+    render(<RootComponent tree={tree} component={Wrapper} />, document.mount);
 
     assert.selectorText('#test', 'Hello John');
 

@@ -18,10 +18,12 @@ assert.selectorText = function(sel, txt) {
   );
 };
 
-console.warn =
-console.error = function(msg) {
+function throwMessage(msg) {
   throw Error(msg);
-};
+}
+
+console.warn = throwMessage;
+console.error = throwMessage;
 
 // Setup
 beforeEach(function() {
@@ -41,5 +43,5 @@ afterEach(function() {
 
 // Suites
 require('./suites/mixins.jsx');
-// require('./suites/higher-order.jsx');
+require('./suites/higher-order.jsx');
 // require('./suites/wrappers.jsx');

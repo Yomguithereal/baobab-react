@@ -24,7 +24,7 @@ PropTypes.cursors = function(props, propName) {
 
   if (!type.object(cursors) ||
       !Object.keys(cursors).every(function(k) {
-        return k instanceof Cursor;
+        return cursors[k] instanceof Cursor;
       }))
     return new Error(errorMessage(propName, 'a cursors object'));
 };
