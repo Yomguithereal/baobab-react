@@ -6,6 +6,7 @@
 var assert = require('assert'),
     React = require('react'),
     ReactDOM = require('react-dom'),
+    Simulate = require('react-addons-test-utils').Simulate,
     Baobab = require('baobab'),
     monkey = Baobab.monkey,
     mixins = require('../../src/mixins.js');
@@ -323,5 +324,54 @@ describe('Mixin', function() {
       assert.selectorText('#test', 'Hello Jack');
       done();
     }, 100);
+  });
+
+  it('should be possible to use actions.', function(done) {
+    var tree = new Baobab({counter: 5}, {asynchronous: false});
+
+    function increment(tree, nb=1) {
+      tree.apply('counter', c => c + nb);
+    }
+
+    function decrement(tree, nb=1) {
+      tree.apply('counter', c => c - nb);
+    }
+
+    var Action = React.createClass({
+      mixins: [mixins.branch],
+      cursors: {
+        counter: ['counter'],
+      },
+      actions: {
+        increment: increment,
+        decrement: decrement
+      },
+      render: function() {
+        return (
+          <div>
+            <button id="inc" onClick={this.actions.increment.bind(null, 1)}>inc</button>
+            <button id="dec" onClick={this.actions.decrement.bind(null, 3)}>dec</button>
+            <div id="test">Count: {this.state.counter}</div>
+          </div>
+        );
+      }
+    });
+
+    ReactDOM.render(<Root tree={tree} component={Action} />, document.mount);
+
+    assert.selectorText('#test', 'Count: 5');
+
+    Simulate.click(document.querySelector('#inc'));
+
+    setTimeout(function() {
+      assert.selectorText('#test', 'Count: 6');
+
+      Simulate.click(document.querySelector('#dec'));
+      setTimeout(function() {
+
+        assert.selectorText('#test', 'Count: 3');
+        done();
+      }, 10);
+    }, 10);
   });
 });

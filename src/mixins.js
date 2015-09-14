@@ -15,6 +15,17 @@ function displayName(instance) {
   return (instance.constructor || {}).displayName || 'Component';
 }
 
+function bindActions(actions) {
+  const tree = this.context.tree,
+        suppl = {};
+
+  this.actions = {};
+
+  Object.keys(actions).forEach(function(k) {
+    this.actions[k] = actions[k].bind(tree, tree);
+  }, this);
+}
+
 /**
  * Root mixin
  */
@@ -51,6 +62,11 @@ var BranchMixin = {
   // Building initial state
   getInitialState: function() {
     var name = displayName(this);
+
+    if (this.actions) {
+      this.__actionsMapping = this.actions;
+      bindActions.call(this, this.__actionsMapping);
+    }
 
     if (this.cursors) {
       this.__cursorsMapping = this.cursors;
@@ -117,6 +133,12 @@ var BranchMixin = {
     this.__watcher.refresh(solvedMapping);
     this.cursors = this.__watcher.getCursors();
     this.setState(this.__watcher.get());
+  },
+
+  // On update
+  componentWillUpdate: function() {
+    if (this.__actionsMapping)
+      bindActions.call(this, this.__actionsMapping);
   }
 };
 
