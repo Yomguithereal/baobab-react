@@ -271,4 +271,50 @@ describe('Mixin', function() {
       done();
     }, 100);
   });
+
+  it('should be possible to access the component\'s cursors.', function() {
+    var tree = new Baobab({value1: 'John', value2: 'Jack'}, {asynchronous: false});
+
+    var Child = React.createClass({
+      mixins: [mixins.branch],
+      cursors: function(props, context) {
+        return {
+          value: props.path
+        };
+      },
+      render: function() {
+        return (
+          <span id="test">
+            Hello {this.cursors.value.get()}
+          </span>
+        );
+      }
+    });
+
+    var Wrapper = React.createClass({
+      getInitialState: function() {
+        var self = this;
+
+        setTimeout(function() {
+          self.setState({path: ['value2']});
+        }, 50);
+
+        return {
+          path: ['value1']
+        };
+      },
+      render: function() {
+        return <Child path={this.state.path} />;
+      }
+    });
+
+    ReactDOM.render(<Root tree={tree} component={Wrapper} />, document.mount);
+
+    assert.selectorText('#test', 'Hello John');
+
+    setTimeout(function() {
+      assert.selectorText('#test', 'Hello Jack');
+      done();
+    }, 100);
+  });
 });
