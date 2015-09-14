@@ -8,10 +8,10 @@ It aims at implementing a handful of popular React patterns so that you're free 
 
 Currently implemented patterns:
 
-* Mixins
-* Higher order components
-* ES7 decorators
-* Wrapper components
+* [Mixins](docs/mixins.md)
+* [Higher order components](docs/higher-order.md)
+* [ES7 decorators](docs/decorators.md)
+* [Wrapper components](docs/wrappers.md)
 
 ## Summary
 
