@@ -356,4 +356,43 @@ describe('Higher Order Component', function() {
       done();
     }, 100);
   });
+
+  it('should be possible to use actions.', function(done) {
+    const tree = new Baobab({counter: 5}, {asynchronous: false}),
+          RootComponent = root(BasicRoot, tree);
+
+    function increment(tree, nb=1) {
+      tree.apply('counter', c => c + nb);
+    }
+
+    function decrement(tree, nb=1) {
+      tree.apply('counter', c => c - nb);
+    }
+
+    @branchDecorator({
+      actions: {
+        increment: increment,
+        decrement: decrement
+      },
+      cursors: {
+        counter: ['counter']
+      }
+    })
+    class Action extends Component {
+      render() {
+        return (
+          <div>
+            <button onClick={this.props.actions.increment}>inc</button>
+            <button onClick={this.props.actions.decrement}>dec</button>
+            <div id="test">Count: {this.props.counter}</div>
+          </div>
+        );
+      }
+    }
+
+    render(<RootComponent tree={tree} component={Action} />, document.mount);
+
+    assert.selectorText('#test', 'Count: 5');
+    done();
+  });
 });

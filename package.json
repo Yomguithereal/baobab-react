@@ -6,7 +6,7 @@
   "scripts": {
     "prepublish": "babel ./src --out-dir dist-modules",
     "lint": "eslint ./*.js && eslint ./src && eslint ./test",
-    "test": "mocha -R spec --delay --compilers jsx:babel/register ./test/endpoint.js",
+    "test": "mocha -R spec --compilers jsx:babel/register ./test/endpoint.js",
     "build": "npm run build-mixins && npm run build-higher-order && npm run build-wrappers && npm run build-decorators",
     "build-mixins": "mkdir -p build && browserify -x baobab ./src/mixins.js -o build/mixins.js",
     "build-higher-order": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/higher-order.js -o build/higher-order.js",

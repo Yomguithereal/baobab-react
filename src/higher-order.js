@@ -111,7 +111,20 @@ export function branch(Component, mapping=null) {
 
     // Render shim
     render() {
-      return <Component {...this.props} {...this.state} />;
+      const tree = this.context.tree;
+
+      let suppl = {};
+
+      // Binding actions if any
+      if (mapping.actions) {
+        suppl.actions = {};
+
+        Object.keys(mapping.actions).forEach(function(k) {
+          suppl.actions[k] = mapping.actions[k].bind(tree, tree);
+        });
+      }
+
+      return <Component {...this.props} {...suppl} {...this.state} />;
     }
 
     // On component unmount
