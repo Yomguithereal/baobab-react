@@ -111,9 +111,8 @@ export function branch(Component, mapping=null) {
 
     // Render shim
     render() {
-      const tree = this.context.tree;
-
-      let suppl = {};
+      const tree = this.context.tree,
+            suppl = {};
 
       // Binding actions if any
       if (mapping.actions) {

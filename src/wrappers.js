@@ -24,14 +24,15 @@ function rootPass(props) {
   return {...otherProps};
 }
 
-function branchPass(props, state) {
+function branchPass(props, suppl, state) {
   const {
+    actions,
     children,
     cursors,
     ...otherProps
   } = props;
 
-  return {...otherProps, ...state};
+  return {...otherProps, ...suppl, ...state};
 }
 
 function renderChildren(children, props) {
@@ -129,7 +130,20 @@ export class Branch extends React.Component {
 
   // Render shim
   render() {
-    return renderChildren(this.props.children, branchPass(this.props, this.state));
+    const tree = this.context.tree,
+          actions = this.props.actions,
+          suppl = {};
+
+    // Binding actions if any
+    if (actions) {
+      suppl.actions = {};
+
+      Object.keys(actions).forEach(function(k) {
+        suppl.actions[k] = actions[k].bind(tree, tree);
+      });
+    }
+
+    return renderChildren(this.props.children, branchPass(this.props, suppl, this.state));
   }
 
   // On component unmount

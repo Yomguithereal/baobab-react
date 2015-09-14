@@ -6,6 +6,7 @@
 import assert from 'assert';
 import React, {Component} from 'react';
 import ReactDOM, {render} from 'react-dom';
+import {Simulate} from 'react-addons-test-utils';
 import Baobab, {monkey} from 'baobab';
 import {Root, Branch} from '../../src/wrappers.js';
 import PropTypes from '../../src/utils/prop-types.js';
@@ -308,5 +309,58 @@ describe('Wrapper', function() {
 
     assert.selectorText('#one', 'Hello John Talbot the first');
     assert.selectorText('#two', 'Hello John Talbot the second');
+  });
+
+    it('should be possible to use actions.', function(done) {
+    const tree = new Baobab({counter: 5}, {asynchronous: false});
+
+    function increment(tree, nb=1) {
+      tree.apply('counter', c => c + nb);
+    }
+
+    function decrement(tree, nb=1) {
+      tree.apply('counter', c => c - nb);
+    }
+
+    class Action extends Component {
+      render() {
+        return (
+          <div>
+            <button id="inc" onClick={this.props.actions.increment.bind(null, 1)}>inc</button>
+            <button id="dec" onClick={this.props.actions.decrement.bind(null, 3)}>dec</button>
+            <div id="test">Count: {this.props.counter}</div>
+          </div>
+        );
+      }
+    }
+
+    const group = (
+      <Root tree={tree}>
+        <Branch cursors={{counter: ['counter']}}
+                actions={{
+                  increment: increment,
+                  decrement: decrement
+                }}>
+          <Action />
+        </Branch>
+      </Root>
+    );
+
+    render(group, document.mount);
+
+    assert.selectorText('#test', 'Count: 5');
+
+    Simulate.click(document.querySelector('#inc'));
+
+    setTimeout(function() {
+      assert.selectorText('#test', 'Count: 6');
+
+      Simulate.click(document.querySelector('#dec'));
+      setTimeout(function() {
+
+        assert.selectorText('#test', 'Count: 3');
+        done();
+      }, 10);
+    }, 10);
   });
 });
