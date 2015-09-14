@@ -5,7 +5,8 @@
  */
 import assert from 'assert';
 import React, {Component} from 'react';
-import Baobab from 'baobab';
+import {render} from 'react-dom';
+import Baobab, {monkey} from 'baobab';
 import {Root, Branch} from '../../src/wrappers.js';
 import PropTypes from '../../src/utils/prop-types.js';
 
@@ -20,7 +21,7 @@ describe('Wrapper', function() {
         </Root>
       );
 
-      React.render(group, document.mount);
+      render(group, document.mount);
     }, /Baobab/);
   });
 
@@ -43,7 +44,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(group, document.mount);
+    render(group, document.mount);
 
     assert.selectorText('#test', 'Hello John');
   });
@@ -73,7 +74,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(group, document.mount);
+    render(group, document.mount);
 
     assert.selectorText('#test', 'Hello John');
   });
@@ -90,7 +91,7 @@ describe('Wrapper', function() {
     }
 
     assert.throws(function() {
-      React.render(<Child />, document.mount);
+      render(<Child />, document.mount);
     }, /Baobab/);
   });
 
@@ -118,7 +119,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(group, document.mount);
+    render(group, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -147,7 +148,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(group, document.mount);
+    render(group, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
 
@@ -181,24 +182,24 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(group, document.mount);
+    render(group, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
 
-  it('should be possible to use facets.', function() {
+  it('should be possible to use monkeys.', function() {
     const tree = new Baobab(
       {
         name: 'John',
         surname: 'Talbot',
-        $name: {
+        $name: monkey({
           cursors: {
             value: ['name']
           },
           get: function(data) {
             return data.value;
           }
-        }
+        })
       },
       {asynchronous: false}
     );
@@ -225,7 +226,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(group, document.mount);
+    render(group, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot');
   });
@@ -254,7 +255,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(firstGroup, document.mount);
+    render(firstGroup, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot the third');
 
@@ -269,7 +270,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(secondGroup, document.mount);
+    render(secondGroup, document.mount);
 
     assert.selectorText('#test', 'Hello John Talbot the second');
   });
@@ -299,7 +300,7 @@ describe('Wrapper', function() {
       </Root>
     );
 
-    React.render(group, document.mount);
+    render(group, document.mount);
 
     assert.selectorText('#one', 'Hello John Talbot the first');
     assert.selectorText('#two', 'Hello John Talbot the second');

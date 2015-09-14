@@ -4,10 +4,12 @@
  *
  * ES6 wrapper component.
  */
-import React from 'react/addons';
+import React from 'react';
+import Baobab from 'baobab';
 import PropTypes from './utils/prop-types.js';
-import helpers from './utils/helpers.js';
-import type from './utils/type.js';
+import {solveMapping} from './utils/helpers.js';
+
+const makeError = Baobab.helpers.makeError;
 
 /**
  * Helpers
@@ -26,7 +28,6 @@ function branchPass(props, state) {
   const {
     children,
     cursors,
-    facets,
     ...otherProps
   } = props;
 
@@ -38,11 +39,11 @@ function renderChildren(children, props) {
     return null;
 
   if (!Array.isArray(children)) {
-    return React.addons.cloneWithProps(children, props);
+    return React.cloneElement(children, props);
   }
   else {
     const group = React.Children.map(children, function(child) {
-      return React.addons.cloneWithProps(child, props);
+      return React.cloneElement(child, props);
     });
 
     return <span>{group}</span>;
@@ -82,21 +83,33 @@ export class Branch extends React.Component {
     tree: PropTypes.baobab
   };
 
+  static childContextTypes = {
+    cursors: PropTypes.cursors
+  };
+
+  // Passing the component's cursors through context
+  getChildContext() {
+    return {
+      cursors: this.cursors
+    };
+  }
+
   // Building initial state
   constructor(props, context) {
     super(props, context);
 
     if (props.cursors) {
-      const solvedMapping = helpers.solveMapping(props.cursors, props, context);
+      const solvedMapping = solveMapping(props.cursors, props, context);
 
       if (!solvedMapping)
-        throw helpers.makeError(
+        throw makeError(
           'baobab-react:wrappers.branch: given mapping is invalid.',
           {mapping: solvedMapping}
         );
 
       // Creating the watcher
       this.watcher = this.context.tree.watch(solvedMapping);
+      this.cursors = this.watcher.getCursors();
       this.state = this.watcher.get();
     }
   }
@@ -134,16 +147,17 @@ export class Branch extends React.Component {
     if (!this.watcher)
       return;
 
-    const solvedMapping = helpers.solveMapping(props.cursors, props, this.context);
+    const solvedMapping = solveMapping(props.cursors, props, this.context);
 
     if (!solvedMapping)
-      throw helpers.makeError(
+      throw makeError(
         'baobab-react:wrappers.branch: given mapping is invalid.',
         {mapping: solvedMapping}
       );
 
     // Refreshing the watcher
     this.watcher.refresh(solvedMapping);
+    this.cursors = this.watcher.getCursors();
     this.setState(this.watcher.get());
   }
 }

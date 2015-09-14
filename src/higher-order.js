@@ -80,9 +80,6 @@ export function branch(Component, mapping=null) {
     constructor(props, context) {
       super(props, context);
 
-      // Fallback
-      this.cursors = {};
-
       if (mapping.cursors) {
         const solvedMapping = solveMapping(mapping.cursors, props, context);
 
