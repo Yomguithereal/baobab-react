@@ -4,11 +4,11 @@ In this example, we'll build a simplistic React app showing a list of colors to 
 
 ### Summary
 
-* [Creating the app's state](#creating-the-app-s-state)
+* [Creating the app's state](#creating-the-apps-state)
 * [Rooting our top-level component](#rooting-out-top-level-component)
 * [Branching our list](#branching-our-list)
 * [Actions](#actions)
-* [Dynamically set the list's path using props](#dynamically-set-the-list-s-path-using-props)
+* [Dynamically set the list's path using props](#dynamically-set-the-lists-path-using-props)
 * [Accessing the tree and cursors](#accessing-the-tree-and-cursors)
 * [Clever vs. dumb components](#clever-vs-dumb-components)
 
