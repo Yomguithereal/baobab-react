@@ -47,9 +47,7 @@ import tree from './state';
 // We will write this component later
 import List from './list.jsx';
 
-// Creating our top-level component
-
-// Let's bind the component to the tree through the `root` decorator
+// Let's bind our top-level component to the tree through the `root` decorator
 @root(tree)
 class App extends Component {
   render() {

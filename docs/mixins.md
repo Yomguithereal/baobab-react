@@ -289,7 +289,7 @@ var List = React.createClass({
   render: function() {
 
     // Accessing the tree
-    this.context.tree;
+    this.context.tree.get();
 
     // Using the underlying cursors
     this.cursors.colors.get();
