@@ -15,11 +15,17 @@ function errorMessage(propName, what) {
 var PropTypes = {};
 
 PropTypes.baobab = function(props, propName) {
+  if (!(propName in props))
+    return;
+
   if (!(props[propName] instanceof Baobab))
     return new Error(errorMessage(propName, 'a Baobab tree'));
 };
 
 PropTypes.cursors = function(props, propName) {
+  if (!(propName in props))
+    return;
+
   var cursors = props[propName];
 
   if (!type.object(cursors) ||

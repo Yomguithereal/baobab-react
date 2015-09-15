@@ -90,9 +90,9 @@ export class Branch extends React.Component {
 
   // Passing the component's cursors through context
   getChildContext() {
-    return {
+    return this.cursors ? {
       cursors: this.cursors
-    };
+    } : {};
   }
 
   // Building initial state
