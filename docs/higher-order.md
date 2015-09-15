@@ -1,6 +1,6 @@
 # Higher order components
 
-In this example, we'll build a simplistic React app showing a list of colors to see how one could integrate **Baobab** with React by using mixins.
+In this example, we'll build a simplistic React app showing a list of colors to see how one could integrate **Baobab** with React by using higher-order components.
 
 ### Summary
 
@@ -52,7 +52,7 @@ class App extends Component {
   }
 }
 
-// Let's bind the component to the tree through the root higher-order component
+// Let's bind the component to the tree through the `root` higher-order component
 const RootedApp = root(App, tree);
 
 // Rendering the app
