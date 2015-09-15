@@ -36,7 +36,7 @@ npm install baobab-react
 
 *Peer dependencies*
 
-This library necessitate that you install `baobab >= 2.0.0` and `react >= 0.13.x`.
+This library necessitate that you install `baobab >= 2.0.0` and `react >= 0.13.x` (plus `react-dom >= 0.14.x` if required).
 
 Then require the desired pattern and only this one will be loaded (meaning that your browserify/webpack bundle, for instance, won't load unnecessary files and end up bloated).
 

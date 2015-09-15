@@ -54,7 +54,7 @@ var App = React.createClass({
 });
 
 // Rendering the app and giving the tree to the `App` component through props
-React.render(<Application tree={tree} />, document.querySelector('#mount'));
+React.render(<App tree={tree} />, document.querySelector('#mount'));
 ```
 
 ### Branching our list
@@ -181,16 +181,23 @@ var List = React.createClass({
     colors: ['colors']
   },
 
+  getInitialState: function() {
+    return {inputColor: null};
+  }
+
   // Controlling the input's value
   updateInput(e) {
     this.setState({inputColor: e.target.value});
   },
 
-  // Adding a color
+  // Adding a color on click
   handleClick() {
 
     // You can access your actions now bound to the tree
     this.actions.add(this.state.inputColor);
+
+    // Resetting the input
+    this.setState({inputColor: null});
   }
 
   render() {
@@ -272,20 +279,13 @@ For convenience, and if you want a quicker way to update your tree, you can alwa
 
 ```js
 var React = require('react'),
-    mixins = require('baobab-react/mixins'),
-    PropTypes = require('baobab-react/prop-types');
+    mixins = require('baobab-react/mixins');
 
 var List = React.createClass({
   mixins: [mixins.branch],
   cursors: {
     colors: ['colors']
   },
-
-  // To access the tree through context, React obliges you to define `contextTypes`
-  contextTypes: {
-    tree: PropTypes.baobab
-  },
-
   render: function() {
 
     // Accessing the tree
@@ -294,7 +294,7 @@ var List = React.createClass({
     // Using the underlying cursors
     this.cursors.colors.get();
   }
-})
+});
 ```
 
 ### Clever vs. dumb components
@@ -326,7 +326,7 @@ var ListWrapper = React.createClass({
   render: function() {
     return <List items={this.state.colors} />;
   }
-})
+});
 ```
 
 *Dumb component*
