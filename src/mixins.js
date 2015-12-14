@@ -16,8 +16,8 @@ function displayName(instance) {
 }
 
 function bindActions(actions) {
-  const tree = this.context.tree,
-        suppl = {};
+  var tree = this.context.tree,
+      suppl = {};
 
   this.actions = {};
 
