@@ -192,6 +192,10 @@ class List extends Component {
   render() {
     const colors = this.props.colors;
 
+    function renderItem(color) {
+      return <li key={color}>{color}</li>;
+    }
+
     return (
       <div>
         <ul>{colors.map(renderItem)}</ul>
