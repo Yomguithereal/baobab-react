@@ -202,7 +202,7 @@ class List extends Component {
         <input type="text"
                value={this.state.inputColor}
                onUpdate={e => this.updateInput(e)} />
-        <button type="button" onClick={() => this.handleClick}>Add</button>
+        <button type="button" onClick={() => this.handleClick()}>Add</button>
       </div>
     );
   }
