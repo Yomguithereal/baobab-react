@@ -209,7 +209,7 @@ export default class List extends Component {
         <ul>{colors.map(renderItem)}</ul>
         <input type="text"
                value={this.state.inputColor}
-               onUpdate={e => this.updateInput(e)} />
+               onInput={e => this.updateInput(e)} />
         <button type="button" onClick={() => this.handleClick}>Add</button>
       </div>
     );
