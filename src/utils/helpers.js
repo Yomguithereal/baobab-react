@@ -5,7 +5,7 @@
  * Miscellaneous helper functions.
  */
 function curry(fn, arity, acc) {
-  acc = acc || [];
+  acc = acc || [];
 
   return function() {
     var args = Array.prototype.slice.call(arguments);
