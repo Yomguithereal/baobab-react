@@ -4,6 +4,10 @@
  *
  * Miscellaneous helper functions.
  */
+
+/**
+ * Simple curry function.
+ */
 export function curry(fn, arity, acc) {
   acc = acc || [];
 
@@ -15,6 +19,9 @@ export function curry(fn, arity, acc) {
   };
 }
 
+/**
+ * Solving the mapping given to a higher-order construct.
+ */
 export function solveMapping(mapping, props, context) {
   if (typeof mapping === 'function')
     mapping = mapping(props, context);
