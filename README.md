@@ -11,7 +11,6 @@ Currently implemented patterns:
 * [Mixins](docs/mixins.md)
 * [Higher order components](docs/higher-order.md)
 * [ES7 decorators](docs/decorators.md)
-* [Wrapper components](docs/wrappers.md)
 
 ## Summary
 

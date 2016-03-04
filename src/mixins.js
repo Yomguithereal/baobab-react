@@ -66,7 +66,7 @@ const BranchMixin = {
       // If the solved mapping is not valid, we throw
       if (!mapping)
         throw makeError(
-          'baobab-react:mixins.branch: given mapping is invalid (check the "' + name + '" component).',
+          'baobab-react/mixins.branch: given mapping is invalid (check the "' + name + '" component).',
           {mapping}
         );
 
@@ -109,7 +109,7 @@ const BranchMixin = {
 
   // On new props
   componentWillReceiveProps(props) {
-    if (!this.__watcher)
+    if (!this.__watcher || typeof this.__cursorsMapping !== 'function')
       return;
 
     const name = displayName(this);
@@ -119,7 +119,7 @@ const BranchMixin = {
 
     if (!mapping)
       throw makeError(
-        'baobab-react:mixins.branch: given mapping is invalid (check the "' + name + '" component).',
+        'baobab-react/mixins.branch: given mapping is invalid (check the "' + name + '" component).',
         {mapping}
       );
 
