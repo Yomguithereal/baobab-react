@@ -10,7 +10,7 @@ import {curry, solveMapping} from './utils/helpers';
 import PropTypes from './utils/prop-types';
 
 const makeError = Baobab.helpers.makeError,
-      isPlainObject = Baobab.types.object;
+      isPlainObject = Baobab.type.object;
 
 /**
  * Helpers
