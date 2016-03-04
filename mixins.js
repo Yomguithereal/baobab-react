@@ -1,1 +1,1 @@
-module.exports = require('./dist-modules/mixins.js');
+module.exports = require('./dist-modules/mixins.js').default;

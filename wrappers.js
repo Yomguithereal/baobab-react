@@ -1,1 +1,1 @@
-module.exports = require('./dist-modules/wrappers.js');
+module.exports = require('./dist-modules/wrappers.js').default;

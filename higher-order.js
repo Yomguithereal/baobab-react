@@ -1,1 +1,1 @@
-module.exports = require('./dist-modules/higher-order.js');
+module.exports = require('./dist-modules/higher-order.js').default;
