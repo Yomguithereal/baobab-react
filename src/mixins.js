@@ -82,6 +82,10 @@ const BranchMixin = {
 
   // On component mount
   componentWillMount() {
+
+    // Creating dispatcher
+    this.dispatch = (fn, ...args) => fn(this.context.tree, ...args);
+
     if (!this.__watcher)
       return;
 

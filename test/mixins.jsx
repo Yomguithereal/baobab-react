@@ -181,4 +181,40 @@ describe('Mixins', function() {
       }, 50);
     });
   });
+
+  describe('actions', function() {
+
+    it('should be possible to dispatch actions.', function() {
+      const tree = new Baobab({counter: 0}, {asynchronous: false});
+
+      const inc = function(state, by = 1) {
+        state.apply('counter', nb => nb + by);
+      };
+
+      const Counter = React.createClass({
+        mixins: [mixins.branch],
+        cursors: {
+          counter: 'counter'
+        },
+        render() {
+          const dispatch = this.dispatch;
+
+          return (
+            <span onClick={() => dispatch(inc)}
+                  onChange={() => dispatch(inc, 2)}>
+              Counter: {this.state.counter}
+            </span>
+          );
+        }
+      });
+
+      const wrapper = mount(<Root tree={tree}><Counter /></Root>);
+
+      assert.strictEqual(wrapper.text(), 'Counter: 0');
+      wrapper.find('span').simulate('click');
+      assert.strictEqual(wrapper.text(), 'Counter: 1');
+      wrapper.find('span').simulate('change');
+      assert.strictEqual(wrapper.text(), 'Counter: 3');
+    });
+  });
 });
