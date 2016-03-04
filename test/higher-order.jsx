@@ -53,6 +53,16 @@ describe('Higher Order', function() {
         branch(null, DummyRoot);
       }, /invalid/);
     });
+
+    it('both root & branch should throw if the target is not a valid React component.', function() {
+      assert.throws(function() {
+        root(new Baobab(), null);
+      }, /component/);
+
+      assert.throws(function() {
+        branch({}, null);
+      }, /component/);
+    });
   });
 
   describe('context', function() {

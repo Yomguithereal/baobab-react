@@ -36,6 +36,9 @@ function root(tree, Component) {
       {target: tree}
     );
 
+  if (typeof Component !== 'function')
+    throw Error('baobab-react/higher-order.root: given target is not a valid React component.');
+
   const name = displayName(Component);
 
   const ComposedComponent = class extends React.Component {
@@ -65,6 +68,9 @@ function root(tree, Component) {
  * Branch component
  */
 function branch(cursors, Component) {
+  if (typeof Component !== 'function')
+    throw Error('baobab-react/higher-order.branch: given target is not a valid React component.');
+
   const name = displayName(Component);
 
   if (!isPlainObject(cursors) && typeof cursors !== 'function')
