@@ -8,6 +8,7 @@ import React, {Component} from 'react';
 import {mount, shallow} from 'enzyme';
 import Baobab from 'baobab';
 import {root, branch} from '../src/higher-order';
+import PropTypes from '../src/utils/prop-types';
 
 /**
  * Components.
@@ -66,7 +67,39 @@ describe('Higher Order', function() {
   });
 
   describe('context', function() {
+    it('the tree should be propagated through context.', function() {
+      const tree = new Baobab({name: 'John'}, {asynchronous: false});
 
+      const Root = root(tree, BasicRoot);
+
+      class Child extends Component {
+        render() {
+          return <span>Hello {this.context.tree.get('name')}</span>;
+        }
+      }
+
+      Child.contextTypes = {
+        tree: PropTypes.baobab
+      };
+
+      const wrapper = mount(<Root tree={tree}><Child /></Root>);
+
+      assert.strictEqual(wrapper.text(), 'Hello John');
+    });
+
+    it('should fail if the tree is not passed through context.', function() {
+      class Child extends Component {
+        render() {
+          return <span>Hello John</span>;
+        }
+      }
+
+      const BranchedChild = branch({}, Child);
+
+      assert.throws(function() {
+        mount(<BranchedChild />);
+      }, /Baobab/);
+    });
   });
 
   describe('binding', function() {
