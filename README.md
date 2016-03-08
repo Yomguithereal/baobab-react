@@ -7,7 +7,7 @@ Welcome to [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://f
 Implemented patterns:
 
 * [Mixins](docs/mixins.md)
-* [Higher order components](docs/higher-order.md) (curried so also usable as ES7 decorator)
+* [Higher order components](docs/higher-order.md) (curried so also usable as ES7 decorators)
 
 ## Summary
 
