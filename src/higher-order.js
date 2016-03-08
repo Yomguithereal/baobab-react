@@ -83,7 +83,7 @@ function branch(cursors, Component) {
       super(props, context);
 
       if (cursors) {
-        const mapping = solveMapping(mapping.cursors, props, context);
+        const mapping = solveMapping(cursors, props, context);
 
         if (!mapping)
           invalidMapping(name, mapping);

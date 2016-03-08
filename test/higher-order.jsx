@@ -5,7 +5,7 @@
  */
 import assert from 'assert';
 import React, {Component} from 'react';
-import {mount, shallow} from 'enzyme';
+import {mount} from 'enzyme';
 import Baobab from 'baobab';
 import {root, branch} from '../src/higher-order';
 import PropTypes from '../src/utils/prop-types';
@@ -103,10 +103,151 @@ describe('Higher Order', function() {
   });
 
   describe('binding', function() {
+    it('should be possible to bind several cursors to a component.', function() {
+      const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
+      class Child extends Component {
+        render() {
+          return (
+            <span>
+              Hello {this.props.name} {this.props.surname}
+            </span>
+          );
+        }
+      }
+
+      const Root = root(tree, BasicRoot);
+
+      const BranchedChild = branch({
+        name: ['name'],
+        surname: ['surname']
+      }, Child);
+
+      const wrapper = mount(<Root tree={tree}><BranchedChild /></Root>);
+
+      assert.strictEqual(wrapper.text(), 'Hello John Talbot');
+    });
+
+    it('should be possible to register paths using typical Baobab polymorphisms.', function() {
+      const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+      class Child extends Component {
+        render() {
+          return (
+            <span>
+              Hello {this.props.name} {this.props.surname}
+            </span>
+          );
+        }
+      }
+
+      const Root = root(tree, BasicRoot);
+
+      const BranchedChild = branch({
+        name: 'name',
+        surname: 'surname'
+      }, Child);
+
+      const wrapper = mount(<Root tree={tree}><BranchedChild /></Root>);
+
+      assert.strictEqual(wrapper.text(), 'Hello John Talbot');
+    });
+
+    it('bound components should update along with the cursor.', function(done) {
+      const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+      class Child extends Component {
+        render() {
+          return (
+            <span>
+              Hello {this.props.name} {this.props.surname}
+            </span>
+          );
+        }
+      }
+
+      const Root = root(tree, BasicRoot);
+
+      const BranchedChild = branch({
+        name: 'name',
+        surname: 'surname'
+      }, Child);
+
+      const wrapper = mount(<Root tree={tree}><BranchedChild /></Root>);
+
+      tree.set('surname', 'the Third');
+
+      setTimeout(() => {
+        assert.strictEqual(wrapper.text(), 'Hello John the Third');
+        done();
+      }, 50);
+    });
+
+    it('should be possible to set cursors with a function.', function(done) {
+      const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
+
+      class Child extends Component {
+        render() {
+          return (
+            <span>
+              Hello {this.props.name} {this.props.surname}
+            </span>
+          );
+        }
+      }
+
+      const Root = root(tree, BasicRoot);
+
+      const BranchedChild = branch(props => {
+        return {
+          name: ['name'],
+          surname: props.path
+        };
+      }, Child);
+
+      const wrapper = mount(<Root tree={tree}><BranchedChild path={['surname']}/></Root>);
+
+      tree.set('surname', 'the Third');
+
+      setTimeout(() => {
+        assert.strictEqual(wrapper.text(), 'Hello John the Third');
+        done();
+      }, 50);
+    });
   });
 
   describe('actions', function() {
+    it('should be possible to dispatch actions.', function() {
+      const tree = new Baobab({counter: 0}, {asynchronous: false});
 
+      const inc = function(state, by = 1) {
+        state.apply('counter', nb => nb + by);
+      };
+
+      class Counter extends Component {
+        render() {
+          const dispatch = this.props.dispatch;
+
+          return (
+            <span onClick={() => dispatch(inc)}
+                  onChange={() => dispatch(inc, 2)}>
+              Counter: {this.props.counter}
+            </span>
+          );
+        }
+      }
+
+      const Root = root(tree, BasicRoot);
+
+      const BranchedCounter = branch({counter: 'counter'}, Counter);
+
+      const wrapper = mount(<Root tree={tree}><BranchedCounter /></Root>);
+
+      assert.strictEqual(wrapper.text(), 'Counter: 0');
+      wrapper.find('span').simulate('click');
+      assert.strictEqual(wrapper.text(), 'Counter: 1');
+      wrapper.find('span').simulate('change');
+      assert.strictEqual(wrapper.text(), 'Counter: 3');
+    });
   });
 });

@@ -5,7 +5,7 @@
  */
 import assert from 'assert';
 import React from 'react';
-import {mount, shallow} from 'enzyme';
+import {mount} from 'enzyme';
 import Baobab from 'baobab';
 import * as mixins from '../src/mixins';
 
