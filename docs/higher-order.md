@@ -11,6 +11,7 @@ In this example, we'll build a simplistic React app showing a list of colors to 
 * [Dynamically set the list's path using props](#dynamically-set-the-lists-path-using-props)
 * [Accessing the tree and cursors](#accessing-the-tree-and-cursors)
 * [Clever vs. dumb components](#clever-vs-dumb-components)
+* [Currying & Decorators](#currying-decorators)
 
 ### Creating the app's state
 
@@ -53,7 +54,7 @@ class App extends Component {
 }
 
 // Let's bind the component to the tree through the `root` higher-order component
-const RootedApp = root(App, tree);
+const RootedApp = root(tree, App);
 
 // Rendering the app
 render(<RootedApp />, document.querySelector('#mount'));
@@ -84,11 +85,9 @@ class List extends Component {
 }
 
 // Branching the component by mapping the desired data to cursors
-export default branch(List, {
-  cursors: {
-    colors: ['colors']
-  }
-});
+export default branch({
+  colors: ['colors']
+}, List);
 ```
 
 Our app would now render something of the kind:
@@ -182,8 +181,12 @@ class List extends Component {
   // Adding a color on click
   handleClick() {
 
-    // Actions bound to the tree are available through `props.actions`
-    this.props.actions.add(this.state.inputColor);
+    // A dispatcher is available through `props.dispatch`
+    Actions bound to the tree are available through `props.actions`
+    this.props.dispatch(
+      actions.addColor,
+      this.state.inputColor
+    );
 
     // Resetting the input
     this.setState({inputColor: null});
@@ -204,15 +207,10 @@ class List extends Component {
   }
 }
 
-// Subscribing to the relevant data and binding actions to the component
-export default branch(List, {
-  cursors: {
-    colors: ['colors']
-  },
-  actions: {
-    add: actions.addColor
-  }
-});
+// Subscribing to the relevant data in the tree
+export default branch({
+  colors: ['colors']
+}, List);
 ```
 
 ### Dynamically set the list's path using props
@@ -257,18 +255,16 @@ class List extends Component {
 }
 
 // Using a function so that your cursors' path can use the component's props etc.
-export default branch(List, {
-  cursors(props, context) {
-    return {
-      colors: [props.alternative ? 'alternativeColors', 'colors']
-    };
-  }
-});
+export default branch((props, context) => {
+  return {
+    colors: [props.alternative ? 'alternativeColors', 'colors']
+  };
+}, List);
 ```
 
 ### Accessing the tree and cursors
 
-For convenience, and if you want a quicker way to update your tree, you can always access this one through the context or even access the cursors used by the branched component under the hood:
+For convenience, and if you want a quicker way to update your tree, you can always access this one through the context:
 
 ```js
 import React, {Component} from 'react';
@@ -280,24 +276,18 @@ class List extends Component {
 
     // Accessing the tree
     this.context.tree.get();
-
-    // Using the underlying cursors
-    this.context.cursors.colors.get();
   }
 }
 
 // To access the tree and cursors through context,
 // React obliges you to define `contextTypes`
 List.contextTypes = {
-  tree: PropTypes.baobab,
-  cursors: PropTypes.cursors
+  tree: PropTypes.baobab
 };
 
-export default branch(List, {
-  cursors: {
-    colors: ['colors']
-  }
-});
+export default branch({
+  colors: ['colors']
+}, List);
 ```
 
 ### Clever vs. dumb components
@@ -327,11 +317,9 @@ class ListWrapper extends Component {
   }
 }
 
-export default branch(ListWrapper, {
-  cursors: {
-    colors: ['colors']
-  }
-});
+export default branch({
+  colors: ['colors']
+}, ListWrapper);
 ```
 
 *Dumb component*
@@ -349,6 +337,29 @@ export default class List extends Component {
     }
 
     return <ul>{this.props.items.map(renderItem)}</ul>;
+  }
+}
+```
+
+<h3 id="currying-decorators">Currying & Decorators</h3>
+
+For convenience, both `root` and `branch` are actually curried function.
+
+```js
+const branchToName = branch({name: ['name']});
+
+const BranchComponent = branchToName(Component);
+```
+
+This also means you can use them as ES7 decorators:
+
+```js
+@branch({
+  name: ['name']
+})
+class Greeting extends Component {
+  render() {
+    return <span>Hello {this.props.name}!</span>;
   }
 }
 ```
