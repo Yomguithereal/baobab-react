@@ -192,13 +192,17 @@ class List extends Component {
   render() {
     const colors = this.props.colors;
 
+    function renderItem(color) {
+      return <li key={color}>{color}</li>;
+    }
+
     return (
       <div>
         <ul>{colors.map(renderItem)}</ul>
         <input type="text"
                value={this.state.inputColor}
-               onUpdate={e => this.updateInput(e)} />
-        <button type="button" onClick={() => this.handleClick}>Add</button>
+               onInput={e => this.updateInput(e)} />
+        <button type="button" onClick={() => this.handleClick()}>Add</button>
       </div>
     );
   }
