@@ -1,7 +1,5 @@
 module.exports = {
-  decorators: require('./dist-modules/decorators.js').default,
-  higherOrder: require('./dist-modules/higher-order.js').default,
-  mixins: require('./dist-modules/mixins.js').default,
+  higherOrder: require('./higher-order.js'),
+  mixins: require('./mixins.js'),
   PropTypes: require('./dist-modules/utils/prop-types.js').default,
-  wrappers: require('./dist-modules/wrappers.js').default
 };
