@@ -76,6 +76,14 @@ export function branch(Component, mapping=null) {
       } : {};
     }
 
+    getDecoratedComponentInstance() {
+	return this.decoratedComponentInstance
+    }
+
+    handleChildRef(component) {
+	this.decoratedComponentInstance = component
+    }
+
     // Building initial state
     constructor(props, context) {
       super(props, context);
@@ -123,7 +131,7 @@ export function branch(Component, mapping=null) {
         });
       }
 
-      return <Component {...this.props} {...suppl} {...this.state} />;
+      return <Component {...this.props} {...suppl} {...this.state} ref={this.handleChildRef.bind(this)} />;
     }
 
     // On component unmount
