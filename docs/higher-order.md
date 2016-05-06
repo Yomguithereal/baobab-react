@@ -182,7 +182,6 @@ class List extends Component {
   handleClick() {
 
     // A dispatcher is available through `props.dispatch`
-    Actions bound to the tree are available through `props.actions`
     this.props.dispatch(
       actions.addColor,
       this.state.inputColor
