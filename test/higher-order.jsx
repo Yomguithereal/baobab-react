@@ -214,6 +214,29 @@ describe('Higher Order', function() {
         done();
       }, 50);
     });
+
+    it('wrapper component should return wrapping component instance by getDecoratedComponentInstance.', function() {
+      const tree = new Baobab({counter: 0}, {asynchronous: false});
+
+      class Counter extends Component {
+        render() {
+          return (
+            <span>
+              Counter: {this.props.counter}
+            </span>
+          );
+        }
+      }
+
+      const Root = root(tree, BasicRoot);
+
+      const BranchedCounter = branch({counter: 'counter'}, Counter);
+
+      const wrapper = mount(<Root tree={tree}><BranchedCounter /></Root>);
+      const decoratedComponentInstance = wrapper.find(BranchedCounter).get(0).getDecoratedComponentInstance();
+
+      assert(decoratedComponentInstance instanceof Counter);
+    });
   });
 
   describe('actions', function() {
