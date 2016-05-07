@@ -4,14 +4,10 @@
 
 Welcome to [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://facebook.github.io/react/) integration (from v2.0.0 and onwards).
 
-It aims at implementing a handful of popular React patterns so that you're free to choose the one you want rather than being imposed one by the library.
-
-Currently implemented patterns:
+Implemented patterns:
 
 * [Mixins](docs/mixins.md)
-* [Higher order components](docs/higher-order.md)
-* [ES7 decorators](docs/decorators.md)
-* [Wrapper components](docs/wrappers.md)
+* [Higher order components](docs/higher-order.md) (curried so also usable as ES7 decorators)
 
 ## Summary
 
@@ -20,8 +16,6 @@ Currently implemented patterns:
 * [Patterns](#patterns)
   * [Mixins](#mixins)
   * [Higher Order Components](#higher-order-components)
-  * [Decorators](#decorators)
-  * [Wrapper Components](#wrapper-components)
 * [Common pitfalls](#common-pitfalls)
 * [Contribution](#contribution)
 * [License](#license)
@@ -64,14 +58,6 @@ This is necessary so that isomorphism can remain an enjoyable stroll in the park
 ### Higher Order Components
 
 [Dedicated documentation](docs/higher-order.md)
-
-### Decorators
-
-[Dedicated documentation](docs/decorators.md)
-
-### Wrapper Components
-
-[Dedicated documentation](docs/wrappers.md)
 
 ## Common pitfalls
 
@@ -130,8 +116,6 @@ npm run build
 # or per pattern
 npm run build-mixins
 npm run build-higher-order
-npm run build wrappers
-npm run build-decorators
 ```
 
 ## License

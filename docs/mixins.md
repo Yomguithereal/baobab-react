@@ -9,7 +9,7 @@ In this example, we'll build a simplistic React app showing a list of colors to 
 * [Branching our list](#branching-our-list)
 * [Actions](#actions)
 * [Dynamically set the list's path using props](#dynamically-set-the-lists-path-using-props)
-* [Accessing the tree and cursors](#accessing-the-tree-and-cursors)
+* [Accessing the tree](#accessing-the-tree)
 * [Clever vs. dumb components](#clever-vs-dumb-components)
 
 ### Creating the app's state
@@ -172,11 +172,6 @@ var React = require('react'),
 var List = React.createClass({
   mixins: [mixins.branch],
 
-  // Mapping actions
-  actions: {
-    add: actions.addColor
-  },
-
   cursors: {
     colors: ['colors']
   },
@@ -193,8 +188,8 @@ var List = React.createClass({
   // Adding a color on click
   handleClick() {
 
-    // You can access your actions now bound to the tree
-    this.actions.add(this.state.inputColor);
+    // Let's dispatch our action
+    this.dispatch(actions.addColor, this.state.inputColor);
 
     // Resetting the input
     this.setState({inputColor: null});
@@ -275,7 +270,7 @@ module.exports = List;
 
 ### Accessing the tree and cursors
 
-For convenience, and if you want a quicker way to update your tree, you can always access this one through the context or even access the cursors used by the branched component under the hood:
+For convenience, and if you want a quicker way to update your tree, you can always access this one through the context:
 
 ```js
 var React = require('react'),
@@ -290,9 +285,6 @@ var List = React.createClass({
 
     // Accessing the tree
     this.context.tree.get();
-
-    // Using the underlying cursors
-    this.cursors.colors.get();
   }
 });
 ```

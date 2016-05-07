@@ -1,17 +1,15 @@
 {
   "name": "baobab-react",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "React integration for Baobab.",
   "main": "./index.js",
   "scripts": {
     "prepublish": "babel ./src --out-dir dist-modules",
-    "lint": "eslint ./*.js ./src",
-    "test": "mocha -R spec --compilers jsx:babel-register ./test/endpoint.js",
-    "build": "npm run build-mixins && npm run build-higher-order && npm run build-wrappers && npm run build-decorators",
-    "build-mixins": "mkdir -p build && browserify -x baobab ./src/mixins.js -o build/mixins.js",
-    "build-higher-order": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/higher-order.js -o build/higher-order.js",
-    "build-wrappers": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/wrappers.js -o build/wrappers.js",
-    "build-decorators": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/decorators.js -o build/decorators.js"
+    "lint": "eslint ./src",
+    "test": "mocha -R spec --require ./test/setup.js --compilers jsx:babel-register ./test",
+    "build": "npm run build-mixins && npm run build-higher-order",
+    "build-mixins": "mkdir -p build && browserify -x baobab -t babelify ./src/mixins.js -o build/mixins.js",
+    "build-higher-order": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/higher-order.js -o build/higher-order.js"
   },
   "repository": {
     "type": "git",
@@ -41,13 +39,13 @@
     "babelify": "^7.2.0",
     "baobab": "^2.3.3",
     "browserify": "^13.0.0",
-    "cheerio": "^0.20.0",
+    "enzyme": "^2.0.0",
     "eslint": "^2.2.0",
     "jsdom": "^8.1.0",
     "mocha": "^2.2.4",
-    "react": "0.14.7",
-    "react-addons-test-utils": "^0.14.7",
-    "react-dom": "^0.14.7"
+    "react": "^15.0.2",
+    "react-addons-test-utils": "^15.0.2",
+    "react-dom": "^15.0.2"
   },
   "babel": {
     "presets": [

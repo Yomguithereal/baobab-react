@@ -2,41 +2,51 @@
  * Baobab-React Higher Order Component
  * ====================================
  *
- * ES6 higher order component to enchance one's component.
+ * ES6 state of the art higher order component.
  */
 import React from 'react';
-import Baobab, {type} from 'baobab';
-import {solveMapping} from './utils/helpers.js';
-import PropTypes from './utils/prop-types.js';
+import Baobab from 'baobab';
+import {curry, solveMapping} from './utils/helpers';
+import PropTypes from './utils/prop-types';
 
-const makeError = Baobab.helpers.makeError;
+const makeError = Baobab.helpers.makeError,
+      isPlainObject = Baobab.type.object;
+
+/**
+ * Helpers
+ */
+function displayName(Component) {
+  return Component.name || Component.displayName || 'Component';
+}
+
+function invalidMapping(name, mapping) {
+  throw makeError(
+    'baobab-react/higher-order.branch: given cursors mapping is invalid (check the "' + name + '" component).',
+    {mapping}
+  );
+}
 
 /**
  * Root component
  */
-export function root(Component, tree) {
+function root(tree, Component) {
   if (!(tree instanceof Baobab))
     throw makeError(
-      'baobab-react:higher-order.root: given tree is not a Baobab.',
+      'baobab-react/higher-order.root: given tree is not a Baobab.',
       {target: tree}
     );
 
-  const componentDisplayName =
-    Component.name ||
-    Component.displayName ||
-    'Component';
+  if (typeof Component !== 'function')
+    throw Error('baobab-react/higher-order.root: given target is not a valid React component.');
+
+  const name = displayName(Component);
 
   const ComposedComponent = class extends React.Component {
-    static displayName = 'Rooted' + componentDisplayName;
-
-    static childContextTypes = {
-      tree: PropTypes.baobab
-    };
 
     // Handling child context
     getChildContext() {
       return {
-        tree: tree
+        tree
       };
     }
 
@@ -46,35 +56,27 @@ export function root(Component, tree) {
     }
   };
 
+  ComposedComponent.displayName = 'Rooted' + name;
+  ComposedComponent.childContextTypes = {
+    tree: PropTypes.baobab
+  };
+
   return ComposedComponent;
 }
 
 /**
  * Branch component
  */
-export function branch(Component, mapping=null) {
-  const componentDisplayName =
-    Component.name ||
-    Component.displayName ||
-    'Component';
+function branch(cursors, Component) {
+  if (typeof Component !== 'function')
+    throw Error('baobab-react/higher-order.branch: given target is not a valid React component.');
+
+  const name = displayName(Component);
+
+  if (!isPlainObject(cursors) && typeof cursors !== 'function')
+    invalidMapping(name, cursors);
 
   const ComposedComponent = class extends React.Component {
-    static displayName = 'Branched' + componentDisplayName;
-
-    static contextTypes = {
-      tree: PropTypes.baobab
-    };
-
-    static childContextTypes = {
-      cursors: PropTypes.cursors
-    };
-
-    // Passing the component's cursors through context
-    getChildContext() {
-      return this.cursors ? {
-        cursors: this.cursors
-      } : {};
-    }
 
     getDecoratedComponentInstance() {
 	return this.decoratedComponentInstance
@@ -88,48 +90,40 @@ export function branch(Component, mapping=null) {
     constructor(props, context) {
       super(props, context);
 
-      if (mapping.cursors) {
-        const solvedMapping = solveMapping(mapping.cursors, props, context);
+      if (cursors) {
+        const mapping = solveMapping(cursors, props, context);
 
-        if (!solvedMapping)
-          throw makeError(
-            'baobab-react:higher-order.branch: given cursors mapping is invalid (check the "' + displayName + '" component).',
-            {mapping: solvedMapping}
-          );
+        if (!mapping)
+          invalidMapping(name, mapping);
 
         // Creating the watcher
-        this.watcher = this.context.tree.watch(solvedMapping);
-        this.cursors = this.watcher.getCursors();
+        this.watcher = this.context.tree.watch(mapping);
+
+        // Hydrating initial state
         this.state = this.watcher.get();
       }
     }
 
     // On component mount
     componentWillMount() {
+
+      // Creating dispatcher
+      this.dispatcher = (fn, ...args) => fn(this.context.tree, ...args);
+
       if (!this.watcher)
         return;
 
-      const handler = (function() {
+      const handler = () => {
         if (this.watcher)
           this.setState(this.watcher.get());
-      }).bind(this);
+      };
 
       this.watcher.on('update', handler);
     }
 
     // Render shim
     render() {
-      const tree = this.context.tree,
-            suppl = {};
-
-      // Binding actions if any
-      if (mapping.actions) {
-        suppl.actions = {};
-
-        Object.keys(mapping.actions).forEach(function(k) {
-          suppl.actions[k] = mapping.actions[k].bind(tree, tree);
-        });
-      }
+      const suppl = {dispatch: this.dispatcher};
 
       return <Component {...this.props} {...suppl} {...this.state} ref={this.handleChildRef.bind(this)} />;
     }
@@ -146,23 +140,30 @@ export function branch(Component, mapping=null) {
 
     // On new props
     componentWillReceiveProps(props) {
-      if (!this.watcher || !mapping.cursors)
+      if (!this.watcher || typeof cursors !== 'function')
         return;
 
-      const solvedMapping = solveMapping(mapping.cursors, props, this.context);
+      const mapping = solveMapping(cursors, props, this.context);
 
-      if (!solvedMapping)
-        throw makeError(
-          'baobab-react:higher-order.branch: given mapping is invalid (check the "' + displayName + '" component).',
-          {mapping: solvedMapping}
-        );
+      if (!mapping)
+        invalidMapping(name, mapping);
 
       // Refreshing the watcher
-      this.watcher.refresh(solvedMapping);
-      this.cursors = this.watcher.getCursors();
+      this.watcher.refresh(mapping);
       this.setState(this.watcher.get());
     }
   };
 
+  ComposedComponent.displayName = 'Branched' + name;
+  ComposedComponent.contextTypes = {
+    tree: PropTypes.baobab
+  };
+
   return ComposedComponent;
 }
+
+// Currying the functions so that they could be used as decorators
+const curriedRoot = curry(root, 2),
+      curriedBranch = curry(branch, 2);
+
+export {curriedRoot as root, curriedBranch as branch};
