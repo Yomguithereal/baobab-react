@@ -79,11 +79,11 @@ function branch(cursors, Component) {
   const ComposedComponent = class extends React.Component {
 
     getDecoratedComponentInstance() {
-	return this.decoratedComponentInstance
+        return this.decoratedComponentInstance;
     }
 
     handleChildRef(component) {
-	this.decoratedComponentInstance = component
+        this.decoratedComponentInstance = component;
     }
 
     // Building initial state
