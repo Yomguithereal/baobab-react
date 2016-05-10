@@ -8,14 +8,16 @@
 /**
  * Simple curry function.
  */
-export function curry(fn, arity, acc) {
-  acc = acc || [];
-
-  return function(...args) {
-    if (args.length < arity)
-      return curry(fn, arity - 1, acc.concat(args));
-
-    return fn(...args);
+export function curry(fn, arity) {
+  return function f1(...args) {
+    if (args.length >= arity) {
+      return fn.apply(null, args);
+    }
+    else {
+      return function f2(...args2) {
+        return f1.apply(null, args.concat(args2));
+      };
+    }
   };
 }
 

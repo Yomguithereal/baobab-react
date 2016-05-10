@@ -41,6 +41,18 @@ describe('Higher Order', function() {
 
       assert(typeof rootTest === 'function');
       assert(typeof branchTest === 'function');
+
+      const rootWithComponentTest = root(new Baobab(), DummyRoot),
+            branchWithComponentTest = branch({}, DummyRoot);
+
+      assert(typeof rootWithComponentTest === 'function');
+      assert(typeof branchWithComponentTest === 'function');
+
+      const rootThenComponentTest = root(new Baobab())(DummyRoot),
+            branchThenComponentTest = branch({})(DummyRoot);
+
+      assert(typeof rootThenComponentTest === 'function');
+      assert(typeof branchThenComponentTest === 'function');
     });
 
     it('root should throw an error if the passed argument is not a tree.', function() {
