@@ -340,6 +340,36 @@ export default class List extends Component {
 }
 ```
 
+### Reference to wrapped component
+
+higher-order functions wrap component that you created. So reference to component instance using "ref", was reference to the component that wrap component you wanted. If you want to get actual reference to wrapped component, you can use `getDecoratedComponentInstance` method on wrapping component instance.
+
+```js
+class MyComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {counts: props.initialCounts};
+  }
+  render() {
+    return <div>Counts: {this.state.counts}</div>
+  }
+}
+
+const WrappedMyComponent = branch({}, MyComponent);
+
+class MyAnotherComponent extends Component {
+  render() {
+    const myComponents = Array.from(Array(10).keys()).map(i => <WrappedMyComponent initialCounts={i} key={i} ref={i}/>);
+    return <div>{myComponents}</div>;
+  }
+
+  // this method returns [ { counts: 0 }, { counts: 1 }, ..., { counts: 9 } ]
+  serializeChildStates() {
+    return Object.keys(this.refs).map(key => this.refs[key].getDecoratedComponentInstance().state);
+  }
+}
+```
+
 <h3 id="currying-decorators">Currying & Decorators</h3>
 
 For convenience, both `root` and `branch` are actually curried function.
