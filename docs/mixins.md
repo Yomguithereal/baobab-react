@@ -250,7 +250,7 @@ var List = React.createClass({
   // Using a function so that your cursors' path can use the component's props etc.
   cursors: function(props, context) {
     return {
-      colors: [props.alternative ? 'alternativeColors', 'colors']
+      colors: [props.alternative ? 'alternativeColors' : 'colors']
     };
   },
 
