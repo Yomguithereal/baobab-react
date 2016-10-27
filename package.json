@@ -1,6 +1,6 @@
 {
   "name": "baobab-react",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "React integration for Baobab.",
   "main": "./index.js",
   "scripts": {
@@ -46,13 +46,6 @@
     "react": "^15.3.0",
     "react-addons-test-utils": "^15.3.0",
     "react-dom": "^15.3.0"
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "react",
-      "stage-1"
-    ]
   },
   "eslintConfig": {
     "extends": [
