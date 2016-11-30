@@ -354,7 +354,9 @@ This also means you can use them as ES7 decorators:
 
 ```js
 @branch({
-  name: ['name']
+  cursors: {
+    name: ['name']
+  }
 })
 class Greeting extends Component {
   render() {
