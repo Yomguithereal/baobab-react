@@ -30,3 +30,13 @@ export function solveMapping(mapping, props, context) {
 
   return mapping;
 }
+
+/**
+ * Determines if the given tree is a Baobab tree.
+ * FIXME: if Baobab ever implements something like Array.isArray we should use
+ * that instead of relying in the internal _identity = '[object Baobab]' value.
+ * See https://github.com/Yomguithereal/baobab/blob/master/src/baobab.js#L111
+ */
+export function isBaobabTree(tree) {
+    return !!(tree && typeof tree.toString === 'function' && tree.toString() === '[object Baobab]');
+}
