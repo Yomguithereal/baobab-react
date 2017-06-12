@@ -16,7 +16,7 @@ const makeError = Baobab.helpers.makeError,
  * Helpers
  */
 function displayName(Component) {
-  return Component.name || Component.displayName || 'Component';
+  return Component.displayName || Component.name || 'Component';
 }
 
 function invalidMapping(name, mapping) {
