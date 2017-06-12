@@ -51,6 +51,13 @@
   "eslintConfig": {
     "extends": [
       "@yomguithereal/eslint-config/es6"
-    ]
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
   }
 }
