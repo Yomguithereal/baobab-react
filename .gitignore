@@ -4,3 +4,4 @@ dist-modules
 TODO.md
 *.log
 build/
+package-lock.json
