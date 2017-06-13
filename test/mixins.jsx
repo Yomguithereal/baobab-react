@@ -5,6 +5,7 @@
  */
 import assert from 'assert';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import {mount} from 'enzyme';
 import Baobab from 'baobab';
 import * as mixins from '../src/mixins';
@@ -12,14 +13,14 @@ import * as mixins from '../src/mixins';
 /**
  * Components.
  */
-const DummyRoot = React.createClass({
+const DummyRoot = createReactClass({
   mixins: [mixins.root],
   render() {
     return <div />;
   }
 });
 
-const Root = React.createClass({
+const Root = createReactClass({
   mixins: [mixins.root],
   render() {
     return <div>{this.props.children}</div>;
@@ -45,7 +46,7 @@ describe('Mixins', function() {
     it('the tree should be propagated through context.', function() {
       const tree = new Baobab({name: 'John'}, {asynchronous: false});
 
-      const Child = React.createClass({
+      const Child = createReactClass({
         mixins: [mixins.branch],
         render() {
           return <span>Hello {this.context.tree.get('name')}</span>;
@@ -58,7 +59,7 @@ describe('Mixins', function() {
     });
 
     // it('should fail if the tree is not passed through context.', function() {
-    //   const Child = React.createClass({
+    //   const Child = createReactClass({
     //     mixins: [mixins.branch],
     //     render() {
     //       return <span>Hello John</span>;
@@ -75,7 +76,7 @@ describe('Mixins', function() {
     it('should be possible to bind several cursors to a component.', function() {
       const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
-      const Child = React.createClass({
+      const Child = createReactClass({
         mixins: [mixins.branch],
         cursors: {
           name: ['name'],
@@ -99,7 +100,7 @@ describe('Mixins', function() {
     it('should be possible to register paths using typical Baobab polymorphisms.', function() {
       const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
-      const Child = React.createClass({
+      const Child = createReactClass({
         mixins: [mixins.branch],
         cursors: {
           name: 'name',
@@ -123,7 +124,7 @@ describe('Mixins', function() {
     it('bound components should update along with the cursor.', function(done) {
       const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
-      const Child = React.createClass({
+      const Child = createReactClass({
         mixins: [mixins.branch],
         cursors: {
           name: ['name'],
@@ -154,7 +155,7 @@ describe('Mixins', function() {
     it('should be possible to set cursors with a function.', function(done) {
       const tree = new Baobab({name: 'John', surname: 'Talbot'}, {asynchronous: false});
 
-      const Child = React.createClass({
+      const Child = createReactClass({
         mixins: [mixins.branch],
         cursors(props) {
           return {
@@ -194,7 +195,7 @@ describe('Mixins', function() {
         state.apply('counter', nb => nb + by);
       };
 
-      const Counter = React.createClass({
+      const Counter = createReactClass({
         mixins: [mixins.branch],
         cursors: {
           counter: 'counter'

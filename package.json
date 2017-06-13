@@ -43,13 +43,21 @@
     "eslint": "^2.2.0",
     "jsdom": "^8.1.0",
     "mocha": "^2.2.4",
-    "react": "^15.3.0",
-    "react-addons-test-utils": "^15.3.0",
-    "react-dom": "^15.3.0"
+    "react": "^15.5.0",
+    "react-dom": "^15.5.4",
+    "react-test-renderer": "^15.5.4",
+    "create-react-class": "^15.5.3"
   },
   "eslintConfig": {
     "extends": [
       "@yomguithereal/eslint-config/es6"
-    ]
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
   }
 }
