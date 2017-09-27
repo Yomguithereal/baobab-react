@@ -115,7 +115,7 @@ function branch(cursors, Component) {
 
     // Render shim
     render() {
-      const {decoratedComponentRef, ...props} = {this.props};
+      const {decoratedComponentRef, ...props} = this.props;
       const suppl = {dispatch: this.dispatcher};
 
       return <Component {...props} {...suppl} {...this.state} ref={decoratedComponentRef} />;
