@@ -78,14 +78,6 @@ function branch(cursors, Component) {
 
   const ComposedComponent = class extends React.Component {
 
-    getDecoratedComponentInstance() {
-        return this.decoratedComponentInstance;
-    }
-
-    handleChildRef(component) {
-        this.decoratedComponentInstance = component;
-    }
-
     // Building initial state
     constructor(props, context) {
       super(props, context);
@@ -123,9 +115,10 @@ function branch(cursors, Component) {
 
     // Render shim
     render() {
+      const {decoratedComponentRef, ...props} = {this.props};
       const suppl = {dispatch: this.dispatcher};
 
-      return <Component {...this.props} {...suppl} {...this.state} ref={this.handleChildRef.bind(this)} />;
+      return <Component {...props} {...suppl} {...this.state} ref={decoratedComponentRef} />;
     }
 
     // On component unmount
