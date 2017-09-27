@@ -227,7 +227,7 @@ describe('Higher Order', function() {
       }, 50);
     });
 
-    it('wrapper component should return wrapping component instance by getDecoratedComponentInstance.', function() {
+    it('wrapper component should allow setting a ref on the wrapped component using the decoratedComponentRef prop.', function(done) {
       const tree = new Baobab({counter: 0}, {asynchronous: false});
 
       class Counter extends Component {
@@ -244,10 +244,12 @@ describe('Higher Order', function() {
 
       const BranchedCounter = branch({counter: 'counter'}, Counter);
 
-      const wrapper = mount(<Root tree={tree}><BranchedCounter /></Root>);
-      const decoratedComponentInstance = wrapper.find(BranchedCounter).get(0).getDecoratedComponentInstance();
+      const wrapper = mount(<Root tree={tree}><BranchedCounter decoratedComponentRef={checkIfNodeIsCounter} /></Root>);
 
-      assert(decoratedComponentInstance instanceof Counter);
+      function checkIfNodeIsCounter(instance) {
+        assert(instance instanceof Counter);
+        done();
+      }
     });
   });
 
