@@ -1,6 +1,6 @@
 {
   "name": "baobab-react",
-  "version": "2.1.4",
+  "version": "3.0.0",
   "description": "React integration for Baobab.",
   "main": "./index.js",
   "scripts": {
