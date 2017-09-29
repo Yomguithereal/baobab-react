@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import Baobab from 'baobab';
-import {curry, solveMapping} from './utils/helpers';
+import {curry, isBaobabTree, solveMapping} from './utils/helpers';
 import PropTypes from './utils/prop-types';
 
 const makeError = Baobab.helpers.makeError,
@@ -30,7 +30,7 @@ function invalidMapping(name, mapping) {
  * Root component
  */
 function root(tree, Component) {
-  if (!(tree instanceof Baobab))
+  if (!isBaobabTree(tree))
     throw makeError(
       'baobab-react/higher-order.root: given tree is not a Baobab.',
       {target: tree}

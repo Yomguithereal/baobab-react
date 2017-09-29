@@ -4,7 +4,7 @@
  *
  * PropTypes used to propagate context safely.
  */
-import Baobab from 'baobab';
+import { isBaobabTree } from './helpers';
 
 function errorMessage(propName, what) {
   return `prop type \`${propName}\` is invalid; it must be ${what}.`;
@@ -15,7 +15,7 @@ export default {
     if (!(propName in props))
       return;
 
-    if (!(props[propName] instanceof Baobab))
+    if (!isBaobabTree(props[propName]))
       return new Error(errorMessage(propName, 'a Baobab tree'));
   }
 };
