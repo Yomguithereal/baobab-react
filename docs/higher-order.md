@@ -12,6 +12,7 @@ In this example, we'll build a simplistic React app showing a list of colors to 
 * [Accessing the tree and cursors](#accessing-the-tree-and-cursors)
 * [Clever vs. dumb components](#clever-vs-dumb-components)
 * [Currying & Decorators](#currying-decorators)
+* [Dealing with refs to your wrapped components](#dealing-with-refs)
 
 ### Creating the app's state
 
@@ -359,6 +360,39 @@ This also means you can use them as ES7 decorators:
 class Greeting extends Component {
   render() {
     return <span>Hello {this.props.name}!</span>;
+  }
+}
+```
+
+<h3 id="dealing-with-refs">Dealing with refs to your wrapped components</h3>
+
+When wrapping a component with a higher-order component, a new component is created around the component you pass to the HOC.
+
+Due to this, when setting a `ref` prop on the decorated component, the reference will point to the wrapping component's instance, instead of pointing to the wrapped component as you probably intend to do.
+
+To solve this problem, the decorated component takes a `decoratedComponentRef` prop which is then forwarded to the wrapped component as a usual `ref` prop.
+
+In other words, if you want to obtain a ref to your wrapped component, you can do so like this:
+
+In your jsx:
+
+```js
+
+class Greeting extends Component {
+  render() {
+    return <span>Hello {this.props.name}!</span>;
+  }
+}
+
+const BranchGreeting = branch({name: ['name']}, Greeting);
+
+class App extends Component {
+  setRef (instance) {
+    // instance will now point to the rendered instance of Greeting
+  }
+
+  render() {
+    return <BranchGreeting decoratedComponentRef={this.setRef}/>;
   }
 }
 ```
