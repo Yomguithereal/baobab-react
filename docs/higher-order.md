@@ -257,7 +257,7 @@ class List extends Component {
 // Using a function so that your cursors' path can use the component's props etc.
 export default branch((props, context) => {
   return {
-    colors: [props.alternative ? 'alternativeColors', 'colors']
+    colors: [props.alternative ? 'alternativeColors' : 'colors']
   };
 }, List);
 ```
