@@ -7,10 +7,11 @@
 import React from 'react';
 import Baobab from 'baobab';
 import {curry, isBaobabTree, solveMapping} from './utils/helpers';
-import PropTypes from './utils/prop-types';
 
 const makeError = Baobab.helpers.makeError,
       isPlainObject = Baobab.type.object;
+
+const BaobabContext = React.createContext();
 
 /**
  * Helpers
@@ -41,25 +42,20 @@ function root(tree, Component) {
 
   const name = displayName(Component);
 
+  const value = { tree };
+
   const ComposedComponent = class extends React.Component {
-
-    // Handling child context
-    getChildContext() {
-      return {
-        tree
-      };
-    }
-
     // Render shim
     render() {
-      return <Component {...this.props} />;
+      return (
+        <BaobabContext.Provider value={ value }>
+          <Component {...this.props} />
+        </BaobabContext.Provider>
+      );
     }
   };
 
   ComposedComponent.displayName = 'Rooted' + name;
-  ComposedComponent.childContextTypes = {
-    tree: PropTypes.baobab
-  };
 
   return ComposedComponent;
 }
@@ -87,6 +83,11 @@ function branch(cursors, Component) {
 
         if (!mapping)
           invalidMapping(name, mapping);
+ 
+        if (!this.context || !isBaobabTree(this.context.tree))
+          throw makeError(
+            'baobab-react/higher-order.branch: tree is not available.'
+          );
 
         // Creating the watcher
         this.watcher = this.context.tree.watch(mapping);
@@ -148,9 +149,8 @@ function branch(cursors, Component) {
   };
 
   ComposedComponent.displayName = 'Branched' + name;
-  ComposedComponent.contextTypes = {
-    tree: PropTypes.baobab
-  };
+  
+  ComposedComponent.contextType = BaobabContext;
 
   return ComposedComponent;
 }
@@ -159,4 +159,4 @@ function branch(cursors, Component) {
 const curriedRoot = curry(root, 2),
       curriedBranch = curry(branch, 2);
 
-export {curriedRoot as root, curriedBranch as branch};
+export {curriedRoot as root, curriedBranch as branch, BaobabContext as Context};
