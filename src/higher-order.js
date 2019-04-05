@@ -7,6 +7,7 @@
 import React from 'react';
 import Baobab from 'baobab';
 import {curry, isBaobabTree, solveMapping} from './utils/helpers';
+import deepEqual from 'deep-equal';
 
 const makeError = Baobab.helpers.makeError,
       isPlainObject = Baobab.type.object;
@@ -78,11 +79,14 @@ function branch(cursors, Component) {
     constructor(props, context) {
       super(props, context);
 
-      if (cursors) {
-        const mapping = solveMapping(cursors, props, context);
+      // Creating dispatcher
+      this.dispatcher = (fn, ...args) => fn(this.context.tree, ...args);
 
-        if (!mapping)
-          invalidMapping(name, mapping);
+      if (cursors) {
+        this.mapping = solveMapping(cursors, props, context);
+
+        if (!this.mapping)
+          invalidMapping(name, this.mapping);
  
         if (!this.context || !isBaobabTree(this.context.tree))
           throw makeError(
@@ -90,7 +94,7 @@ function branch(cursors, Component) {
           );
 
         // Creating the watcher
-        this.watcher = this.context.tree.watch(mapping);
+        this.watcher = this.context.tree.watch(this.mapping);
 
         // Hydrating initial state
         this.state = this.watcher.get();
@@ -98,11 +102,7 @@ function branch(cursors, Component) {
     }
 
     // On component mount
-    componentWillMount() {
-
-      // Creating dispatcher
-      this.dispatcher = (fn, ...args) => fn(this.context.tree, ...args);
-
+    componentDidMount() {
       if (!this.watcher)
         return;
 
@@ -133,17 +133,21 @@ function branch(cursors, Component) {
     }
 
     // On new props
-    componentWillReceiveProps(props) {
+    componentDidUpdate() {
       if (!this.watcher || typeof cursors !== 'function')
         return;
 
-      const mapping = solveMapping(cursors, props, this.context);
+      const mapping = solveMapping(cursors, this.props, this.context);
 
       if (!mapping)
         invalidMapping(name, mapping);
 
+      if (deepEqual(mapping, this.mapping)) return;
+
+      this.mapping = mapping;
+
       // Refreshing the watcher
-      this.watcher.refresh(mapping);
+      this.watcher.refresh(this.mapping);
       this.setState(this.watcher.get());
     }
   };
