@@ -6,8 +6,9 @@ Welcome to [baobab](https://github.com/Yomguithereal/baobab)'s [React](https://f
 
 Implemented patterns:
 
-* [Mixins](docs/mixins.md)
+* [Hooks](docs/hooks.md)
 * [Higher order components](docs/higher-order.md) (curried so also usable as ES7 decorators)
+* [Mixins](docs/mixins.md)
 
 ## Summary
 
@@ -51,13 +52,17 @@ This is necessary so that isomorphism can remain an enjoyable stroll in the park
 
 ## Patterns
 
-### Mixins
+### Hooks
 
-[Dedicated documentation](docs/mixins.md)
+[Dedicated documentation](docs/hooks.md)
 
 ### Higher Order Components
 
 [Dedicated documentation](docs/higher-order.md)
+
+### Mixins
+
+[Dedicated documentation](docs/mixins.md)
 
 ## Common pitfalls
 
