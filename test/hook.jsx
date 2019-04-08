@@ -172,4 +172,33 @@ describe('Hook', function() {
       }, 50);
     });
   });
+
+  describe('actions', function() {
+    it('should be possible to dispatch actions.', function() {
+      const tree = new Baobab({counter: 0}, {asynchronous: false});
+
+      const inc = function(state, by = 1) {
+        state.apply('counter', nb => nb + by);
+      };
+
+      const Counter = function() {
+        const {counter, dispatch} = useBranch({counter: 'counter'});
+
+        return (
+          <span onClick={() => dispatch(inc)}
+                onChange={() => dispatch(inc, 2)}>
+            Counter: {counter}
+          </span>
+        );
+      };
+
+      const wrapper = mount(<BasicRoot tree={tree}><Counter /></BasicRoot>);
+
+      assert.strictEqual(wrapper.text(), 'Counter: 0');
+      wrapper.find('span').simulate('click');
+      assert.strictEqual(wrapper.text(), 'Counter: 1');
+      wrapper.find('span').simulate('change');
+      assert.strictEqual(wrapper.text(), 'Counter: 3');
+    });
+  });
 });

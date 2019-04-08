@@ -54,7 +54,9 @@ export function useBranch(cursors) {
 
   const [state, setState] = useState(() => {
     const mapping = typeof cursors === 'function' ? cursors(context) : cursors;
-    return context.tree.project(mapping);
+    const obj = context.tree.project(mapping);
+    obj.dispatch = (fn, ...args) => fn(context.tree, ...args);
+    return obj;
   });
 
   useEffect(() => {
@@ -62,7 +64,9 @@ export function useBranch(cursors) {
     const watcher = context.tree.watch(mapping);
 
     watcher.on('update', () => {
-      setState(watcher.get());
+      const obj = watcher.get();
+      obj.dispatch = (fn, ...args) => fn(context.tree, ...args);
+      setState(obj);
     });
 
     return () => watcher.release();
