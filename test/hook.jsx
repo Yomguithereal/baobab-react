@@ -4,44 +4,41 @@
  *
  */
 import assert from 'assert';
-import React, {Component} from 'react';
+import React from 'react';
 import enzyme, {mount} from 'enzyme';
 import Baobab from 'baobab';
-import {root} from '../src/higher-order';
-import {useBranch} from '../src/useBranch';
+import {useRoot, useBranch} from '../src/hooks';
 import Adapter from 'enzyme-adapter-react-16';
  
-enzyme.configure({ adapter: new Adapter() });
+enzyme.configure({adapter: new Adapter()});
 
 /**
  * Components.
  */
-class DummyRoot extends Component {
-  render() {
-    return <div />;
-  }
-}
-
-class BasicRoot extends Component {
-  render() {
-    return (
+const BasicRoot = function({tree, children}) {
+  const Root = useRoot(tree);
+  return (
+    <Root>
       <div>
-        {this.props.children}
+        {children}
       </div>
-    );
-  }
+    </Root>
+  );
 }
 
 /**
  * Test suite.
  */
 describe('Hook', function() {
-
   describe('api', function() {
-    it('hook should throw an error if the passed argument is not valid.', function() {
+    it('root should throw an error if the passed argument is not a tree.', function() {
+      assert.throws(function() {
+        mount(<BasicRoot />);
+      }, /baobab-react/);
+    });
+    
+    it('branch should throw an error if the passed argument is not valid.', function() {
       const tree = new Baobab({name: 'John'}, {asynchronous: false});
-
-      const Root = root(tree, BasicRoot);
 
       const Child = () => {
         const data = useBranch();
@@ -49,7 +46,7 @@ describe('Hook', function() {
       }
 
       assert.throws(() => {
-        mount(<Root><Child /></Root>);
+        mount(<BasicRoot tree={tree}><Child /></BasicRoot>);
       }, /baobab-react/);
     });
   });
@@ -58,8 +55,6 @@ describe('Hook', function() {
     it('the tree should be propagated through context.', function() {
       const tree = new Baobab({path: ['name'], name: 'John'}, {asynchronous: false});
 
-      const Root = root(tree, BasicRoot);
-
       const Child = () => {
         const data = useBranch(context => ({
             name: context.tree.get('path'),
@@ -67,7 +62,7 @@ describe('Hook', function() {
         return <span>Hello {data.name}</span>;
       }
 
-      const wrapper = mount(<Root tree={tree}><Child /></Root>);
+      const wrapper = mount(<BasicRoot tree={tree}><Child /></BasicRoot>);
 
       assert.strictEqual(wrapper.text(), 'Hello John');
     });
@@ -100,9 +95,7 @@ describe('Hook', function() {
         );
       }
 
-      const Root = root(tree, BasicRoot);
-
-      const wrapper = mount(<Root tree={tree}><Child /></Root>);
+      const wrapper = mount(<BasicRoot tree={tree}><Child /></BasicRoot>);
 
       assert.strictEqual(wrapper.text(), 'Hello John Talbot');
     });
@@ -122,9 +115,7 @@ describe('Hook', function() {
         );
       }
 
-      const Root = root(tree, BasicRoot);
-
-      const wrapper = mount(<Root><Child /></Root>);
+      const wrapper = mount(<BasicRoot tree={tree}><Child /></BasicRoot>);
 
       assert.strictEqual(wrapper.text(), 'Hello John Talbot');
     });
@@ -144,9 +135,7 @@ describe('Hook', function() {
         );
       }
 
-      const Root = root(tree, BasicRoot);
-
-      const wrapper = mount(<Root tree={tree}><Child /></Root>);
+      const wrapper = mount(<BasicRoot tree={tree}><Child /></BasicRoot>);
 
       tree.set('surname', 'the Third');
 
@@ -173,9 +162,7 @@ describe('Hook', function() {
         );
       }
 
-      const Root = root(tree, BasicRoot);
-
-      const wrapper = mount(<Root><Child path={['surname']}/></Root>);
+      const wrapper = mount(<BasicRoot tree={tree}><Child path={['surname']}/></BasicRoot>);
 
       tree.set('surname', 'the Third');
 
