@@ -8,11 +8,10 @@ import React from 'react';
 import Baobab from 'baobab';
 import {curry, isBaobabTree, solveMapping} from './utils/helpers';
 import deepEqual from 'deep-equal';
+import BaobabContext from './context';
 
 const makeError = Baobab.helpers.makeError,
       isPlainObject = Baobab.type.object;
-
-const BaobabContext = React.createContext();
 
 /**
  * Helpers
@@ -163,4 +162,4 @@ function branch(cursors, Component) {
 const curriedRoot = curry(root, 2),
       curriedBranch = curry(branch, 2);
 
-export {curriedRoot as root, curriedBranch as branch, BaobabContext as Context};
+export {curriedRoot as root, curriedBranch as branch};

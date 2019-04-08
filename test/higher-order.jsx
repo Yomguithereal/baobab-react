@@ -7,10 +7,11 @@ import assert from 'assert';
 import React, {Component} from 'react';
 import enzyme, {mount} from 'enzyme';
 import Baobab from 'baobab';
-import {root, branch, Context} from '../src/higher-order';
+import BaobabContext from '../src/context';
+import {root, branch} from '../src/higher-order';
 import Adapter from 'enzyme-adapter-react-16';
  
-enzyme.configure({ adapter: new Adapter() });
+enzyme.configure({adapter: new Adapter()});
 
 /**
  * Components.
@@ -92,7 +93,7 @@ describe('Higher Order', function() {
         }
       }
 
-      Child.contextType = Context;
+      Child.contextType = BaobabContext;
 
       const wrapper = mount(<Root tree={tree}><Child /></Root>);
 
