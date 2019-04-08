@@ -1,27 +1,55 @@
-import {useContext, useState, useEffect} from 'react';
-import {Context} from './higher-order';
+import React, {useContext, useState, useEffect} from 'react';
 import {isBaobabTree} from './utils/helpers';
 import Baobab from 'baobab';
+import BaobabContext from './context';
 
 const makeError = Baobab.helpers.makeError,
       isPlainObject = Baobab.type.object;
 
 function invalidMapping(name, mapping) {
   throw makeError(
-    'baobab-react/useBranch: given cursors mapping is invalid (check the "' + name + '" component).',
+    'baobab-react/hooks.useBranch: given cursors mapping is invalid (check the "' + name + '" component).',
     {mapping}
   );
+}
+
+export function useRoot(tree) {
+  if (!isBaobabTree(tree))
+    throw makeError(
+      'baobab-react/hooks.useRoot: given tree is not a Baobab.',
+      {target: tree}
+    );
+
+  const [state, setState] = useState(() => {
+    return ({children}) => {
+      return React.createElement(BaobabContext.Provider, {
+        value: {tree}
+      }, children);
+    };
+  });
+
+  useEffect(() => {
+    setState(() => {
+      return ({children}) => {
+        return React.createElement(BaobabContext.Provider, {
+          value: {tree}
+        }, children);
+      };
+   });
+  }, [tree]);
+
+  return state;
 }
 
 export function useBranch(cursors) {
   if (!isPlainObject(cursors) && typeof cursors !== 'function')
     invalidMapping(name, cursors);
 
-  const context = useContext(Context);
+  const context = useContext(BaobabContext);
 
   if (!context || !isBaobabTree(context.tree))
     throw makeError(
-      'baobab-react/useBranch: tree is not available.'
+      'baobab-react/hooks.useBranch: tree is not available.'
     );
 
   const [state, setState] = useState(() => {
