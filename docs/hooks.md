@@ -47,9 +47,9 @@ import tree from './state';
 import List from './list.jsx';
 
 // Creating our top-level component
-const App = function({tree}) {
+const App = function({store}) {
   // useRoot takes the baobab tree and provides a component bound to the tree
-  const Root = useRoot(tree);
+  const Root = useRoot(store);
   return (
     <Root>
       <List />
@@ -58,7 +58,7 @@ const App = function({tree}) {
 }
 
 // Rendering the app
-render(<App tree={tree} />, document.querySelector('#mount'));
+render(<App store={tree} />, document.querySelector('#mount'));
 ```
 
 ### Branching our list
