@@ -7,9 +7,10 @@
     "prepublish": "babel ./src --out-dir dist-modules",
     "lint": "eslint ./src",
     "test": "mocha -R spec --require ./test/setup.js --compilers jsx:babel-register ./test",
-    "build": "npm run build-mixins && npm run build-higher-order",
+    "build": "npm run build-mixins && npm run build-higher-order && npm run build-hooks",
     "build-mixins": "mkdir -p build && browserify -x baobab -t babelify ./src/mixins.js -o build/mixins.js",
-    "build-higher-order": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/higher-order.js -o build/higher-order.js"
+    "build-higher-order": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/higher-order.js -o build/higher-order.js",
+    "build-hooks": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/hooks.js -o build/hooks.js"
   },
   "repository": {
     "type": "git",

@@ -121,6 +121,7 @@ npm run build
 # or per pattern
 npm run build-mixins
 npm run build-higher-order
+npm run build-hooks
 ```
 
 ## License
