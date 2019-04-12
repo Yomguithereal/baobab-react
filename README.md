@@ -15,6 +15,7 @@ Implemented patterns:
 * [Installation](#installation)
 * [On root & branches](#on-root--branches)
 * [Patterns](#patterns)
+  * [Hooks](#hooks)
   * [Mixins](#mixins)
   * [Higher Order Components](#higher-order-components)
 * [Common pitfalls](#common-pitfalls)
