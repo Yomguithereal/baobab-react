@@ -7,9 +7,10 @@
     "prepublish": "babel ./src --out-dir dist-modules",
     "lint": "eslint ./src",
     "test": "mocha -R spec --require ./test/setup.js --compilers jsx:babel-register ./test",
-    "build": "npm run build-mixins && npm run build-higher-order",
+    "build": "npm run build-mixins && npm run build-higher-order && npm run build-hooks",
     "build-mixins": "mkdir -p build && browserify -x baobab -t babelify ./src/mixins.js -o build/mixins.js",
-    "build-higher-order": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/higher-order.js -o build/higher-order.js"
+    "build-higher-order": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/higher-order.js -o build/higher-order.js",
+    "build-hooks": "mkdir -p build && browserify -x baobab -x react -t babelify ./src/hooks.js -o build/hooks.js"
   },
   "repository": {
     "type": "git",
@@ -39,14 +40,15 @@
     "babelify": "^7.2.0",
     "baobab": "^2.3.3",
     "browserify": "^13.0.0",
-    "enzyme": "^2.0.0",
+    "create-react-class": "^15.6.3",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.11.2",
     "eslint": "^2.2.0",
     "jsdom": "^8.1.0",
     "mocha": "^2.2.4",
-    "react": "^15.5.0",
-    "react-dom": "^15.5.4",
-    "react-test-renderer": "^15.5.4",
-    "create-react-class": "^15.5.3"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-test-renderer": "^16.8.6"
   },
   "eslintConfig": {
     "extends": [
@@ -59,5 +61,8 @@
         "jsx": true
       }
     }
+  },
+  "dependencies": {
+    "deep-equal": "^1.0.1"
   }
 }

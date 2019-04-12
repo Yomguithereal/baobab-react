@@ -7,7 +7,8 @@
 import React from 'react';
 import Baobab from 'baobab';
 import {curry, isBaobabTree, solveMapping} from './utils/helpers';
-import PropTypes from './utils/prop-types';
+import deepEqual from 'deep-equal';
+import BaobabContext from './context';
 
 const makeError = Baobab.helpers.makeError,
       isPlainObject = Baobab.type.object;
@@ -41,25 +42,20 @@ function root(tree, Component) {
 
   const name = displayName(Component);
 
+  const value = { tree };
+
   const ComposedComponent = class extends React.Component {
-
-    // Handling child context
-    getChildContext() {
-      return {
-        tree
-      };
-    }
-
     // Render shim
     render() {
-      return <Component {...this.props} />;
+      return (
+        <BaobabContext.Provider value={ value }>
+          <Component {...this.props} />
+        </BaobabContext.Provider>
+      );
     }
   };
 
   ComposedComponent.displayName = 'Rooted' + name;
-  ComposedComponent.childContextTypes = {
-    tree: PropTypes.baobab
-  };
 
   return ComposedComponent;
 }
@@ -82,14 +78,22 @@ function branch(cursors, Component) {
     constructor(props, context) {
       super(props, context);
 
-      if (cursors) {
-        const mapping = solveMapping(cursors, props, context);
+      // Creating dispatcher
+      this.dispatcher = (fn, ...args) => fn(this.context.tree, ...args);
 
-        if (!mapping)
-          invalidMapping(name, mapping);
+      if (cursors) {
+        this.mapping = solveMapping(cursors, props, context);
+
+        if (!this.mapping)
+          invalidMapping(name, this.mapping);
+ 
+        if (!this.context || !isBaobabTree(this.context.tree))
+          throw makeError(
+            'baobab-react/higher-order.branch: tree is not available.'
+          );
 
         // Creating the watcher
-        this.watcher = this.context.tree.watch(mapping);
+        this.watcher = this.context.tree.watch(this.mapping);
 
         // Hydrating initial state
         this.state = this.watcher.get();
@@ -97,11 +101,7 @@ function branch(cursors, Component) {
     }
 
     // On component mount
-    componentWillMount() {
-
-      // Creating dispatcher
-      this.dispatcher = (fn, ...args) => fn(this.context.tree, ...args);
-
+    componentDidMount() {
       if (!this.watcher)
         return;
 
@@ -132,25 +132,28 @@ function branch(cursors, Component) {
     }
 
     // On new props
-    componentWillReceiveProps(props) {
+    componentDidUpdate() {
       if (!this.watcher || typeof cursors !== 'function')
         return;
 
-      const mapping = solveMapping(cursors, props, this.context);
+      const mapping = solveMapping(cursors, this.props, this.context);
 
       if (!mapping)
         invalidMapping(name, mapping);
 
+      if (deepEqual(mapping, this.mapping)) return;
+
+      this.mapping = mapping;
+
       // Refreshing the watcher
-      this.watcher.refresh(mapping);
+      this.watcher.refresh(this.mapping);
       this.setState(this.watcher.get());
     }
   };
 
   ComposedComponent.displayName = 'Branched' + name;
-  ComposedComponent.contextTypes = {
-    tree: PropTypes.baobab
-  };
+  
+  ComposedComponent.contextType = BaobabContext;
 
   return ComposedComponent;
 }

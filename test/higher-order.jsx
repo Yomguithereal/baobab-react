@@ -5,10 +5,13 @@
  */
 import assert from 'assert';
 import React, {Component} from 'react';
-import {mount} from 'enzyme';
+import enzyme, {mount} from 'enzyme';
 import Baobab from 'baobab';
+import BaobabContext from '../src/context';
 import {root, branch} from '../src/higher-order';
-import PropTypes from '../src/utils/prop-types';
+import Adapter from 'enzyme-adapter-react-16';
+ 
+enzyme.configure({adapter: new Adapter()});
 
 /**
  * Components.
@@ -90,9 +93,7 @@ describe('Higher Order', function() {
         }
       }
 
-      Child.contextTypes = {
-        tree: PropTypes.baobab
-      };
+      Child.contextType = BaobabContext;
 
       const wrapper = mount(<Root tree={tree}><Child /></Root>);
 
@@ -110,7 +111,7 @@ describe('Higher Order', function() {
 
       assert.throws(function() {
         mount(<BranchedChild />);
-      }, /Baobab/);
+      }, /baobab-react/);
     });
   });
 
