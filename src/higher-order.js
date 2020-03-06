@@ -110,6 +110,7 @@ function branch(cursors, Component) {
           this.setState(this.watcher.get());
       };
 
+      handler();
       this.watcher.on('update', handler);
     }
 
