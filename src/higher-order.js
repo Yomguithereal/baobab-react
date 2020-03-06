@@ -42,7 +42,7 @@ function root(tree, Component) {
 
   const name = displayName(Component);
 
-  const value = { tree };
+  const value = {tree};
 
   const ComposedComponent = class extends React.Component {
     // Render shim
@@ -86,7 +86,7 @@ function branch(cursors, Component) {
 
         if (!this.mapping)
           invalidMapping(name, this.mapping);
- 
+
         if (!this.context || !isBaobabTree(this.context.tree))
           throw makeError(
             'baobab-react/higher-order.branch: tree is not available.'
@@ -153,7 +153,7 @@ function branch(cursors, Component) {
   };
 
   ComposedComponent.displayName = 'Branched' + name;
-  
+
   ComposedComponent.contextType = BaobabContext;
 
   return ComposedComponent;
