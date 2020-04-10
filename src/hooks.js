@@ -41,7 +41,7 @@ export function useRoot(tree) {
   return state;
 }
 
-export function useBranch(cursors) {
+export function useBranch(cursors, deps) {
   if (!isPlainObject(cursors) && typeof cursors !== 'function')
     invalidMapping(name, cursors);
 
@@ -63,14 +63,19 @@ export function useBranch(cursors) {
     const mapping = typeof cursors === 'function' ? cursors(context) : cursors;
     const watcher = context.tree.watch(mapping);
 
-    watcher.on('update', () => {
+    const updateValue = () => {
       const obj = watcher.get();
       obj.dispatch = (fn, ...args) => fn(context.tree, ...args);
       setState(obj);
-    });
+    };
+
+    // cursors have changed - update value immediately
+    updateValue();
+
+    watcher.on('update', updateValue);
 
     return () => watcher.release();
-  }, [cursors]);
+  }, deps || []);
 
   return state;
 }

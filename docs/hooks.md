@@ -228,7 +228,7 @@ const List = function(props) {
   // Using a function so that your cursors' path can use the component's props etc.
   const {colors} = useBranch({
     colors: [props.alternative ? 'alternativeColors' : 'colors']
-  });
+  }, [props.alternative]);
 
   function renderItem(color) {
     return <li key={color}>{color}</li>;
@@ -239,6 +239,8 @@ const List = function(props) {
 
 export default List;
 ```
+
+Note that you need to pass an array of dependencies as a second argument. If dependencies are not specified, the path will not be re-computed.
 
 ### Clever vs. dumb components
 

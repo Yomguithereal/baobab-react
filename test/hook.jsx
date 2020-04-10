@@ -154,7 +154,7 @@ describe('Hook', function() {
             name: ['name'],
             surname: props.path
           };
-        });
+        }, [props.path]);
         return (
           <span>
             Hello {data.name} {data.surname}
